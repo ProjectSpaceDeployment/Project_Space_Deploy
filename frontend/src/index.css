@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components{
+    .primary-btn {
+        @apply inline-block bg-primary text-white font-semibold
+        rounded-lg hover:bg-amber-500 duration-200 shadow-[0px_10px_8px_-7px_#ffd978] 
+        hover:shadow-[0px_10px_8px_-7px_#ca8a04] py-2 px-6;
+    }
+}
+
+/* This hides the scrollbar but keeps scrolling functionality */
+::-webkit-scrollbar {
+  width: 0px; /* Remove horizontal scrollbar */
+  height: 0px; /* Remove vertical scrollbar */
+}
+
+::-webkit-scrollbar-thumb {
+  background: transparent; /* make the thumb (scrollbar itself) transparent */
+}
+
+::-webkit-scrollbar-track {
+  background: transparent; /* make the track transparent */
+}
+
+/* For Firefox */
+scrollbar-width: none; /* Hides scrollbar in Firefox */
