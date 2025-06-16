@@ -1,8 +1,7 @@
 const Footer = ({ isSidebarOpen, isMobile }) => {
   return (
     <footer
-      className={`p-4 md:p-6 bg-[#fbdc9b] shadow-lg rounded-lg 
-    w-full transition-all duration-300 space-y-6
+      className={`p-4 md:p-6 bg-[#fbdc9b] shadow-lg rounded-lg  transition-all duration-300 space-y-6
     dark:bg-gray-800 dark:border-gray-600 dark:text-white
      ${isMobile ? (isSidebarOpen ? 'ml-64 w-auto' : 'ml-0 w-full') : 'ml-64 w-auto'}`}
     >
