@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*of09i*b3xlav+w3myckb$xvojmo3ypog)&!p8)o0o#c49fwli
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['projectspace.apsit.edu.in', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -57,6 +57,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    'projectspace.apsit.edu.in'
 ]
 
 AUTHENTICATION_BACKENDS = [
