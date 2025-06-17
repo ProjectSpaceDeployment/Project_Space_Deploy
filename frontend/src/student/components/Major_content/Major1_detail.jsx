@@ -1797,9 +1797,11 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
          </p>
          <p className="text-gray-700 dark:text-gray-400">Members:</p>
          <ul className="list-disc list-inside text-gray-700 dark:text-gray-400">
-           {project?.members.map((member, index) => (
-             <li key={index}>{member}</li>
-           ))}
+           {Array.isArray(project?.members) &&
+              project.members.map((member, index) => (
+                <li key={index}>{member}</li>
+              ))
+            }
          </ul>
        </fieldset>
 
@@ -1904,7 +1906,9 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
           </tr>
         </thead>
         <tbody>
-          {(activeSemester === 'sem7' ? tasksSem7 : tasksSem8).map((task) => (
+          {(Array.isArray(activeSemester === 'sem7' ? tasksSem7 : tasksSem8)
+  ? (activeSemester === 'sem7' ? tasksSem7 : tasksSem8)
+  : []).map((task) => (
             <tr key={task.id} className="border border-gray-300">
               <td className="border border-gray-300 p-2">{task.week}</td>
               <td className="border border-gray-300 p-2">
