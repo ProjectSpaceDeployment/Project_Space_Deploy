@@ -25,7 +25,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        console.log("entered");
+        console.log("sending");
         const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
         console.log("reposnse");
         console.log(response.data);
@@ -49,8 +49,6 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
           AxiosInstance.get(`/projects/tasks/?id=${id}&sem_new=sem_7`),
           AxiosInstance.get(`/projects/tasks/?id=${id}&sem_new=sem_8`)
         ]);
-        console.log(sem7Response.data);
-        console.log(sem8Response.data);
         setTasksSem7(sem7Response.data);
         setTasksSem8(sem8Response.data);
       } catch (error) {
