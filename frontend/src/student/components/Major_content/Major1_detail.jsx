@@ -25,7 +25,9 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
+        console.log("entered");
         const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
+        console.log("reposnse");
         console.log(response.data);
         setProject(response.data);
       } catch (error) {
