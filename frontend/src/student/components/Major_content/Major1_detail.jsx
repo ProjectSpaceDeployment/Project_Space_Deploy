@@ -1955,7 +1955,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
             </p>
 
             {/* Render tasks inside the modal */}
-            {selectedTask?.tasks.map((t, index) => (
+            {Array.isArray(selectedTask?.tasks) && selectedTask.tasks.map((t, index) => (
               <div key={t.task_id} className="p-3 bg-gray-100 rounded-md mb-2">
                 {/* Task description */}
                 <p className="text-gray-700 font-medium">{index + 1}. {t.task}</p>
@@ -2113,7 +2113,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {publications.map((pub) => (
+                  { Array.isArray(publications) && publications.map((pub) => (
                     <tr
                       key={pub.id}
                       className={`cursor-pointer ${selectedRows.includes(pub.id) ? "bg-blue-100" : "hover:bg-gray-100"
@@ -2234,7 +2234,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </tr>
               </thead>
               <tbody>
-                {copyrights.map((c) => (
+                {Array.isArray(copyrights) && copyrights.map((c) => (
                   <tr key={c.id} className={`cursor-pointer ${selectedCopyrightRows.includes(c.id) ? "bg-blue-100" : "hover:bg-gray-100"}`} onClick={() => toggleCopyrightRow(c.id)}>
                     <td className="p-2 border text-center">
                       <input
@@ -2316,7 +2316,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </tr>
               </thead>
               <tbody>
-                {patentData.map((row) => (
+                {Array.isArray(patentData) && patentData.map((row) => (
                   <tr key={row.id} className={`cursor-pointer ${selectedPatentRows.includes(row.id) ? "bg-blue-100" : "hover:bg-gray-100"}`} onClick={() => togglePatentRow(row.id)}>
                     <td className="border p-2 text-center">
                       <input type="checkbox" checked={selectedPatentRows.includes(row.id)} onChange={() => togglePatentRow(row.id)} onClick={(e) => e.stopPropagation()} />
@@ -2408,7 +2408,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 <legend className="text-xl font-semibold text-gray-800 dark:text-gray-200 px-2">
                   Assignment Section
                 </legend>
-                {links.map((link) => {
+                {Array.isArray(links) && links.map((link) => {
   const existingUpload = uploadedFiles[link.id];
 
   return (
