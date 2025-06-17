@@ -34,7 +34,9 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
         console.error("Error fetching project:", error);
       }
     };
-    fetchProject();
+    if (id) {
+      fetchProject();  // Fetch tasks when projectId is available
+    }
   }, [id]);
   const [tasks, setTasks] = useState([]);
   const [tasksSem7, setTasksSem7] = useState([]);
@@ -259,27 +261,6 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   //   alert("Your request has been sent to your Guide. Changes will reflect once approved.");
   //   setShowPopup(false);
   // };
-
-
-
-  const [showGroupPopup, setShowGroupPopup] = useState(false);
-  const [groupDetails, setGroupDetails] = useState({
-    guide: "Prof. Vishal Badgujar",
-    coGuide: "Prof. Seema Jadhav",
-    leader: "Prakruti Bhavsar",
-    members: ["Nimisha Idekar", "Akanksha Bhoir", "Payal Gupta"],
-  });
-
-  const [tempGroupDetails, setTempGroupDetails] = useState(groupDetails);
-
-  const handleGroupPopupSubmit = () => {
-    setGroupDetails(tempGroupDetails); // Update group details
-    alert("Your request has been sent to your Guide");
-    setShowGroupPopup(false);
-  };
-
-  const [guideApproved, setGuideApproved] = useState(false);
-
   const [selectedRows, setSelectedRows] = useState([]);
   
   
