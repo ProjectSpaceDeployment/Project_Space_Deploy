@@ -25,14 +25,18 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
+        console.log("sending");
         const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
+        console.log("reposnse");
         console.log(response.data);
         setProject(response.data);
       } catch (error) {
         console.error("Error fetching project:", error);
       }
     };
-    fetchProject();
+    if (id) {
+      fetchProject();  // Fetch tasks when projectId is available
+    }
   }, [id]);
   const [tasks, setTasks] = useState([]);
   const [tasksSem7, setTasksSem7] = useState([]);
@@ -47,8 +51,6 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
           AxiosInstance.get(`/projects/tasks/?id=${id}&sem_new=sem_7`),
           AxiosInstance.get(`/projects/tasks/?id=${id}&sem_new=sem_8`)
         ]);
-        console.log(sem7Response.data);
-        console.log(sem8Response.data);
         setTasksSem7(sem7Response.data);
         setTasksSem8(sem8Response.data);
       } catch (error) {
@@ -259,27 +261,6 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   //   alert("Your request has been sent to your Guide. Changes will reflect once approved.");
   //   setShowPopup(false);
   // };
-
-
-
-  const [showGroupPopup, setShowGroupPopup] = useState(false);
-  const [groupDetails, setGroupDetails] = useState({
-    guide: "Prof. Vishal Badgujar",
-    coGuide: "Prof. Seema Jadhav",
-    leader: "Prakruti Bhavsar",
-    members: ["Nimisha Idekar", "Akanksha Bhoir", "Payal Gupta"],
-  });
-
-  const [tempGroupDetails, setTempGroupDetails] = useState(groupDetails);
-
-  const handleGroupPopupSubmit = () => {
-    setGroupDetails(tempGroupDetails); // Update group details
-    alert("Your request has been sent to your Guide");
-    setShowGroupPopup(false);
-  };
-
-  const [guideApproved, setGuideApproved] = useState(false);
-
   const [selectedRows, setSelectedRows] = useState([]);
   
   
@@ -1797,9 +1778,11 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
          </p>
          <p className="text-gray-700 dark:text-gray-400">Members:</p>
          <ul className="list-disc list-inside text-gray-700 dark:text-gray-400">
-           {project?.members.map((member, index) => (
-             <li key={index}>{member}</li>
-           ))}
+           {Array.isArray(project?.members) &&
+              project.members.map((member, index) => (
+                <li key={index}>{member}</li>
+              ))
+            }
          </ul>
        </fieldset>
 
@@ -1904,7 +1887,9 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
           </tr>
         </thead>
         <tbody>
-          {(activeSemester === 'sem7' ? tasksSem7 : tasksSem8).map((task) => (
+          {(Array.isArray(activeSemester === 'sem7' ? tasksSem7 : tasksSem8)
+  ? (activeSemester === 'sem7' ? tasksSem7 : tasksSem8)
+  : []).map((task) => (
             <tr key={task.id} className="border border-gray-300">
               <td className="border border-gray-300 p-2">{task.week}</td>
               <td className="border border-gray-300 p-2">
@@ -1951,7 +1936,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
             </p>
 
             {/* Render tasks inside the modal */}
-            {selectedTask?.tasks.map((t, index) => (
+            {Array.isArray(selectedTask?.tasks) && selectedTask.tasks.map((t, index) => (
               <div key={t.task_id} className="p-3 bg-gray-100 rounded-md mb-2">
                 {/* Task description */}
                 <p className="text-gray-700 font-medium">{index + 1}. {t.task}</p>
@@ -2109,7 +2094,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {publications.map((pub) => (
+                  { Array.isArray(publications) && publications.map((pub) => (
                     <tr
                       key={pub.id}
                       className={`cursor-pointer ${selectedRows.includes(pub.id) ? "bg-blue-100" : "hover:bg-gray-100"
@@ -2230,7 +2215,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </tr>
               </thead>
               <tbody>
-                {copyrights.map((c) => (
+                {Array.isArray(copyrights) && copyrights.map((c) => (
                   <tr key={c.id} className={`cursor-pointer ${selectedCopyrightRows.includes(c.id) ? "bg-blue-100" : "hover:bg-gray-100"}`} onClick={() => toggleCopyrightRow(c.id)}>
                     <td className="p-2 border text-center">
                       <input
@@ -2312,7 +2297,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </tr>
               </thead>
               <tbody>
-                {patentData.map((row) => (
+                {Array.isArray(patentData) && patentData.map((row) => (
                   <tr key={row.id} className={`cursor-pointer ${selectedPatentRows.includes(row.id) ? "bg-blue-100" : "hover:bg-gray-100"}`} onClick={() => togglePatentRow(row.id)}>
                     <td className="border p-2 text-center">
                       <input type="checkbox" checked={selectedPatentRows.includes(row.id)} onChange={() => togglePatentRow(row.id)} onClick={(e) => e.stopPropagation()} />
@@ -2404,7 +2389,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 <legend className="text-xl font-semibold text-gray-800 dark:text-gray-200 px-2">
                   Assignment Section
                 </legend>
-                {links.map((link) => {
+                {Array.isArray(links) && links.map((link) => {
   const existingUpload = uploadedFiles[link.id];
 
   return (
