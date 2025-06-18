@@ -26,7 +26,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
     const fetchProject = async () => {
       try {
         console.log("sending");
-        const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
+        const response = await AxiosInstance.get(`/projects/${id}/get_project_pk/`);
         console.log(response);
         setProject(response.data);
       } catch (error) {
