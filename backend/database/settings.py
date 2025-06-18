@@ -26,7 +26,7 @@ env = environ.Env(
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 DEBUG = env('DEBUG')
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = "django-insecure-*of09i*b3xlav+w3myckb$xvojmo3ypog)&!p8)o0o#c49fwli"
 
 ALLOWED_HOSTS = ['projectspace.apsit.edu.in', 'localhost', '127.0.0.1']
 
