@@ -1131,7 +1131,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             def header(canvas, doc, year, dept):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  
+                    image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')  
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)
                     canvas.setFont("Helvetica", 10)
                     canvas.drawString(40, 725, f"Class/Division: BE {dept}")
@@ -1328,7 +1328,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             
@@ -1517,7 +1517,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             
@@ -1741,7 +1741,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             
@@ -1839,7 +1839,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             merged_format = workbook.add_format({'border': 1, 'align': 'center', 'valign': 'vcenter', 'text_wrap': True})
 
             
-            logo_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            logo_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', logo_path, {'x_scale': 1, 'y_scale': 1})
             worksheet.set_row(1, 40)
 
@@ -2154,7 +2154,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             # EXCEL GENERATION
             output = BytesIO()
             workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             
             worksheet = workbook.add_worksheet('Assessment Report')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
@@ -2355,7 +2355,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True })
 
             
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
 
@@ -2604,7 +2604,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True })
 
             # Insert Image (Institute Logo)
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             # Merge Cells for Titles & Subtitles
@@ -3844,8 +3844,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                     (class_incharge, "Class In-charge"),
                     (hod, "HOD")
                 ]
-                worksheet.merge_range('A4:E4', str(settings.BASE_DIR), title_format)
-                worksheet.merge_range('A5:E5', str(os.path.exists(os.path.join(settings.BASE_DIR, 'images', 'header_image.png'))), title_format)
+               
                 worksheet.merge_range('A6:E6', "Group", title_format)
                 worksheet.merge_range('A7:E7', f"Academic Year: {year}", subtitle_format)
 
@@ -7572,7 +7571,7 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
                     'text_wrap': True  
                 })
 
-                image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+                image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
                 worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
                 worksheet.set_row(1,40)
                 
