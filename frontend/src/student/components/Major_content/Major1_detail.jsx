@@ -27,7 +27,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
       try {
         console.log("sending");
         const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
-        console.log(response.data);
+        console.log(response);
         setProject(response.data);
       } catch (error) {
         console.error("Error fetching project:", error);
