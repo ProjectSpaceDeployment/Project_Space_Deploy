@@ -19,6 +19,95 @@ const ManagementPage = ({ isDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
 
+  const [domains, setDomains] = useState([]);
+  const [selectedDomains, setSelectedDomains] = useState([]);
+
+  // States for Filtering & Searching
+  const [department, setDepartment] = useState("");
+  const [batch, setBatch] = useState("");
+  const [search, setSearch] = useState("");
+  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  const [depart, setDepart] = useState([]);
+  const [selectedDepartments, setSelectedDepartments] = useState([]);
+  const [newDepartmentName, setNewDepartmentName] = useState("");
+  const [newShortform, setNewShortform] = useState("");
+  const [editDepartmentName, setEditDepartmentName] = useState("");
+  const [editShortform, setEditShortform] = useState("");
+
+  const [isAddDeptOpen, setIsAddDeptOpen] = useState(false);
+  const [isEditDeptOpen, setIsEditDeptOpen] = useState(false);
+
+  const [dsg, setDsg] = useState([]);
+  const [selectedDsg, setSelectedDsg] = useState([]);
+
+  const [dept, setDept] = useState("");
+  const [desg, setDesg] = useState("");
+
+  const [selectedTeachers, setSelectedTeachers] = useState([]);
+  const [activeAddTab, setAddActiveTab] = useState("manual");
+  const [formData, setFormData] = useState({
+    moodleId: "",
+    firstname: "",
+    lastname: "",
+    middlename: "",
+    department: "",
+    batch: "",
+    email: "",
+  });
+  const [csvFile, setCsvFile] = useState(null);
+  const [csvTeacherFile, setTeacherCsvFile] = useState(null);
+
+  const [formTeacherData, setFormTeacherData] = useState({
+    userId: "",
+    firstname: "",
+    lastname: "",
+    middlename: "",
+    department: "",
+    designation: "",
+    email: "",
+  });
+
+  const [editFormTeacherData, setEditFormTeacherData] = useState({
+    Id: "",
+    userId: "",
+    firstname: "",
+    lastname: "",
+    middlename: "",
+    department: "",
+    designation: "",
+    email: "",
+  });
+
+  const [isAddDomainOpen, setIsAddDomainOpen] = useState(false);
+  const [isEditDomainOpen, setIsEditDomainOpen] = useState(false);
+  const [editDomainName, setEditDomainName] = useState("");
+  const [newDomainName, setNewDomainName] = useState("");
+  const [editFormData, setEditFormData] = useState({
+    studentId: "",
+    moodleId: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    department: "",
+    batch: "",
+    email: "",
+  });
+  const [activeEditTab, setAddEditTab] = useState("profile");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isAddDsgOpen, setIsAddDsgOpen] = useState(false);
+  const [isEditDsgOpen, setIsEditDsgOpen] = useState(false);
+  const [editDsgName, setEditDsgName] = useState("");
+  const [newDsgName, setNewDsgName] = useState("");
+  const [accessList, setAccessList] = useState([]);
+  const [selectedToRemove, setSelectedToRemove] = useState([]);
+  const [teacherList, setTeacherList] = useState([]);
+  const [selectedToAdd, setSelectedToAdd] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("");
+  const [designationFilter, setDesignationFilter] = useState("");
+
   const fetchDomains = () => {
     AxiosInstance.get("/domains/")
       .then((res) => setDomains(res.data))
@@ -164,12 +253,6 @@ const ManagementPage = ({ isDarkMode }) => {
     );
   };
 
-  // States for Filtering & Searching
-  const [department, setDepartment] = useState("");
-  const [batch, setBatch] = useState("");
-  const [search, setSearch] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState([]);
-
   // Filtering & Searching Logic
   const filteredStudents = students.filter((student) => {
     return (
@@ -184,10 +267,6 @@ const ManagementPage = ({ isDarkMode }) => {
     );
   });
 
-  const [dept, setDept] = useState("");
-  const [desg, setDesg] = useState("");
-
-  const [selectedTeachers, setSelectedTeachers] = useState([]);
   const filteredTeachers = teacher.filter((student) => {
     return (
       (dept === "" || student.department === dept) &&
@@ -220,40 +299,6 @@ const ManagementPage = ({ isDarkMode }) => {
         : [...prevSelected, moodleId]
     );
   };
-
-  const [activeAddTab, setAddActiveTab] = useState("manual");
-  const [formData, setFormData] = useState({
-    moodleId: "",
-    firstname: "",
-    lastname: "",
-    middlename: "",
-    department: "",
-    batch: "",
-    email: "",
-  });
-  const [csvFile, setCsvFile] = useState(null);
-  const [csvTeacherFile, setTeacherCsvFile] = useState(null);
-
-  const [formTeacherData, setFormTeacherData] = useState({
-    userId: "",
-    firstname: "",
-    lastname: "",
-    middlename: "",
-    department: "",
-    designation: "",
-    email: "",
-  });
-
-  const [editFormTeacherData, setEditFormTeacherData] = useState({
-    Id: "",
-    userId: "",
-    firstname: "",
-    lastname: "",
-    middlename: "",
-    department: "",
-    designation: "",
-    email: "",
-  });
 
   const handleEditTeacherClick = () => {
     const selected = filteredTeachers.find(
@@ -388,17 +433,6 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
-  const [editFormData, setEditFormData] = useState({
-    studentId: "",
-    moodleId: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    department: "",
-    batch: "",
-    email: "",
-  });
-
   const handleEditClick = () => {
     const selected = filteredStudents.find(
       (student) => student.moodleId === selectedStudents[0]
@@ -423,9 +457,6 @@ const ManagementPage = ({ isDarkMode }) => {
     setEditFormTeacherData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const [domains, setDomains] = useState([]);
-  const [selectedDomains, setSelectedDomains] = useState([]);
-
   const handleDomainCheckboxChange = (id) => {
     if (selectedDomains.includes(id)) {
       setSelectedDomains(selectedDomains.filter((d) => d !== id));
@@ -440,10 +471,6 @@ const ManagementPage = ({ isDarkMode }) => {
     );
   });
 
-  const [isAddDomainOpen, setIsAddDomainOpen] = useState(false);
-  const [isEditDomainOpen, setIsEditDomainOpen] = useState(false);
-  const [editDomainName, setEditDomainName] = useState("");
-  const [newDomainName, setNewDomainName] = useState("");
   const handleAdd = () => {
     if (newDomainName.trim() !== "") {
       AxiosInstance.post("/domains/", { name: newDomainName.trim() }).then(
@@ -491,10 +518,6 @@ const ManagementPage = ({ isDarkMode }) => {
       alert("Selected Domains Deleted");
     });
   };
-
-  const [activeEditTab, setAddEditTab] = useState("profile");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
 
   const handleEditInputChange = (e) => {
     const { name, value } = e.target;
@@ -624,16 +647,6 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
-  const [depart, setDepart] = useState([]);
-  const [selectedDepartments, setSelectedDepartments] = useState([]);
-  const [newDepartmentName, setNewDepartmentName] = useState("");
-  const [newShortform, setNewShortform] = useState("");
-  const [editDepartmentName, setEditDepartmentName] = useState("");
-  const [editShortform, setEditShortform] = useState("");
-
-  const [isAddDeptOpen, setIsAddDeptOpen] = useState(false);
-  const [isEditDeptOpen, setIsEditDeptOpen] = useState(false);
-
   const filteredDepartments = depart.filter(
     (dept) =>
       dept.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -720,9 +733,6 @@ const ManagementPage = ({ isDarkMode }) => {
     });
   };
 
-  const [dsg, setDsg] = useState([]);
-  const [selectedDsg, setSelectedDsg] = useState([]);
-
   const handleDsgCheckboxChange = (id) => {
     if (selectedDsg.includes(id)) {
       setSelectedDsg(selectedDsg.filter((d) => d !== id));
@@ -737,10 +747,6 @@ const ManagementPage = ({ isDarkMode }) => {
     );
   });
 
-  const [isAddDsgOpen, setIsAddDsgOpen] = useState(false);
-  const [isEditDsgOpen, setIsEditDsgOpen] = useState(false);
-  const [editDsgName, setEditDsgName] = useState("");
-  const [newDsgName, setNewDsgName] = useState("");
   const handleDsgAdd = () => {
     if (newDsgName.trim() !== "") {
       AxiosInstance.post("/designation/", { name: newDsgName.trim() }).then(
@@ -792,11 +798,6 @@ const ManagementPage = ({ isDarkMode }) => {
     });
   };
 
-  const [accessList, setAccessList] = useState([]);
-  const [selectedToRemove, setSelectedToRemove] = useState([]);
-  const [teacherList, setTeacherList] = useState([]);
-  const [selectedToAdd, setSelectedToAdd] = useState([]);
-
   const filteredAccessTeachers = accessList.filter((student) => {
     const deptMatch = dept === "" || student.teacher.department === dept;
     const desgMatch = desg === "" || student.teacher.role === desg;
@@ -810,10 +811,6 @@ const ManagementPage = ({ isDarkMode }) => {
 
     return deptMatch && desgMatch && nameMatch;
   });
-
-  const [searchQuery, setSearchQuery] = useState("");
-  const [departmentFilter, setDepartmentFilter] = useState("");
-  const [designationFilter, setDesignationFilter] = useState("");
 
   const filteredSelectedTeachers = teacherList.filter((teacher) => {
     const fullName = `${teacher.firstName} ${teacher.lastName}`.toLowerCase();
