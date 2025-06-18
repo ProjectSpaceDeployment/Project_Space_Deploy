@@ -3844,6 +3844,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                     (class_incharge, "Class In-charge"),
                     (hod, "HOD")
                 ]
+                worksheet.merge_range('A4:E4', settings.BASE_DIR, title_format)
+                worksheet.merge_range('A5:E5', os.path.join(settings.BASE_DIR, 'images', 'image.png'), title_format)
                 worksheet.merge_range('A6:E6', "Group", title_format)
                 worksheet.merge_range('A7:E7', f"Academic Year: {year}", subtitle_format)
 
