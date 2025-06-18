@@ -217,8 +217,6 @@ const MiniProject = () => {
     <div className="w-full p-4 dark:bg-gray-600 dark:text-gray-500 rounded-lg">
       {/* Heading and Plus Button */}
       <div className="flex justify-between items-center mb-4 p-3 rounded-md border-2 border-green-500 shadow-md bg-[#DFF0D8]">
-        <h2 className="text-2xl font-bold text-[#3C763D]">Mini Projects</h2>
-        <h2>Prakruti</h2>
         <button
           onClick={handlePopup}
           className="w-10 h-10 bg-green-700 text-white text-2xl rounded-full font-bold transition shadow-lg hover:scale-105 flex items-center justify-center"
