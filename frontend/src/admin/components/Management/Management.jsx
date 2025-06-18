@@ -19,6 +19,39 @@ const ManagementPage = ({ isDarkMode }) => {
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
 
+  const fetchDomains = () => {
+    AxiosInstance.get("/domains/")
+      .then((res) => setDomains(res.data))
+      .catch((err) => console.error("Failed to fetch domains", err));
+  };
+
+  const fetchDepartment = () => {
+    AxiosInstance.get("/departments/")
+      .then((res) => setDepart(res.data))
+      .catch((err) => console.error("Failed to fetch domains", err));
+  };
+
+  const fetchDsg = () => {
+    AxiosInstance.get("/designation/")
+      .then((res) => setDsg(res.data))
+      .catch((err) => console.error("Failed to fetch Designation", err));
+  };
+
+  const fetchPermissions = async () => {
+    try {
+      const res = await AxiosInstance.get(`/managementpermission/`);
+      setAccessList(res.data);
+      console.log(res.data);
+      const accessIds = new Set(res.data.map((p) => p.teacher.id));
+      console.log(teacher);
+      const availableTeachers = teacher.filter((t) => !accessIds.has(t.id));
+      console.log(availableTeachers);
+      setTeacherList(availableTeachers);
+    } catch (err) {
+      console.error("Failed to fetch permissions", err);
+    }
+  };
+
   useEffect(() => {
     AxiosInstance.get("/managementpermission/check-access/")
       .then((res) => {
@@ -401,12 +434,6 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
-  const fetchDomains = () => {
-    AxiosInstance.get("/domains/")
-      .then((res) => setDomains(res.data))
-      .catch((err) => console.error("Failed to fetch domains", err));
-  };
-
   const filteredDomains = domains.filter((domain) => {
     return (
       search === "" || domain.name.toLowerCase().includes(search.toLowerCase())
@@ -607,12 +634,6 @@ const ManagementPage = ({ isDarkMode }) => {
   const [isAddDeptOpen, setIsAddDeptOpen] = useState(false);
   const [isEditDeptOpen, setIsEditDeptOpen] = useState(false);
 
-  const fetchDepartment = () => {
-    AxiosInstance.get("/departments/")
-      .then((res) => setDepart(res.data))
-      .catch((err) => console.error("Failed to fetch domains", err));
-  };
-
   const filteredDepartments = depart.filter(
     (dept) =>
       dept.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -710,12 +731,6 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
-  const fetchDsg = () => {
-    AxiosInstance.get("/designation/")
-      .then((res) => setDsg(res.data))
-      .catch((err) => console.error("Failed to fetch Designation", err));
-  };
-
   const filteredDsg = dsg.filter((domain) => {
     return (
       search === "" || domain.name.toLowerCase().includes(search.toLowerCase())
@@ -781,21 +796,6 @@ const ManagementPage = ({ isDarkMode }) => {
   const [selectedToRemove, setSelectedToRemove] = useState([]);
   const [teacherList, setTeacherList] = useState([]);
   const [selectedToAdd, setSelectedToAdd] = useState([]);
-
-  const fetchPermissions = async () => {
-    try {
-      const res = await AxiosInstance.get(`/managementpermission/`);
-      setAccessList(res.data);
-      console.log(res.data);
-      const accessIds = new Set(res.data.map((p) => p.teacher.id));
-      console.log(teacher);
-      const availableTeachers = teacher.filter((t) => !accessIds.has(t.id));
-      console.log(availableTeachers);
-      setTeacherList(availableTeachers);
-    } catch (err) {
-      console.error("Failed to fetch permissions", err);
-    }
-  };
 
   const filteredAccessTeachers = accessList.filter((student) => {
     const deptMatch = dept === "" || student.teacher.department === dept;
