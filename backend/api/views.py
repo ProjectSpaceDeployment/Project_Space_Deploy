@@ -3780,11 +3780,11 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # Insert Image (Institute Logo)
-            # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
-            # if os.path.exists(image_path):
-            #     worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
-            # else:
-            #     print("Logo image not found, skipping image insert.")
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            if os.path.exists(image_path):
+                worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
+            else:
+                print("Logo image not found, skipping image insert.")
             # worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
 
@@ -3845,7 +3845,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                     (hod, "HOD")
                 ]
                 worksheet.merge_range('A4:E4', str(settings.BASE_DIR), title_format)
-                worksheet.merge_range('A5:E5', str(os.path.exists(os.path.join(settings.BASE_DIR, 'images', 'image.png'))), title_format)
+                worksheet.merge_range('A5:E5', str(os.path.exists(os.path.join(settings.BASE_DIR, 'images', 'header_image.png'))), title_format)
                 worksheet.merge_range('A6:E6', "Group", title_format)
                 worksheet.merge_range('A7:E7', f"Academic Year: {year}", subtitle_format)
 
