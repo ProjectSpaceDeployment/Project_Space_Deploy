@@ -3780,11 +3780,11 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # Insert Image (Institute Logo)
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
-            if os.path.exists(image_path):
-                worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
-            else:
-                print("Logo image not found, skipping image insert.")
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+            # if os.path.exists(image_path):
+            #     worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
+            # else:
+            #     print("Logo image not found, skipping image insert.")
             # worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
 
