@@ -10,9 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from dotenv import load_dotenv
 from pathlib import Path
 import environ
 import os
+
+load_dotenv() 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +29,7 @@ env = environ.Env(
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 DEBUG = env('DEBUG')
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = "django-insecure-*of09i*b3xlav+w3myckb$xvojmo3ypog)&!p8)o0o#c49fwli"
 
 ALLOWED_HOSTS = ['projectspace.apsit.edu.in', 'localhost', '127.0.0.1']
 
