@@ -139,6 +139,7 @@ const Profile = ({ isSidebarOpen, isMobile }) => {
     ${!isMobile ? 'md:ml-64 w-auto' : isSidebarOpen ? 'ml-64 w-auto' : 'ml-0 w-full'}
   `}
 >
+  <p>Profile Page</p>
   <div className="flex flex-col md:flex-row md:justify-between md:items-center mb-4 gap-2">
     <h2 className="text-xl md:text-2xl font-bold text-center md:text-left">
       {`${profileData.first_name} ${profileData.last_name}`}
