@@ -1131,7 +1131,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             def header(canvas, doc, year, dept):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')  
+                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)
                     canvas.setFont("Helvetica", 10)
                     canvas.drawString(40, 725, f"Class/Division: BE {dept}")
