@@ -1,0 +1,12 @@
+Django
+django-cors-headers
+django-phonenumber-field
+django-rest-knox
+scikit-learn
+openpyxl
+pandas
+psycopg2-binary
+reportlab
+XlsxWriter
+django-environ
+python-dotenv
