@@ -1587,7 +1587,10 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             return response
 
         except Exception as e:
-            return HttpResponse(f"Error generating Excel: {e}", status=500)
+            error_message = f"Excel generation failed: {str(e)}\n{traceback.format_exc()}"
+            print(error_message)  # Show in logs
+            return HttpResponse(error_message, status=500)
+            # return HttpResponse(f"Error generating Excel: {e}", status=500)
     
     @action(detail=False, methods=['get'], url_path='week-progress')
     def week_progress_excel(self, request):
