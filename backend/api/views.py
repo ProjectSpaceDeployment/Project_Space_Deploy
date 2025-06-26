@@ -1517,10 +1517,10 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             # worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             # worksheet.set_row(1,40)
-            
+            worksheet.merge_range('A5:F5', image_path, title_format)
             worksheet.merge_range('A6:F6', "Guide Allocation", title_format)
             worksheet.merge_range('A7:F7', "Academic Year: 2024-25", subtitle_format)
 
