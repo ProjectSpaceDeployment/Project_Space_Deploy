@@ -232,8 +232,10 @@ const ManagementPage = ({ isDarkMode }) => {
 
   // Call it inside useEffect (for initial load)
   useEffect(() => {
-    fetchPermissions();
-  }, []);
+      if (teacher.length > 0) {
+      fetchPermissions();
+    }
+  }, [teacher]);
 
   if (loading) {
     return <div className="text-center mt-10">Loading...</div>;
@@ -1455,7 +1457,7 @@ const ManagementPage = ({ isDarkMode }) => {
             </button>
             {isAddModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
-                <div className="bg-white p-6 rounded-lg w-96 max-h-[80vh]">
+                <div className="bg-white p-6 rounded-lg w-[32rem] max-h-[80vh]">
                   <h2 className="text-xl font-bold mb-4">Add Teacher</h2>
 
                   {/* Tabs */}
@@ -1488,7 +1490,7 @@ const ManagementPage = ({ isDarkMode }) => {
                       onSubmit={handleTeacherManualSubmit}
                       className="space-y-3"
                     >
-                      <div className="max-h-[30vh] overflow-y-auto">
+                      {/* <div className="max-h-[30vh] overflow-y-auto"> */}
                         {/* <input type="text" name="userId" placeholder="User ID" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
                       <input type="text" name="firstname" placeholder="First Name" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
                       <input type="text" name="lastname" placeholder="Last Name" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
@@ -1497,6 +1499,36 @@ const ManagementPage = ({ isDarkMode }) => {
                       <input type="text" name="designation" placeholder="Designation" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
                       <input type="email" name="email" placeholder="Email ID" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required /> */}
                         {/* <input type="tel" name="phone" placeholder="Phone Number" className="border p-2 mt-2 w-full" onChange={handleInputChange} required /> */}
+                      {/* </div> */}
+                       <div className="max-h-[30vh] overflow-y-auto space-y-3">
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="userId" className="w-32 font-medium">User ID</label>
+                          <input type="text" name="userId" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="firstname" className="w-32 font-medium">First Name</label>
+                          <input type="text" name="firstname" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="lastname" className="w-32 font-medium">Last Name</label>
+                          <input type="text" name="lastname" className="border p-2 mt-2 w-full" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="middlename" className="w-32 font-medium">Middle Name</label>
+                          <input type="text" id="middlename" name="middlename" className="border p-2 flex-1" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="department" className="w-32 font-medium">Department</label>
+                          <input type="text" id="department" name="department" className="border p-2 flex-1" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="designation" className="w-32 font-medium">Designation</label>
+                          <input type="text" id="designation" name="designation" className="border p-2 flex-1" onChange={handleTeacherInputChange} required />
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <label htmlFor="email" className="w-32 font-medium">Email ID</label>
+                          <input type="email" id="email" name="email" className="border p-2 flex-1" onChange={handleTeacherInputChange} required />
+                        </div>
                       </div>
                       <button
                         type="submit"

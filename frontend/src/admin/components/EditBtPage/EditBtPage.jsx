@@ -148,7 +148,7 @@ const EditPanelPage = ({ isDarkMode }) => {
     Submit Changes
   </button>
 </div>
-      <div className="flex h-screen">
+      <div className="flex flex-1">
       <div className="flex-grow">
         <main className="h-full p-6 space-y-6">
           {Object.keys(panelData).sort().map((panelName) => (

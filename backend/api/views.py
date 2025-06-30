@@ -4035,8 +4035,8 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT setval(pg_get_serial_sequence('api_teacherpreference', 'id'), "
-                    "COALESCE((SELECT MAX(id) FROM api_teacherpreference) + 1, 1), false);"
+                    "SELECT setval(pg_get_serial_sequence('TeacherPreference', 'id'), "
+                    "COALESCE((SELECT MAX(id) FROM TeacherPreference) + 1, 1), false);"
                 )
 
             new_preferences = []
@@ -6724,8 +6724,8 @@ class WeekViewSet(viewsets.ModelViewSet):
             
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT setval(pg_get_serial_sequence('api_week', 'id'), "
-                    "COALESCE((SELECT MAX(id) FROM api_week) + 1, 1), false);"
+                    "SELECT setval(pg_get_serial_sequence('week', 'id'), "
+                    "COALESCE((SELECT MAX(id) FROM week) + 1, 1), false);"
                 )
             with transaction.atomic():
                 for week_num, tasks in tasks_for_sem.items():
@@ -6987,8 +6987,8 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
                 return Response({'error': 'Project ID and task statuses are required'}, status=status.HTTP_400_BAD_REQUEST)
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT setval(pg_get_serial_sequence('api_projecttask', 'id'), "
-                    "COALESCE((SELECT MAX(id) FROM api_projecttask) + 1, 1), false);"
+                    "SELECT setval(pg_get_serial_sequence('ProjectTask', 'id'), "
+                    "COALESCE((SELECT MAX(id) FROM ProjectTask) + 1, 1), false);"
                 )
             # Loop through the task statuses and update ProjectTask entries
             for task_data in task_statuses:
