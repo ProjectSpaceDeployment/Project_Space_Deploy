@@ -1331,7 +1331,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            # worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
             
             worksheet.merge_range('A6:F6', "Guide Allocation", title_format)
@@ -1520,7 +1520,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
             # worksheet.merge_range('A5:F5', image_path, title_format)
             worksheet.merge_range('A6:F6', "Guide Allocation", title_format)
@@ -1747,7 +1747,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
             
             worksheet.merge_range('A6:F6', "Guide Allocation", title_format)
@@ -2162,7 +2162,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             
             worksheet = workbook.add_worksheet('Assessment Report')
-            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
 
             # Formats
             title_format = workbook.add_format({'bold': True, 'font_size': 14, 'align': 'center', 'valign': 'vcenter'})
@@ -2361,7 +2361,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
 
             if type == "Copyright":
@@ -2610,7 +2610,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             # Insert Image (Institute Logo)
             # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             worksheet.set_row(1,40)
             # Merge Cells for Titles & Subtitles
             worksheet.merge_range('A6:H6', "Publication Status", title_format)
@@ -7577,7 +7577,7 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
                 })
 
                 # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-                worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+                worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
                 worksheet.set_row(1,40)
                 
                 worksheet.set_column('A:A', 15)  
