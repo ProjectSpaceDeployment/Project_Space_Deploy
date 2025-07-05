@@ -50,6 +50,8 @@ from .weekly_tasks import PREDEFINED_TASKS_BY_SEM
 
 logger = logging.getLogger(__name__)
 
+image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+
 class LoginViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
     serializer_class = LoginSerializer
@@ -1131,7 +1133,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             def header(canvas, doc, year, dept):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  
+                    # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)
                     canvas.setFont("Helvetica", 10)
                     canvas.drawString(40, 725, f"Class/Division: BE {dept}")
@@ -1517,10 +1519,10 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
-            # worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
-            # worksheet.set_row(1,40)
-            worksheet.merge_range('A5:F5', image_path, title_format)
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
+            worksheet.set_row(1,40)
+            # worksheet.merge_range('A5:F5', image_path, title_format)
             worksheet.merge_range('A6:F6', "Guide Allocation", title_format)
             worksheet.merge_range('A7:F7', "Academic Year: 2024-25", subtitle_format)
 
@@ -1744,7 +1746,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True  
             })
 
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             
@@ -2157,7 +2159,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             # EXCEL GENERATION
             output = BytesIO()
             workbook = xlsxwriter.Workbook(output, {'in_memory': True})
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             
             worksheet = workbook.add_worksheet('Assessment Report')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
@@ -2358,7 +2360,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True })
 
             
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
 
@@ -2607,7 +2609,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 'text_wrap': True })
 
             # Insert Image (Institute Logo)
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
             worksheet.set_row(1,40)
             # Merge Cells for Titles & Subtitles
@@ -2700,7 +2702,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
         try:
             def header(canvas, doc):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
+                    # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)  # Adjust dimensions as needed
 
                     # canvas.showPage()  # Ensure the page is properly initiated
@@ -2909,7 +2911,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             def header(canvas, doc):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
+                    # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)  # Adjust dimensions as needed
 
                     # canvas.showPage()  # Ensure the page is properly initiated
@@ -3458,7 +3460,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             def header(canvas, doc):
                 try:
-                    image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
+                    # image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')  # Ensure correct image path
                     canvas.drawImage(image_path, 30, 750, width=530, height=80)  # Adjust dimensions as needed
 
                     # canvas.showPage()  # Ensure the page is properly initiated
@@ -3783,7 +3785,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
 
             # Insert Image (Institute Logo)
-            image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+            # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
             if os.path.exists(image_path):
                 worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'align': 'center'})
             else:
@@ -4035,7 +4037,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
 
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT setval(pg_get_serial_sequence('TeacherPreference', 'id'), "
+                    "SELECT setval(pg_get_serial_sequence('\"TeacherPreference\"', 'id'), "
                     "COALESCE((SELECT MAX(id) FROM TeacherPreference) + 1, 1), false);"
                 )
 
@@ -6987,8 +6989,8 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
                 return Response({'error': 'Project ID and task statuses are required'}, status=status.HTTP_400_BAD_REQUEST)
             with connection.cursor() as cursor:
                 cursor.execute(
-                    "SELECT setval(pg_get_serial_sequence('ProjectTask', 'id'), "
-                    "COALESCE((SELECT MAX(id) FROM ProjectTask) + 1, 1), false);"
+                    "SELECT setval(pg_get_serial_sequence('\"ProjectTask\"', 'id'), "
+                    "COALESCE((SELECT MAX(id) FROM \"ProjectTask\") + 1, 1), false);"
                 )
             # Loop through the task statuses and update ProjectTask entries
             for task_data in task_statuses:
@@ -7574,7 +7576,7 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
                     'text_wrap': True  
                 })
 
-                image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
+                # image_path = os.path.join(settings.BASE_DIR, 'images', 'header_image.png')
                 worksheet.insert_image('B1', image_path, {'x_scale': 1, 'y_scale': 1, 'url': '', 'align': 'center'})
                 worksheet.set_row(1,40)
                 
