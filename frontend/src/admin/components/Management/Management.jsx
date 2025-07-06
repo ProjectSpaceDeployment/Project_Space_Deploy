@@ -926,6 +926,37 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
+  const handleAddBatch = async () => {
+    if (!newBatchName.trim() || !newBatchDept.trim()) {
+      alert("Please enter both batch name and department name.");
+      return;
+    }
+
+    const selectedDept = depart.find(
+      (dept) => dept.name.toLowerCase() === newBatchDept.toLowerCase()
+    );
+
+    if (!selectedDept) {
+      alert("Invalid department name.");
+      return;
+    }
+
+    try {
+      const response = await AxiosInstance.post("/academicbatch/", {
+        batch: newBatchName,
+        department: selectedDept.id, // send ID to backend
+      });
+
+      setNewBatchName("");
+      setNewBatchDept("");
+      setIsAddBatchOpen(false);
+      fetchBatches();
+    } catch (error) {
+      console.error("Error adding batch:", error);
+      alert("Failed to add batch.");
+    }
+  };
+
   return (
     <div
       className={`${
@@ -944,7 +975,7 @@ const ManagementPage = ({ isDarkMode }) => {
         ].map((tab) => (
           <button
             key={tab}
-            className={`px-4 py-2 rounded-md ${
+            className={`px-2 py-2 rounded-md ${
               activeTab === tab
                 ? isDarkMode
                   ? "bg-green-700 text-white"
@@ -2588,8 +2619,21 @@ const ManagementPage = ({ isDarkMode }) => {
         </tr>
       </thead>
       <tbody>
-        {academicBatches.length > 0 ? (
-          academicBatches.map((batch, index) => (
+        {academicBatches.filter((batch) => {
+  const query = search.toLowerCase();
+  return (
+    batch.batch.toLowerCase().includes(query) ||
+    batch.department_name.toLowerCase().includes(query)
+  );
+}).length > 0 ? (
+  academicBatches
+    .filter((batch) => {
+      const query = search.toLowerCase();
+      return (
+        batch.batch.toLowerCase().includes(query) ||
+        batch.department_name.toLowerCase().includes(query)
+      );
+    }).map((batch, index) => (
             <tr key={batch.id}>
               <td className="border p-2 text-center">
                 <input
@@ -2641,7 +2685,7 @@ const ManagementPage = ({ isDarkMode }) => {
             </button>
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded"
-              // onClick={handleAddBatch}
+              onClick={handleAddBatch}
             >
               Add
             </button>
