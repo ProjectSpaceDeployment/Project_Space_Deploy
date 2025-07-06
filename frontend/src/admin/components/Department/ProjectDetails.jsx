@@ -833,7 +833,11 @@ const handleDeleteWeek = async (weekNumber) => {
       data.sem = selectedSem;  
     }
     const res = await AxiosInstance.delete(
-      `/week/delete_week/?category=${category}&year=${year}&sem=${semester}&div=${div}&week_number=${weekNumber}`,data
+      `/week/delete_week/?category=${category}&year=${year}&sem=${semester}&div=${div}&week_number=${weekNumber}`,{
+    data: {
+      sem: selectedSem
+    }
+  }
     );
     alert(res.data.message);
     fetchWeeklyTasks(); // refresh UI

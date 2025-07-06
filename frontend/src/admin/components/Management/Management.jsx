@@ -431,7 +431,7 @@ const ManagementPage = ({ isDarkMode }) => {
       );
 
       alert(response.data.message); // Show success message
-      setIsAddModalOpen(false); // Close modal after success
+      setIsAddModalOpen(false); 
     } catch (error) {
       alert(error.response.data.error || "Failed to register student.");
     }
@@ -983,7 +983,6 @@ const ManagementPage = ({ isDarkMode }) => {
       alert("Invalid department name.");
       return;
     }
-
     try {
       await AxiosInstance.put(`/academicbatch/${editingBatchId}/`, {
         batch: editBatchName,
@@ -1168,7 +1167,7 @@ const ManagementPage = ({ isDarkMode }) => {
                             name="middlename"
                             className="border p-2 flex-1"
                             onChange={handleInputChange}
-                            required
+                            // required
                           />
                         </div>
                         <div className="flex items-center space-x-2">
