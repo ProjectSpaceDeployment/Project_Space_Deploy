@@ -957,6 +957,50 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
+   const handleEditBatchClick = () => {
+    const index = selectedBatches[0];
+    const domainToEdit = academicBatches.find((domain) => domain.id === index);
+    if (domainToEdit) {
+      setEditingBatchId(domainToEdit.id); 
+      setEditBatchName(domainToEdit.batch);
+      setEditBatchDept(domainToEdit.department_name);
+      setIsEditBatchOpen(true);
+    }
+  };
+
+  const handleEditBatch = async () => {
+    if (!editBatchName.trim() || !editBatchDept.trim()) {
+      alert("Please enter both batch name and department name.");
+      return;
+    }
+
+    // Convert department name to ID
+    const selectedDept = depart.find(
+      (dept) => dept.name.toLowerCase() === editBatchDept.toLowerCase()
+    );
+
+    if (!selectedDept) {
+      alert("Invalid department name.");
+      return;
+    }
+
+    try {
+      await AxiosInstance.put(`/academicbatch/${editingBatchId}/`, {
+        batch: editBatchName,
+        department: selectedDept.id,
+      });
+
+      setIsEditBatchOpen(false);
+      setEditBatchName("");
+      setEditBatchDept("");
+      setEditingBatchId("");
+      fetchBatches(); // Refresh the list
+    } catch (error) {
+      console.error("Error updating batch:", error);
+      alert("Failed to update batch.");
+    }
+  };
+
   return (
     <div
       className={`${
@@ -2567,7 +2611,7 @@ const ManagementPage = ({ isDarkMode }) => {
           </table>
         </div>
       )}
-     {activeTab === "Academic Batch Management" && (
+        {activeTab === "Academic Batch Management" && (
   <div>
     <div className="flex gap-4 mb-4">
       {/* Search Bar */}
@@ -2583,6 +2627,17 @@ const ManagementPage = ({ isDarkMode }) => {
         onClick={() => setIsAddBatchOpen(true)}
       >
         Add
+      </button>
+      <button
+        className={`px-4 py-2 rounded ${
+          selectedBatches.length !== 1
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-yellow-500 text-white"
+        }`}
+        disabled={selectedBatches.length !== 1}
+        onClick={handleEditBatchClick}
+      >
+        Edit
       </button>
       <button
         className={`px-4 py-2 rounded ${
@@ -2672,7 +2727,7 @@ const ManagementPage = ({ isDarkMode }) => {
           <input
             type="text"
             className="border p-2 w-full mb-4"
-            value={newBatchName}
+            value={newBatchDept}
             onChange={(e) => setNewBatchDept(e.target.value)}
             placeholder="Enter batch name"
           />
@@ -2708,7 +2763,7 @@ const ManagementPage = ({ isDarkMode }) => {
           <input
             type="text"
             className="border p-2 w-full mb-4"
-            value={editBatchName}
+            value={editBatchDept}
             onChange={(e) => setEditBatchDept(e.target.value)}
           />
           <div className="flex justify-end gap-2">
@@ -2720,7 +2775,7 @@ const ManagementPage = ({ isDarkMode }) => {
             </button>
             <button
               className="bg-yellow-500 text-white px-4 py-2 rounded"
-              // onClick={handleEditBatch}
+              onClick={handleEditBatch}
             >
               Save
             </button>
@@ -2730,7 +2785,6 @@ const ManagementPage = ({ isDarkMode }) => {
     )}
   </div>
 )}
-
 
     </div>
   );
