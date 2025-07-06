@@ -129,8 +129,9 @@ const ManagementPage = ({ isDarkMode }) => {
 
   const fetchBatches = async () => {
   try {
-    const response = await axios.get('/academicbatch/');
+    const response = await AxiosInstance.get('/academicbatch/');
     setBatches(response.data);
+    console.log(response.data);
     setFilteredBatches(response.data);
   } catch (error) {
     console.error('Failed to fetch batches:', error);
