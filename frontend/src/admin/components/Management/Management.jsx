@@ -109,7 +109,6 @@ const ManagementPage = ({ isDarkMode }) => {
   const [designationFilter, setDesignationFilter] = useState("");
 
   const [academicBatches, setAcademicBatches] = useState([]);
-  const [filteredBatches, setFilteredBatches] = useState([]);
   const [selectedBatches, setSelectedBatches] = useState([]);
 
   const [isAddBatchOpen, setIsAddBatchOpen] = useState(false);
@@ -130,9 +129,8 @@ const ManagementPage = ({ isDarkMode }) => {
   const fetchBatches = async () => {
   try {
     const response = await AxiosInstance.get('/academicbatch/');
-    setBatches(response.data);
+    setAcademicBatches(response.data);
     console.log(response.data);
-    setFilteredBatches(response.data);
   } catch (error) {
     console.error('Failed to fetch batches:', error);
   }
@@ -2590,8 +2588,8 @@ const ManagementPage = ({ isDarkMode }) => {
         </tr>
       </thead>
       <tbody>
-        {filteredBatches.length > 0 ? (
-          filteredBatches.map((batch, index) => (
+        {academicBatches.length > 0 ? (
+          academicBatches.map((batch, index) => (
             <tr key={batch.id}>
               <td className="border p-2 text-center">
                 <input
