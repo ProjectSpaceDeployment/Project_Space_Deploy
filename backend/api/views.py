@@ -4012,6 +4012,10 @@ class DomainViewSet(viewsets.ModelViewSet):
     queryset = Domain.objects.all().order_by("id")  # Fetches all Domain objects
     serializer_class = DomainSerializer 
 
+class AcademicBatchViewSet(viewsets.ModelViewSet):
+    queryset = Batch.objects.all().order_by('id')
+    serializer_class = AcademicBatchSerializer
+
 class TeacherPreferenceViewSet(viewsets.ModelViewSet):
     queryset = TeacherPreference.objects.all()
     serializer_class = TeacherPreferenceSerializer

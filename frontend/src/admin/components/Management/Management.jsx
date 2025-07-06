@@ -108,6 +108,35 @@ const ManagementPage = ({ isDarkMode }) => {
   const [departmentFilter, setDepartmentFilter] = useState("");
   const [designationFilter, setDesignationFilter] = useState("");
 
+  const [academicBatches, setAcademicBatches] = useState([]);
+  const [filteredBatches, setFilteredBatches] = useState([]);
+  const [selectedBatches, setSelectedBatches] = useState([]);
+
+  const [isAddBatchOpen, setIsAddBatchOpen] = useState(false);
+  const [newBatchName, setNewBatchName] = useState('');
+  const [newBatchDept, setNewBatchDept] = useState('');
+
+  const [isEditBatchOpen, setIsEditBatchOpen] = useState(false);
+  const [editBatchName, setEditBatchName] = useState('');
+  const [editBatchDept, setEditBatchDept] = useState('');
+  const [editingBatchId, setEditingBatchId] = useState(null);
+
+  const handleBatchCheckboxChange = (id) => {
+    setSelectedBatches((prev) =>
+      prev.includes(id) ? prev.filter((bid) => bid !== id) : [...prev, id]
+    );
+  };
+
+  const fetchBatches = async () => {
+  try {
+    const response = await axios.get('/academicbatch/');
+    setBatches(response.data);
+    setFilteredBatches(response.data);
+  } catch (error) {
+    console.error('Failed to fetch batches:', error);
+  }
+};
+
   const fetchDomains = () => {
     AxiosInstance.get("/domains/")
       .then((res) => setDomains(res.data))
@@ -229,6 +258,11 @@ const ManagementPage = ({ isDarkMode }) => {
   useEffect(() => {
     fetchDsg();
   }, []);
+
+  useEffect(() => {
+    fetchBatches();
+  }, []);
+
 
   // Call it inside useEffect (for initial load)
   useEffect(() => {
@@ -907,6 +941,7 @@ const ManagementPage = ({ isDarkMode }) => {
           "Department Management",
           "Permissions",
           "Designation Management",
+          "Academic Batch Management",
         ].map((tab) => (
           <button
             key={tab}
@@ -2502,6 +2537,158 @@ const ManagementPage = ({ isDarkMode }) => {
           </table>
         </div>
       )}
+     {activeTab === "Academic Batch Management" && (
+  <div>
+    <div className="flex gap-4 mb-4">
+      {/* Search Bar */}
+      <input
+        type="text"
+        placeholder="Search"
+        className="border p-2 rounded w-1/3"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      <button
+        className="bg-blue-500 text-white px-4 py-2 rounded"
+        onClick={() => setIsAddBatchOpen(true)}
+      >
+        Add
+      </button>
+      <button
+        className={`px-4 py-2 rounded ${
+          selectedBatches.length === 0
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-red-500 text-white"
+        }`}
+        disabled={selectedBatches.length === 0}
+        // onClick={handleBatchRemove}
+      >
+        Remove
+      </button>
+    </div>
+
+    {/* Table */}
+    <table className="w-full border-collapse border">
+      <thead>
+        <tr className="bg-gray-200">
+          <th className="border p-2">
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                if (e.target.checked) {
+                  setSelectedBatches(batches.map((b) => b.id));
+                } else {
+                  setSelectedBatches([]);
+                }
+              }}
+            />
+          </th>
+          <th className="border p-2">Sr No.</th>
+          <th className="border p-2">Batch Name</th>
+          <th className="border p-2">Department</th>
+        </tr>
+      </thead>
+      <tbody>
+        {filteredBatches.length > 0 ? (
+          filteredBatches.map((batch, index) => (
+            <tr key={batch.id}>
+              <td className="border p-2 text-center">
+                <input
+                  type="checkbox"
+                  checked={selectedBatches.includes(batch.id)}
+                  onChange={() => handleBatchCheckboxChange(batch.id)}
+                />
+              </td>
+              <td className="border p-2 text-center">{index + 1}</td>
+              <td className="border p-2">{batch.batch}</td>
+              <td className="border p-2">{batch.department_name || '—'}</td>
+            </tr>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="4" className="text-center p-4">
+              No batches found.
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
+
+    {/* Add Batch Modal */}
+    {isAddBatchOpen && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded w-1/3">
+          <h2 className="text-lg font-semibold mb-4">Add Academic Batch</h2>
+          <input
+            type="text"
+            className="border p-2 w-full mb-4"
+            value={newBatchName}
+            onChange={(e) => setNewBatchName(e.target.value)}
+            placeholder="Enter batch name"
+          />
+          <input
+            type="text"
+            className="border p-2 w-full mb-4"
+            value={newBatchName}
+            onChange={(e) => setNewBatchDept(e.target.value)}
+            placeholder="Enter batch name"
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              className="bg-gray-300 px-4 py-2 rounded"
+              onClick={() => setIsAddBatchOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+              // onClick={handleAddBatch}
+            >
+              Add
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* Edit Batch Modal */}
+    {isEditBatchOpen && (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div className="bg-white p-6 rounded w-1/3">
+          <h2 className="text-lg font-semibold mb-4">Edit Academic Batch</h2>
+          <input
+            type="text"
+            className="border p-2 w-full mb-4"
+            value={editBatchName}
+            onChange={(e) => setEditBatchName(e.target.value)}
+          />
+          <input
+            type="text"
+            className="border p-2 w-full mb-4"
+            value={editBatchName}
+            onChange={(e) => setEditBatchDept(e.target.value)}
+          />
+          <div className="flex justify-end gap-2">
+            <button
+              className="bg-gray-300 px-4 py-2 rounded"
+              onClick={() => setIsEditBatchOpen(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-yellow-500 text-white px-4 py-2 rounded"
+              // onClick={handleEditBatch}
+            >
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+)}
+
+
     </div>
   );
 };

@@ -39,6 +39,8 @@ router.register('student-uploads', LinkUploadViewSet, basename='student-uploads'
 router.register('departments', DepartmentViewSet, basename='departments')
 router.register('designation', DesignationViewSet, basename='designation')
 router.register('managementpermission', ManagementPermissionViewSet, basename='managementpermission')
+router.register('academicbatch', AcademicBatchViewSet, basename='academicbatch')
+
 
 
 urlpatterns = router.urls

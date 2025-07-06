@@ -20,6 +20,13 @@ class DomainSerializer(serializers.ModelSerializer):
         model = Domain
         fields = ['id', 'name'] 
 
+class AcademicBatchSerializer(serializers.ModelSerializer):
+    department_name = serializers.CharField(source='department.name', read_only=True)
+
+    class Meta:
+        model = Batch
+        fields = ['id', 'batch', 'department', 'department_name']
+
 class DepartmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Department
