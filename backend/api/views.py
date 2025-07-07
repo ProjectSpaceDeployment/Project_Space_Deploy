@@ -4657,17 +4657,10 @@ class TeacherViewSet(viewsets.ModelViewSet):
         category = request.query_params.get('category', None)
         year = request.query_params.get('year', None)
         sem = request.query_params.get('sem', None)
-        div_raw = request.query_params.get('div', None)
+        div = request.query_params.get('div', None)
         print("div",div)
         sem = None if (not sem or sem.lower() == "null") else sem.strip()
-        # div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
-
-        if not div_raw:
-            div = None
-        elif div_raw.lower() == "null":
-            div = "null"
-        else:
-            div = div_raw.strip()
+        div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
         
         dept = Department.objects.filter(name__iexact=category).first()
         if not dept:
@@ -4679,17 +4672,11 @@ class TeacherViewSet(viewsets.ModelViewSet):
             return Response({"error": f"Year '{year}' not found for department '{category}'"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Step 4: Get the semester safely
-        # if div is not None:
-        #     semester = Sem.objects.filter(year=y, sem=sem, div=div).first()
-        # else:
-        #     semester = Sem.objects.filter(year=y, sem=sem, div__isnull=True).first()
-        if div is None:
-            semester = Sem.objects.filter(year=y, sem=sem, div__isnull=True).first()
-        elif div == "null":
-            semester = Sem.objects.filter(year=y, sem=sem, div="").first()
-        else:
+        if div is not None:
             semester = Sem.objects.filter(year=y, sem=sem, div=div).first()
-            
+        else:
+            semester = Sem.objects.filter(year=y, sem=sem, div__isnull=True).first()
+
         if not semester:
             return Response(
                 {"error": f"Semester '{sem}' with Division '{div}' not found for year '{year}'"},
@@ -5106,7 +5093,11 @@ class SemViewSet(viewsets.ModelViewSet):
 
         category = request.query_params.get('category', None)
         year = request.query_params.get('year', None)
-
+        div_raw = data.get("division")
+        if not div_raw or div_raw.lower() in ["", "null", "undefined"]:
+            division = None
+        else:
+            division = div_raw.strip()
         if category and year:
             dept = Department.objects.get(name = category)
             y = Year.objects.get(department=dept, year = year)
@@ -5133,7 +5124,7 @@ class SemViewSet(viewsets.ModelViewSet):
         semester = Sem.objects.create(
             sem=data["semester"],
             year=y,
-            div=data["division"],
+            div=division,
             project_coordinator=project_coordinator,
             project_co_coordinator=project_co_coordinator,
             class_incharge=class_incharge,
