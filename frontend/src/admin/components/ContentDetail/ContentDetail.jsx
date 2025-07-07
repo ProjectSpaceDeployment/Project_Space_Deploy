@@ -15,10 +15,8 @@ const ContentDetail = ({isDarkMode }) => {
     const fetchEventData = async () => {
       try {
         const response = await AxiosInstance.get(`/event/${event}/event_detail/`);
-        console.log(response.data);
         setEventName(response.data.event);
         setResponseData(response.data.panels);
-        console.log(responseData);
       } catch (error) {
         console.error("Error fetching event data:", error);
       }
@@ -36,7 +34,6 @@ const ContentDetail = ({isDarkMode }) => {
 
       // Add button click handler
   const handleAddButtonClick = (projectTitle, members, groupId) => {
-    console.log("Clicked:", projectTitle, members, groupId);
     setSelectedProject({ projectTitle, members, groupId }); // Set the project title and members
     setFormOpen(true); // Open the form
   };
@@ -92,6 +89,7 @@ const handleOpenPDF = async () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   const handleAssessment = async () => {
@@ -124,6 +122,7 @@ const handleOpenPDF = async () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   return (

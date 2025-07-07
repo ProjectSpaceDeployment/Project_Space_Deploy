@@ -49,7 +49,6 @@ const HomePage = ({ isDarkMode }) => {
       return;
     }
 
-    console.log("Preferences:", preferences);
 
     try {
       const response = await AxiosInstance.post("/teacherpreferences/save_preferences/", {
@@ -274,8 +273,6 @@ const getProjectCounts = (section) => {
       const div = project.div || "Unknown";
       divisionCounts[div] = (divisionCounts[div] || 0) + 1;
     });
-    console.log(projectsArray);
-    console.log(divisionCounts);
     return divisionCounts;
   }
 };

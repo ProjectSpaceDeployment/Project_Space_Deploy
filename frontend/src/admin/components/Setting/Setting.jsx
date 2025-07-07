@@ -31,7 +31,6 @@ const AdminProfile = () => {
       try {
         const response = await AxiosInstance.get('/teacher-profile/');  // Adjust API endpoint based on your Django URL
         setProfileData(response.data); 
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching student profile data:", error);
       }

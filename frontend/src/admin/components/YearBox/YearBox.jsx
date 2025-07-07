@@ -9,10 +9,8 @@ const YearBox = ({ id, year, isDarkMode }) => {
   const navigate = useNavigate();
 
   const fetchEvents = async () => {
-    console.log(id)
     try {
       const response = await AxiosInstance.get(`review/by-year/?id=${id}`);
-      console.log(response.data);
       setEvents(response.data);  // assuming it returns a list of event names
     } catch (error) {
       console.error("Failed to fetch events:", error.response.data.error);
@@ -111,7 +109,6 @@ const YearBox = ({ id, year, isDarkMode }) => {
       previousEventId: usePreviousPanel === 'yes' ? previousEventId : null,
       year: id,
     };
-    console.log(payload);
     try {
       AxiosInstance.post(`clustering/cluster_and_allocate/`, {
         payload,
@@ -127,6 +124,7 @@ const YearBox = ({ id, year, isDarkMode }) => {
         });
     } catch (error) {
       console.error("Error creating event:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 

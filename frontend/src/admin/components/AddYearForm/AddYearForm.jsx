@@ -5,8 +5,6 @@ const AddYearForm = ({ onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Here you can handle adding the new year (e.g., updating state or making an API call)
-    console.log('New Year Added:', newYear);
     onClose(); // Close the form after submitting
   };
 

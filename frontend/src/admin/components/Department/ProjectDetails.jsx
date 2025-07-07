@@ -149,7 +149,6 @@ const handleRegister = () => {
     students: selectedStudents,
   })
     .then((response) => {
-      console.log("Success:", response.data);
       setSelectedStudents([]);
       setShowStudentForm(false);
       fetchStudents();
@@ -158,6 +157,7 @@ const handleRegister = () => {
     })
     .catch((error) => {
       console.error("Error:", error.response?.data || error.message);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     });
 };
   
@@ -181,14 +181,12 @@ const handleRegister = () => {
 // };
 const handleSelectionChange = (teacherId) => {
   setSelectedTeachers((prevSelected) => {
-    console.log("Previous Selected BEFORE Fix:", prevSelected);
     
     if (!prevSelected) {
       console.log("Fixing prevSelected to an empty array.");
       prevSelected = []; // Ensure it's never undefined
     }
 
-    console.log("Previous Selected AFTER Fix:", prevSelected);
 
     return prevSelected.includes(teacherId)
       ? prevSelected.filter((id) => id !== teacherId)
@@ -230,6 +228,7 @@ const handleSelectionChange = (teacherId) => {
       window.open(pdfUrl, "_blank");
     } catch (error) {
       console.error("Error opening the PDF:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
 };
 
@@ -241,7 +240,7 @@ useEffect(() => {
       const response = await AxiosInstance.get(`/semesters/group-status/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
       setGroupsData(response.data);
     } catch (error) {
-      alert("Error fetching groups data:", error.response.data.error);
+      console.log("Error fetching groups data:", error.response.data.error);
     }
   };
 
@@ -272,9 +271,8 @@ useEffect(() => {
     try {
       const response = await AxiosInstance.get(`/semesters/publication-status/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
       setPublicationData(response.data);
-      console.log(response.data)
     } catch (error) {
-      alert("Error fetching groups data:", error.response.data.error);
+      console.log("Error fetching groups data:", error.response.data.error);
     }
   };
 
@@ -307,7 +305,7 @@ useEffect(() => {
       setCopyrightData(response.data.overall);
       setCopyrightBreakdown(response.data.breakdown);
     } catch (error) {
-      alert("Error fetching groups data:", error.response.data.error);
+      console.log("Error fetching groups data:", error.response.data.error);
     }
   };
 
@@ -331,7 +329,6 @@ useEffect(() => {
         const res = await AxiosInstance.get(`/week/weekly-chart-data/?category=${category}&year=${year}&sem=${semester}&div=${div}`, {
         });
         setChartData(res.data);
-        console.log(res.data);
         if (semester !== "Major Project") {
           setSemActive("default");
         }
@@ -345,7 +342,6 @@ useEffect(() => {
 
   const handleBarClick = async (barData) => {
     const weekNumber = barData.week.split(" ")[1];
-    console.log(semActive);
     try {
       const response = await AxiosInstance.get(
         `/pdf/week-progress/?category=${category}&year=${year}&sem=${semester}&div=${div}&week_number=${weekNumber}&sem_new=${semActive}`, // Replace with your actual endpoint
@@ -375,6 +371,7 @@ useEffect(() => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
@@ -396,18 +393,17 @@ useEffect(() => {
         .get(`guide-allocation/allocate_guides/?category=${category}&year=${year}&sem=${semester}&div=${div}`)
         .then((response) => {
               if (response && response.data) {
-                // setAllocationResults(response.data.allocations);
-                console.log(response.data.automatic_allocations);
-                console.log(response.data.manual_allocations)
                 setSummary(response.data.summary);
                 setShowModal(true);
                 fetchProjects(category, year, semester, div);
               } else {
                   console.error("Unexpected API response:", response);
+                  alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
               }
         })
         .catch((error) => {
             console.error("Error fetching guide allocation:", error);
+            alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
         });
   };
   
@@ -424,7 +420,6 @@ useEffect(() => {
 const fetchWeeklyTasks = async () => {
   try {
     const response = await AxiosInstance.get(`/week/formatted/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
-    console.log(response.data);
     if(semester=="Major Project"){
       setAllWeeks(response.data)
     } else{
@@ -499,6 +494,7 @@ const handleAddWeeklyTask = async () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
@@ -517,10 +513,10 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
     AxiosInstance.get(`/teacher/roles/?category=${category}&year=${year}&sem=${semester}&div=${div}`)
       .then((response) => {
         setRoles(response.data);
-        console.log(response.data);
       })
       .catch((error) => {
         console.error("Error fetching roles:", error.response.data.error);
+      
       });
   }, [category, year,semester,div]);
 
@@ -592,9 +588,9 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
       );
   
       setTicks(calculatedTicks);
-      console.log("Projects:", response.data);
     } catch (error) {
       console.error("Error fetching projects:", error.response?.data?.error || error.message);
+     
     }
   };
 
@@ -643,6 +639,7 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   
@@ -677,6 +674,7 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
@@ -710,6 +708,7 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Error downloading Excel:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   
@@ -758,6 +757,7 @@ const handleSubmit = async () => {
     })
     .catch((error) => {
       console.error("Error:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     });
 };
 const handleTeacherButton = async () => {
@@ -768,6 +768,7 @@ const handleTeacherButton = async () => {
     alert(`Success: ${response.data.message}`);
   } catch (error) {
     console.error("Error:", error.response?.data || error.message);
+    alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
   }
 };
 const handleStudentButton = async () => {
@@ -778,6 +779,7 @@ const handleStudentButton = async () => {
     alert(`Success: ${response.data.message}`);
   } catch (error) {
     console.error("Error:", error.response?.data || error.message);
+    alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
   }
 };
 
@@ -787,15 +789,14 @@ const [projectId, setProjectID] = useState("")
 const handleOpenPopup = async (projectID) => {
   if (!projectID) return; 
   try {
-    console.log(projectID);
     setProjectID(projectID);
     const response = await AxiosInstance.get(
       `/projectpreference/project-pref/?projectID=${projectID}`
     );
     setPreferences(response.data);
-    console.log(response.data)
   } catch (error) {
     console.error("Error:", error.response?.data.error || error.message);
+    alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
   } finally {
     setIsAllocateOpen(true); // Ensure modal opens even if an error occurs
   }
@@ -806,8 +807,6 @@ const handleClosePopup = () => {
   setIsAllocateOpen(false);
 };
 const handleSubmitTask = async () => {
-  console.log(selectedWeek);
-  console.log(selectedSem);
   const payload = {
     week_number: selectedWeek,
     tasks: taskText.split(",").map(t => t.trim()).filter(Boolean),
@@ -823,6 +822,7 @@ const handleSubmitTask = async () => {
     fetchWeeklyTasks();
   } catch (error) {
     console.error("Error saving tasks:", error);
+    alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
   }
 };
 const handleDeleteWeek = async (weekNumber) => {
@@ -843,6 +843,7 @@ const handleDeleteWeek = async (weekNumber) => {
     fetchWeeklyTasks(); // refresh UI
   } catch (err) {
     console.error("Error deleting week:", err);
+    alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
   }
 };
 
@@ -854,7 +855,6 @@ const handleDeleteWeek = async (weekNumber) => {
     try {
       const response = await AxiosInstance.get(`/teacherpreferences/availability/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
       setDomainsData(response.data); 
-      console.log(response.data); // Set the data in state
     } catch (error) {
       console.error('Error fetching domain teacher data:', error);
     }
@@ -864,7 +864,6 @@ const handleDeleteWeek = async (weekNumber) => {
     try {
       const response = await AxiosInstance.get(`/teacherpreferences/availability/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
       setFilteredGuides(response.data); 
-      console.log(response.data); // Set the data in state
     } catch (error) {
       console.error('Error fetching domain teacher data:', error);
     }
@@ -916,7 +915,6 @@ const handleDeleteWeek = async (weekNumber) => {
         '/projectpreference/manual_save_project/', // Adjust to your backend URL
         payload
       );
-      console.log('Data saved:', response.data);
       alert("Saved Successfully");
       // Handle successful save, close the popup, and update state if necessary
       setIsAllocateOpen(false);
@@ -926,6 +924,7 @@ const handleDeleteWeek = async (weekNumber) => {
       fetchProjects(category, year, semester, div);
     } catch (error) {
       console.error('Error saving data:', error.response?.data.error || error.message);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
@@ -955,7 +954,6 @@ const handleDeleteWeek = async (weekNumber) => {
         },
       });
       setAvailStudents(response.data.students);
-      console.log(response.data.students);
     } catch (error) {
       console.error("Error fetching students:", error);
     }
@@ -987,7 +985,6 @@ const handleDeleteWeek = async (weekNumber) => {
         co_guide: coGuide || null,
         division: division || null,  
       };
-      console.log(payload);
   
       const response = await AxiosInstance.post(`/projectpreference/create-project/?category=${category}&year=${year}&sem=${semester}&div=${div}`, payload);
   
@@ -1082,7 +1079,6 @@ const handleDeleteWeek = async (weekNumber) => {
 
   const handleEditSubmit = async () => {
     if (!selectedProjectToEdit) return;
-      console.log(selectedProjectToEdit);
     const payload = {
       project_id: selectedProjectToEdit,
       leader_id: leader?.moodle_id,
@@ -1095,7 +1091,6 @@ const handleDeleteWeek = async (weekNumber) => {
     };
   
     try {
-      console.log(payload);
       const response = await AxiosInstance.put(
         `/projectpreference/${selectedProjectToEdit}/update/`, // adjust to your endpoint
         payload
@@ -1111,7 +1106,6 @@ const handleDeleteWeek = async (weekNumber) => {
         alert("Failed to update project.");
       }
     } catch (err) {
-      console.error(err);
       alert("An error occurred while updating.");
     }
   };

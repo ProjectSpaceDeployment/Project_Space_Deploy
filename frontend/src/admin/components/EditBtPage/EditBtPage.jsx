@@ -4,7 +4,6 @@ import AxiosInstance from "../../../AxiosInstance";
 
 const EditPanelPage = ({ isDarkMode }) => {
   const { event } = useParams();
-  console.log(event);
   const navigate = useNavigate();
 
   // State for panels and unassigned teachers/students
@@ -22,7 +21,6 @@ const EditPanelPage = ({ isDarkMode }) => {
       try {
         const response = await AxiosInstance.get(`/event/${event}/panel-data/?_=${Date.now()}`); // Replace with your actual API endpoint
         const fetchedData = response.data;
-        console.log(response.data);
 
         const { panels = {}, groups = {}, unassigned_teachers = [], remaining_groups = [] } = fetchedData;
 
@@ -115,7 +113,6 @@ const EditPanelPage = ({ isDarkMode }) => {
     };
   
     try {
-      console.log(formattedData);
       const response = await AxiosInstance.post(`/event/${event}/update_panels/`, formattedData);
       alert("Panels updated successfully!");
     } catch (err) {

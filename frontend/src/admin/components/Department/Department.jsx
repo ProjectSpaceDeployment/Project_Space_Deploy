@@ -59,7 +59,6 @@ const DeptDetail = ({ isDarkMode }) => {
       Object.keys(response.data).forEach((department) => {
         sortedData[department] = response.data[department].sort((a, b) => b.localeCompare(a));
       });
-      console.log(response.data);
       setCategories(response.data);
       const firstCategory = Object.keys(response.data)[0];
       if (firstCategory) {

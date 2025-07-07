@@ -52,16 +52,15 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
     try {
       const response = await AxiosInstance.get(`/projects/${project.group}/get_project_pk/`, {
       });
-      console.log(response.data);
       setProjectData(response.data);
     } catch (err) {
       console.error(err);
+      alert(err.response?.data?.message || err.response?.data?.error || "An unexpected error occurred.");
     }
   };
   useEffect(() => {
     AxiosInstance.get(`/teacher/visibility/?id=${project.group}`).then(res => {
       setIsChecked(res.data);
-      console.log(res.data);
     });
     
   }, [project]);
@@ -154,16 +153,13 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
     if (semester === "Major Project") {
       AxiosInstance.get(`/projects/weekly_progress_chart/?sem_new=sem_7&id=${project.group}`).then(res => {
         setSem7Data(formatChartData(res.data));
-        console.log(res.data);
       });
       AxiosInstance.get(`/projects/weekly_progress_chart/?sem_new=sem_8&id=${project.group}`).then(res => {
         setSem8Data(formatChartData(res.data));
-        console.log(res.data);
       });
     } else {
       AxiosInstance.get(`/projects/weekly_progress_chart/?id=${project.group}`).then(res => {
         setSem7Data(formatChartData(res.data));
-        console.log(res.data); // reuse sem7Data for non-major
       });
     }
   }, [semester]);
@@ -221,7 +217,6 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
 
   const handleDateChange = (date) => {
     const formattedDate = date.toISOString().split("T")[0];
-    console.log(formattedDate);
     setSelectedDate(date);
   };
 
@@ -276,6 +271,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       window.open(pdfUrl, "_blank");
     } catch (error) {
       console.error("Error opening the PDF:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 
@@ -293,6 +289,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       window.open(pdfUrl, "_blank");
     } catch (error) {
       console.error("Error opening the PDF:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
 

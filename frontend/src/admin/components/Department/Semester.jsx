@@ -37,7 +37,6 @@ const Semesters = ({ isDarkMode }) => {
     if (category && year) {
       AxiosInstance.get(`/semesters/?category=${category}&year=${year}`) // Use query parameters
         .then((response) => {
-          console.log(response.data);
           setSemesters(response.data);
         })
         .catch((error) => {
@@ -71,7 +70,6 @@ const Semesters = ({ isDarkMode }) => {
 
   const handleEdit = async () => {
     if (selectedRows.length === 1) {
-      console.log(selectedRows[0]);
       const semesterId = selectedRows[0].id; // Assuming selected row has an 'id' field
       try {
         const response = await AxiosInstance.put(`/semesters/${semesterId}/edit-semester/`, {
@@ -82,12 +80,12 @@ const Semesters = ({ isDarkMode }) => {
           classInCharge: editingSemester.classInCharge,
           tech: editingSemester.tech,
         });
-        console.log(response.data); // Handle the response
         alert("Semester updated!");
         setShowEditModal(false);
         fetchSemesters();
       } catch (error) {
         console.error("Error updating semester:", error.response.data.error);
+        alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
       }
     }
   };
@@ -104,6 +102,7 @@ const Semesters = ({ isDarkMode }) => {
       setSemesters((prev) => prev.filter((sem) => !semesterIds.includes(sem.id)));
     } catch (error) {
       console.error('Error deleting semesters:', error.response?.data?.error || error.message);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   
@@ -128,7 +127,6 @@ const Semesters = ({ isDarkMode }) => {
 
   const handleAddSemester = async () => {
     try {
-      console.log(newSemester);
       const response = await AxiosInstance.post(`/semesters/add-semester/?category=${category}&year=${year}`, newSemester);
   
       if (response) {
@@ -157,8 +155,7 @@ const Semesters = ({ isDarkMode }) => {
   const handleEditButtonClick = () => {
     // Assuming selectedRows is an array, and you want to edit the first selected row
     if (selectedRows.length === 1) {
-      const row = selectedRows[0];
-      console.log(selectedRows[0]); // Get the first selected row
+      const row = selectedRows[0];// Get the first selected row
       setEditingSemester({
         semester: row.sem,
         division: row.div,
@@ -167,8 +164,6 @@ const Semesters = ({ isDarkMode }) => {
         classInCharge: row.class_incharge_name,
         tech: row.tech,
       });
-
-      console.log(editingSemester);
   
       // Open the edit modal
       setShowEditModal(true);

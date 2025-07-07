@@ -26,13 +26,11 @@ const StudentAddModal = ({ isOpen, onClose }) => {
   // Handle form submission (manual)
   const handleManualSubmit = (e) => {
     e.preventDefault();
-    console.log("Manual Data Submitted:", formData);
     onClose(); // Close modal after submission
   };
 
   // Handle CSV upload submission
   const handleCsvSubmit = () => {
-    console.log("CSV File Uploaded:", csvFile);
     onClose();
   };
 

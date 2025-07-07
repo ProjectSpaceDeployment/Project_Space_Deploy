@@ -42,7 +42,6 @@ const AssessmentForm = ({ projectTitle, members, groupId, eventId, onClose, isDa
       AxiosInstance(`/project-assessment/get-assessment/?project=${groupId}&event=${eventId}`)
         .then((res) => {
           const data = res.data; 
-          console.log(data); // Axios automatically parses JSON
           if (data.id) {
             setMarks(data.marks.reduce((acc, mark) => {
               acc[mark.rubric_id] = mark.marks;  // Reshaping the marks data to be used in the form
@@ -56,7 +55,6 @@ const AssessmentForm = ({ projectTitle, members, groupId, eventId, onClose, isDa
         })
         .catch((error) => {
           console.error('Error fetching assessment data:', error);
-          // You can set some error state or handle it as needed
         });
     }
   }, [groupId, eventId]);
@@ -89,13 +87,12 @@ const AssessmentForm = ({ projectTitle, members, groupId, eventId, onClose, isDa
         marks: parseInt(mark),
       })),
     };
-    console.log(payload);
     try {
       const response = await AxiosInstance.post("/project-assessment/", payload); // Adjust URL if needed
-      console.log("Assessment saved:", response.data);
       onClose(); // optionally close modal after submission
     } catch (error) {
       console.error("Error submitting assessment:", error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
   

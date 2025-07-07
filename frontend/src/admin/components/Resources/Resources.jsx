@@ -64,7 +64,6 @@ const ResourceManagement = ({ category, year, semester, div }) => {
         `/resources/?category=${category}&year=${year}&sem=${semester}&div=${div}`
       );
       setUploads(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch uploads", error);
     }
@@ -80,7 +79,6 @@ const ResourceManagement = ({ category, year, semester, div }) => {
         `/links/?category=${category}&year=${year}&sem=${semester}&div=${div}`
       );
       setLinks(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Failed to fetch uploads", error);
     }
@@ -149,6 +147,7 @@ const ResourceManagement = ({ category, year, semester, div }) => {
     })
     .catch(error => {
       console.error('Error downloading Excel:', error);
+      alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     });
   }
   const handleDelete = async () => {
@@ -641,7 +640,6 @@ const UploadForm = ({ isEdit, category, year, semester, div, onClose, fetchUploa
 };
 
 const LinkForm = ({ isEdit, category, year, semester, div, onClose, existingLink, fetchLinks }) => {
-  console.log(existingLink);
   const [name, setName] = useState(isEdit ? existingLink.name : "");
   const [linkType, setLinkType] = useState(isEdit ? existingLink.link_type : "");
 

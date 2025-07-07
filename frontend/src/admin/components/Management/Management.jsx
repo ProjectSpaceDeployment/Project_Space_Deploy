@@ -393,7 +393,6 @@ const ManagementPage = ({ isDarkMode }) => {
   const handleTeacherManualSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log(formTeacherData);
       const response = await AxiosInstance.post(
         "/teacher/teacher-registration/",
         formTeacherData,
@@ -415,11 +414,7 @@ const ManagementPage = ({ isDarkMode }) => {
     const formData = new FormData();
     formData.append("file", csvFile);
 
-    console.log("Uploading CSV File...");
-    console.log("Form Data Content:", formData.get("file"));
-
     try {
-      console.log("Uploading CSV File...");
       const response = await AxiosInstance.post(
         "/student/register/",
         formData,
@@ -446,11 +441,8 @@ const ManagementPage = ({ isDarkMode }) => {
     const formData = new FormData();
     formData.append("file", csvTeacherFile);
 
-    console.log("Uploading CSV File...");
-    console.log("Form Data Content:", formData.get("file"));
 
     try {
-      console.log("Uploading CSV File...");
       const response = await AxiosInstance.post(
         "/teacher/teacher-registration/",
         formData,
