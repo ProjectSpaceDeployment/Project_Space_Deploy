@@ -4288,12 +4288,12 @@ class StudentViewSet(viewsets.ModelViewSet):
                 return Response({"error": f"Missing required columns: {missing_columns}"}, status=status.HTTP_400_BAD_REQUEST)
 
             with transaction.atomic():
-                for _, row in df.iterrows():
+                for index, row in df.iterrows():
                     username = row["moodleId"]
 
                     if User.objects.filter(username=username).exists():
                         continue  # Skip existing users
-                    password = f'{username}@Apsit'
+                    password = f'{str(row["moodleId"]).strip()}@Apsit'
                     user = User.objects.create_user(username=username, email=row["email"], password=password)
                     user.first_name = row["firstname"]
                     user.last_name = row["lastname"]
