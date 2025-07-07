@@ -360,7 +360,7 @@ const Semesters = ({ isDarkMode }) => {
               key={`${semester.sem}-${semester.div}`}
               onClick={() =>
                 navigate(
-                  `/department/${category}/${year}/${semester.sem}/${semester.div}/projects`
+                  `/department/${category}/${year}/${semester.sem}/${semester.div || null}/projects`
                 )
               }
               className={`p-6 rounded-lg shadow-md border-2 border-green-400 transition transform hover:scale-105 cursor-pointer flex flex-col items-center justify-center text-lg font-semibold ${
