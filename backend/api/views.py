@@ -4661,7 +4661,7 @@ class TeacherViewSet(viewsets.ModelViewSet):
 
         sem = None if (not sem or sem.lower() == "null") else sem.strip()
         div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
-
+        print("div",div)
         dept = Department.objects.filter(name__iexact=category).first()
         if not dept:
             return Response({"error": f"Department '{category}' not found"}, status=status.HTTP_400_BAD_REQUEST)
