@@ -57,6 +57,7 @@ const ProjectDetails = ({ selectedCategory, selectedYear, selectedSemester, onBa
   // Fetch students when a batch is selected
   useEffect(() => {
     if (selectedBatch) {
+      console.log(div);
       AxiosInstance.get(`/studentslist/by-batch/?category=${category}&year=${year}&sem=${semester}&div=${div}&batch=${selectedBatch}`)
         .then((response) => setStudents(response.data))
         .catch((error) => console.error("Error fetching students:", error));

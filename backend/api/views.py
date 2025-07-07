@@ -4658,10 +4658,10 @@ class TeacherViewSet(viewsets.ModelViewSet):
         year = request.query_params.get('year', None)
         sem = request.query_params.get('sem', None)
         div = request.query_params.get('div', None)
-
+        print("div",div)
         sem = None if (not sem or sem.lower() == "null") else sem.strip()
         div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
-        print("div",div)
+        
         dept = Department.objects.filter(name__iexact=category).first()
         if not dept:
             return Response({"error": f"Department '{category}' not found"}, status=status.HTTP_400_BAD_REQUEST)
@@ -4670,10 +4670,6 @@ class TeacherViewSet(viewsets.ModelViewSet):
         y = Year.objects.filter(department=dept, year=year).first()
         if not y:
             return Response({"error": f"Year '{year}' not found for department '{category}'"}, status=status.HTTP_400_BAD_REQUEST)
-
-        # Step 3: Debug available semesters
-        available_sems = Sem.objects.filter(year=y).values("sem", "div")
-        print(f"Available Sems for Year {year}: {list(available_sems)}")
 
         # Step 4: Get the semester safely
         if div is not None:
