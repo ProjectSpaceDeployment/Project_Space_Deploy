@@ -4657,10 +4657,17 @@ class TeacherViewSet(viewsets.ModelViewSet):
         category = request.query_params.get('category', None)
         year = request.query_params.get('year', None)
         sem = request.query_params.get('sem', None)
-        div = request.query_params.get('div', None)
+        div_raw = request.query_params.get('div', None)
         print("div",div)
         sem = None if (not sem or sem.lower() == "null") else sem.strip()
-        div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
+        # div = None if (not div or div.lower() == "null" or div.lower() == "undefined") else div.strip()
+
+        if not div_raw:
+            div = None
+        elif div_raw.lower() == "null":
+            div = "null"
+        else:
+            div = div_raw.strip()
         
         dept = Department.objects.filter(name__iexact=category).first()
         if not dept:
@@ -4672,11 +4679,17 @@ class TeacherViewSet(viewsets.ModelViewSet):
             return Response({"error": f"Year '{year}' not found for department '{category}'"}, status=status.HTTP_400_BAD_REQUEST)
 
         # Step 4: Get the semester safely
-        if div is not None:
-            semester = Sem.objects.filter(year=y, sem=sem, div=div).first()
-        else:
+        # if div is not None:
+        #     semester = Sem.objects.filter(year=y, sem=sem, div=div).first()
+        # else:
+        #     semester = Sem.objects.filter(year=y, sem=sem, div__isnull=True).first()
+        if div is None:
             semester = Sem.objects.filter(year=y, sem=sem, div__isnull=True).first()
-
+        elif div == "null":
+            semester = Sem.objects.filter(year=y, sem=sem, div="").first()
+        else:
+            semester = Sem.objects.filter(year=y, sem=sem, div=div).first()
+            
         if not semester:
             return Response(
                 {"error": f"Semester '{sem}' with Division '{div}' not found for year '{year}'"},
