@@ -2720,7 +2720,7 @@ const ManagementPage = ({ isDarkMode }) => {
             className="border p-2 w-full mb-4"
             value={newBatchDept}
             onChange={(e) => setNewBatchDept(e.target.value)}
-            placeholder="Enter batch name"
+            placeholder="Enter department name"
           />
           <div className="flex justify-end gap-2">
             <button
