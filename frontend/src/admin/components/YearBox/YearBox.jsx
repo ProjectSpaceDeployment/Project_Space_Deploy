@@ -5,6 +5,7 @@ import AxiosInstance from "../../../AxiosInstance";
 const YearBox = ({ id, year, isDarkMode }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [hasAccess, setHasAccess] = useState(false);
   const [events, setEvents] = useState([]); // Default content
   const navigate = useNavigate();
 
@@ -23,6 +24,15 @@ const YearBox = ({ id, year, isDarkMode }) => {
       fetchEvents();
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/teacher/has-add-access/?year_id=${id}`)
+        .then((res) => {
+          setHasAccess(res.data.has_access);
+        });
+    }
+  }, [id]);
 
   // Toggle year box content visibility
   const toggleYearContent = () => setIsOpen(!isOpen);
@@ -162,6 +172,7 @@ const YearBox = ({ id, year, isDarkMode }) => {
             e.stopPropagation();
             setIsFormOpen(true);
           }}
+          disabled={!hasAccess}
           className={`py-2 px-4 rounded-lg transition-all ${
             isDarkMode
               ? "bg-[#5CC800] text-white hover:bg-[#3fa600]"

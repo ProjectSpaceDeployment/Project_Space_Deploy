@@ -4987,6 +4987,28 @@ class TeacherViewSet(viewsets.ModelViewSet):
         serializer = TeacherSerializer(teachers, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(detail=False, methods=["get"], url_path="has-add-access")
+    def has_add_access(self, request):
+        year_id = request.query_params.get('year_id')
+        if not year_id:
+            return Response({"error": "year_id is required"}, status=400)
+
+        user = request.user
+        try:
+            teacher = Teacher.objects.get(user=user)
+        except Teacher.DoesNotExist:
+            return Response({"error": "Teacher not found"}, status=404)
+
+        # Check if the teacher is coordinator or co-coordinator for any sem in that year
+        has_access = Sem.objects.filter(
+            year_id=year_id
+        ).filter(
+            models.Q(project_coordinator=teacher) |
+            models.Q(project_co_coordinator=teacher)
+        ).exists()
+
+        return Response({"has_access": has_access})
+
 class YearViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Year.objects.all()
     serializer_class = YearSerializer
