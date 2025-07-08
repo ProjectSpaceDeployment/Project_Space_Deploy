@@ -167,20 +167,21 @@ const YearBox = ({ id, year, isDarkMode }) => {
         </div>
 
         {/* Add Content Button */}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsFormOpen(true);
-          }}
-          disabled={!hasAccess}
-          className={`py-2 px-4 rounded-lg transition-all ${
-            isDarkMode
-              ? "bg-[#5CC800] text-white hover:bg-[#3fa600]"
-              : "bg-[#f3d727] text-black hover:bg-[#ffec6f]"
-          }`}
-        >
-          + Add
-        </button>
+        {hasAccess && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsFormOpen(true);
+            }}
+            className={`py-2 px-4 rounded-lg transition-all ${
+              isDarkMode
+                ? "bg-[#5CC800] text-white hover:bg-[#3fa600]"
+                : "bg-[#f3d727] text-black hover:bg-[#ffec6f]"
+            }`}
+          >
+            + Add
+          </button>
+        )}
       </div>
 
       {/* Content Area */}
