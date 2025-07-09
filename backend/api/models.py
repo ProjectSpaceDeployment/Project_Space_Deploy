@@ -50,7 +50,7 @@ class Teacher(models.Model):
     middle_name = models.CharField(max_length=50, null=True)
     experience = models.PositiveIntegerField(null=True)
     title = models.CharField(max_length=50, null=True)
-
+    form = models.IntegerField(default = 0)
     class Meta:
         db_table = "Teacher"
 
