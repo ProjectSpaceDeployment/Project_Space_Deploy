@@ -395,20 +395,19 @@ const getPieChartData = (semester) => {
     </div>
     
       )}
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         
           <div className="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full max-h-96 overflow-y-auto">
           <h2 className="text-xl font-bold mb-4">Preferences</h2>
           {error && <p className="text-red-500">{error}</p>}
           <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Dynamic Preferences */}
+            
             {preferences.map((pref, index) => (
               <div key={index} className="flex space-x-2">
-                {/* Preference Rank (Auto-Assigned) */}
+
                 <span className="w-8 flex items-center justify-center bg-gray-200 rounded-md">{index + 1}</span>
 
-                {/* Domain Selection Dropdown */}
                 <select
                   value={pref.id}
                   onChange={(e) => handleDomainChange(index, e.target.value)}
@@ -426,7 +425,6 @@ const getPieChartData = (semester) => {
                     </option>))}
                   
                 </select>
-                {/* Remove Button (Only for extra preferences) */}
                 {index >= 3 && (
                   <button 
                     type="button" 
@@ -439,7 +437,6 @@ const getPieChartData = (semester) => {
               </div>
             ))}
 
-            {/* Add More Preferences Button */}
             {preferences.length >= 3 && (
               <button
                 type="button"
@@ -450,7 +447,6 @@ const getPieChartData = (semester) => {
               </button>
             )}
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
@@ -461,7 +457,7 @@ const getPieChartData = (semester) => {
         </div>
         </div>
       )}
-      
+       */}
 
       {/* Tabs */}
       {/* <div className="flex justify-between items-center border-b border-gray-300">
