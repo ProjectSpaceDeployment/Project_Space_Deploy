@@ -30,7 +30,10 @@ const HomePage = ({ isDarkMode }) => {
   useEffect(() => {
     AxiosInstance
       .get("/semesters/teacher-form-visibility") 
-      .then((response) => setIsFormVisible(response.data.status))
+      .then((response) => {
+      console.log("Response Data:", response.data); // ✅ Log here
+      setIsFormVisible(response.data.status);
+    })
       .catch(() => console.error("Error fetching form status:", error.response?.data || error.message));
   }, []);
 

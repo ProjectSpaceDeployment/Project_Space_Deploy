@@ -5334,7 +5334,7 @@ class SemViewSet(viewsets.ModelViewSet):
             year = Year.objects.filter(department = teacher.department.id).order_by('-id').first()
             print(year)
             semester = Sem.objects.filter(year=year, sem="Major Project", div__isnull=True).first()
-            print(semester)
+            print(semester.sem,semester.div)
             cursem = ProjectGuide.objects.get(sem=semester,teacher=teacher)
             print(cursem)
             visibility = False
@@ -5342,7 +5342,7 @@ class SemViewSet(viewsets.ModelViewSet):
                 if semester.teacher_form == 1 and cursem.form == 0 :
                     visibility = True
             print(visibility)
-            return Response({"status":visibility},status=status.HTTP_200_OK)
+            return Response({"status":visibility, "year":year.year, "semester":semester.sem, "cursem":cursem.form},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
