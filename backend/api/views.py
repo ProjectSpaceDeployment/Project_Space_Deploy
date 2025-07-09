@@ -4070,8 +4070,10 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
 
             cursem = ProjectGuide.objects.filter(sem=semester, teacher=teacher).first()
 
-            teacher.form = 1
-            teacher.save()
+            if cursem:
+                cursem.form = 1
+                cursem.save()
+
         return Response({"message": "Preferences saved successfully!"}, status=status.HTTP_201_CREATED)
 
 
@@ -5227,7 +5229,6 @@ class SemViewSet(viewsets.ModelViewSet):
             if semester:
                 semester.teacher_form = 1
                 semester.save()
-                Teacher.objects.filter(department=dept).update(form=0)
             return Response({"message": "Activated Form"}, status=status.HTTP_200_OK)
         except Sem.DoesNotExist:
             return Response({"error": "Invalid semester ID"}, status=status.HTTP_400_BAD_REQUEST)
@@ -5337,8 +5338,9 @@ class SemViewSet(viewsets.ModelViewSet):
             cursem = ProjectGuide.objects.get(sem=semester,teacher=teacher)
             print(cursem)
             visibility = False
-            if semester.teacher_form == 1 and teacher.form == 0 :
-                visibility = True
+            if cursem:
+                if semester.teacher_form == 1 and cursem.form == 0 :
+                    visibility = True
             print(visibility)
             return Response({"status":visibility, "year":year.year, "semester":semester.sem, "cursem":cursem.form},status=status.HTTP_200_OK)
         except Exception as e:
