@@ -5329,13 +5329,14 @@ class SemViewSet(viewsets.ModelViewSet):
     def teacher_form_visibility(self, request):
         try:
             teacher = Teacher.objects.get(user=request.user) 
+            print("teacher",teacher)
 
             year = Year.objects.filter(department = teacher.department.id).order_by('-id').first()
-
-            semester = Sem.objects.filter(year=year, sem="Major Project").first()
-
+            print(year)
+            semester = Sem.objects.filter(year=year, sem="Major Project", div__isnull=True).first()
+            print(semester)
             cursem = ProjectGuide.objects.get(sem=semester,teacher=teacher)
-
+            print(cursem)
             visibility = False
             if cursem:
                 if semester.teacher_form == 1 and cursem.form == 0 :
