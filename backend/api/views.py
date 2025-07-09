@@ -4042,7 +4042,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
             with connection.cursor() as cursor:
                 cursor.execute(
                     "SELECT setval(pg_get_serial_sequence('\"TeacherPreference\"', 'id'), "
-                    "COALESCE((SELECT MAX(id) FROM TeacherPreference) + 1, 1), false);"
+                    "COALESCE((SELECT MAX(id) FROM \"TeacherPreference\") + 1, 1), false);"
                 )
 
             new_preferences = []
