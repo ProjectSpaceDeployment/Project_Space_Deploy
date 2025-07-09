@@ -313,7 +313,6 @@ const getPieChartData = (semester) => {
       } py-16`}
     >
       {/* Title */}
-      <h1 className="text-3xl font-extrabold tracking-tight">Academic Year</h1>
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         
@@ -380,6 +379,8 @@ const getPieChartData = (semester) => {
         </div>
         </div>
       )}
+      <h1 className="text-3xl font-extrabold tracking-tight">Academic Year</h1>
+      
       {/* Marquee Section */}
       {isFormVisibile && (
         <div className="bg-pink-500 text-white py-2 px-4 text-center font-semibold mb-6 text-1xl">
