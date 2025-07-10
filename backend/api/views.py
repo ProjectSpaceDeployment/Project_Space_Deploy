@@ -4156,7 +4156,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
 
                 for domain in domains:
                     # Get the teacher preferences for each domain
-                    teacher_preferences = TeacherPreference.objects.filter(domain=domain)
+                    teacher_preferences = TeacherPreference.objects.filter(domain=domain, teacher__department=dept)
                     teachers_with_availability = []
 
                     for preference in teacher_preferences:
@@ -4233,7 +4233,11 @@ class StudentViewSet(viewsets.ModelViewSet):
             email = data.get("email")
             batch_id = data.get("batch")  
             department = data.get("department")
-            middle_name = data.get("middlename")
+            middle_name_raw = data.get("middlename")
+            if not middle_name_raw or middle_name_raw.lower() in ["", "null", "undefined"]:
+                middle_name = None
+            else:
+                middle_name = middle_name_raw.strip()
 
             if not all([username, first_name, last_name, email, batch_id]):
                 return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
@@ -4844,9 +4848,13 @@ class TeacherViewSet(viewsets.ModelViewSet):
             email = data.get("email")
             designation = data.get("designation")  
             department = data.get("department")
-            middle_name = data.get("middlename")
+            middle_name_raw = data.get("middlename")
+            if not middle_name_raw or middle_name_raw.lower() in ["", "null", "undefined"]:
+                middle_name = None
+            else:
+                middle_name = middle_name_raw.strip()
 
-            if not all([username, first_name, last_name, email, designation, department, middle_name]):
+            if not all([username, first_name, last_name, email, designation, department]):
                 return Response({"error": "Missing required fields"}, status=status.HTTP_400_BAD_REQUEST)
 
             if User.objects.filter(username=username).exists():

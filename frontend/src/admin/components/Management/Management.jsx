@@ -674,6 +674,17 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
+  const handleTeacherRemove = () => {
+    const deleteRequests = selectedTeachers.map((index) =>
+      AxiosInstance.delete(`/teacher/${index}/`)
+    );
+
+    Promise.all(deleteRequests).then((res) => {
+      setSelectedTeachers([]);
+      alert("Selected Faculty Deleted");
+    });
+  };
+
   const filteredDepartments = depart.filter(
     (dept) =>
       dept.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -1615,7 +1626,7 @@ const ManagementPage = ({ isDarkMode }) => {
                         </div>
                         <div className="flex items-center space-x-2">
                           <label htmlFor="middlename" className="w-32 font-medium">Middle Name</label>
-                          <input type="text" id="middlename" name="middlename" className="border p-2 flex-1" onChange={handleTeacherInputChange} required />
+                          <input type="text" id="middlename" name="middlename" className="border p-2 flex-1" onChange={handleTeacherInputChange} />
                         </div>
                         <div className="flex items-center space-x-2">
                           <label htmlFor="department" className="w-32 font-medium">Department</label>
@@ -1691,7 +1702,7 @@ const ManagementPage = ({ isDarkMode }) => {
             {isEditModalOpen && (
               <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-10">
                 <div className="bg-white p-6 rounded-lg w-[40rem] max-h-[80vh] overflow-y-auto">
-                  <h2 className="text-xl font-bold mb-4">Edit Student</h2>
+                  <h2 className="text-xl font-bold mb-4">Edit Faculty</h2>
 
                   {/* Tabs */}
                   <div className="flex border-b mb-4">
@@ -1850,6 +1861,7 @@ const ManagementPage = ({ isDarkMode }) => {
                   : "bg-red-500 text-white"
               }`}
               disabled={selectedTeachers.length === 0}
+              onClick={handleTeacherRemove}
             >
               Remove
             </button>
