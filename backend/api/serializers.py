@@ -177,7 +177,10 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     def get_leader_name(self, obj):
         if obj.leader:
-            return f"{obj.leader.user.first_name} {obj.leader.middle_name or ''} {obj.leader.user.last_name}".strip()
+            middle = obj.leader.middle_name
+            if middle is None or str(middle).strip().lower() == "nan":
+                middle = ""
+            return f"{obj.leader.user.first_name} {middle} {obj.leader.user.last_name}".strip()
         return "N/A"
 
     def get_project_guide_name(self, obj):
@@ -191,8 +194,10 @@ class ProjectSerializer(serializers.ModelSerializer):
         return "N/A"
 
     def get_members(self, obj):
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
         return [
-            f"{student.user.first_name} {student.middle_name or ''} {student.user.last_name}".strip()
+            f"{student.user.first_name} {clean_middle_name(student.middle_name)} {student.user.last_name}".strip()
             for student in obj.members.all()
         ]
 
