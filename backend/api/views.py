@@ -5038,14 +5038,27 @@ class YearViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="grouped-by-department")
     def grouped_by_department(self, request):
-        departments = Department.objects.all()
-        data = {}
+        try:
+            teacher = Teacher.objects.get(user=request.user)
+        except Teacher.DoesNotExist:
+            return Response({"error": "Teacher not found"}, status=status.HTTP_404_NOT_FOUND)
 
-        for department in departments:
-            years = Year.objects.filter(department=department).values_list("year", flat=True)
-            data[department.name] = list(years)  # Convert QuerySet to a list
+        department = teacher.department
+        if not department:
+            return Response({"error": "Department not assigned to teacher"}, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response(data)
+        years = Year.objects.filter(department=department).values_list("year", flat=True)
+        data = {
+            department.name: list(years)
+        }
+        # departments = Department.objects.all()
+        # data = {}
+
+        # for department in departments:
+        #     years = Year.objects.filter(department=department).values_list("year", flat=True)
+        #     data[department.name] = list(years)  # Convert QuerySet to a list
+
+        return Response(data, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="by-department")
     def by_department(self, request):
