@@ -674,15 +674,25 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
-  const handleTeacherRemove = () => {
-    const deleteRequests = selectedTeachers.map((index) =>
-      AxiosInstance.delete(`/teacher/${index}/`)
-    );
+  const handleTeacherRemove = async () => {
+    if (selectedTeachers.length === 0) {
+      alert("Please select at least one teacher to delete.");
+      return;
+    }
 
-    Promise.all(deleteRequests).then((res) => {
-      setSelectedTeachers([]);
-      alert("Selected Faculty Deleted");
-    });
+    try {
+      const response = await AxiosInstance.post('/teacher/bulk-delete/', {
+        usernames: selectedTeachers,
+      });
+
+      if (response.status === 200) {
+        alert("Selected teachers deleted successfully.");
+        setSelectedTeachers([]); // Clear the selection
+      }
+    } catch (error) {
+      console.error("Error deleting teachers:", error.response?.data || error.message);
+      alert("Failed to delete teachers.");
+    }
   };
 
   const filteredDepartments = depart.filter(

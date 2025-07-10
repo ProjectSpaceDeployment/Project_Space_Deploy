@@ -4604,6 +4604,21 @@ class TeacherViewSet(viewsets.ModelViewSet):
     serializer_class = TeacherSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(detail=False, methods=["post"], url_path="bulk-delete")
+    @transaction.atomic
+    def bulk_delete_teachers(self, request):
+        usernames = request.data.get("usernames", [])
+
+        if not isinstance(usernames, list) or not all(isinstance(u, str) for u in usernames):
+            return Response({"error": "A list of valid usernames is required."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        users_deleted = User.objects.filter(username__in=usernames).delete()
+
+        return Response({"message": f"{users_deleted[0]} user(s) deleted."},
+                        status=status.HTTP_200_OK)
+
+
     @transaction.atomic
     def update(self, request, *args, **kwargs):
         teacher = self.get_object()
