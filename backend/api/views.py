@@ -47,10 +47,20 @@ import os
 from django.conf import settings
 
 from .weekly_tasks import PREDEFINED_TASKS_BY_SEM
+import math
 
 logger = logging.getLogger(__name__)
 
 image_path = os.path.join(settings.BASE_DIR, 'images', 'image.png')
+
+def clean_middle_name(value):
+    if value is None:
+        return ""
+    if isinstance(value, float) and math.isnan(value):
+        return ""
+    if isinstance(value, str) and value.strip().lower() == "nan":
+        return ""
+    return value
 
 class LoginViewset(viewsets.ViewSet):
     permission_classes = [permissions.AllowAny]
@@ -424,7 +434,7 @@ class ClusteringViewSet(viewsets.ModelViewSet):
                     for pref in teacher_prefs:
                         title= pref.teacher.title
                         first_name = pref.teacher.user.first_name
-                        middle_name = pref.teacher.middle_name or ""  
+                        middle_name = clean_middle_name(pref.teacher.middle_name)
                         last_name = pref.teacher.user.last_name
 
                         full_name = f"{title} {first_name} {middle_name + ' ' if middle_name else ''}{last_name}"
@@ -437,7 +447,7 @@ class ClusteringViewSet(viewsets.ModelViewSet):
                     for project in projects:
                         
                         domain_name = project.domain.name if project.domain else "Unknown Domain"
-                        guide_name = f"{project.project_guide.title} {project.project_guide.user.first_name} {project.project_guide.middle_name + ' ' if project.project_guide.middle_name else ''}{project.project_guide.user.last_name}" if project.project_guide else "No Guide Assigned"
+                        guide_name = f"{project.project_guide.title} {project.project_guide.user.first_name} {clean_middle_name(project.project_guide.middle_name) + ' ' if clean_middle_name(project.project_guide.middle_name) else ''}{project.project_guide.user.last_name}" if project.project_guide else "No Guide Assigned"
 
                         groups.append({
                             "Group": project.id,
@@ -1106,8 +1116,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                 def get_full_name(student):
                     name_parts = [student.user.first_name]
-                    if student.middle_name:  
-                        name_parts.append(student.middle_name)
+                    if clean_middle_name(student.middle_name):  
+                        name_parts.append(clean_middle_name(student.middle_name))
                     name_parts.append(student.user.last_name)
                     return " ".join(name_parts)
 
@@ -1259,8 +1269,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                 def get_full_name(student):
                     name_parts = [student.user.first_name]
-                    if student.middle_name:  
-                        name_parts.append(student.middle_name)
+                    if clean_middle_name(student.middle_name):  
+                        name_parts.append(clean_middle_name(student.middle_name))
                     name_parts.append(student.user.last_name)
                     return " ".join(name_parts)
 
@@ -1448,8 +1458,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                 def get_full_name(student):
                     name_parts = [student.user.first_name]
-                    if student.middle_name:  
-                        name_parts.append(student.middle_name)
+                    if clean_middle_name(student.middle_name):  
+                        name_parts.append(clean_middle_name(student.middle_name))
                     name_parts.append(student.user.last_name)
                     return " ".join(name_parts)
 
@@ -1570,7 +1580,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             for idx, (teacher, role) in enumerate(footer_data):
                 if teacher:
-                    full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                    full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                     worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
            
@@ -1675,8 +1685,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                 def get_full_name(student):
                     name_parts = [student.user.first_name]
-                    if student.middle_name:  
-                        name_parts.append(student.middle_name)
+                    if clean_middle_name(student.middle_name):  
+                        name_parts.append(clean_middle_name(student.middle_name))
                     name_parts.append(student.user.last_name)
                     return " ".join(name_parts)
 
@@ -1797,7 +1807,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             for idx, (teacher, role) in enumerate(footer_data):
                 if teacher:
-                    full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                    full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                     worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
            
@@ -1823,8 +1833,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
     def panel_excel(self, request):
         def get_full_name(student):
             name_parts = [student.user.first_name]
-            if student.middle_name:  
-                name_parts.append(student.middle_name)
+            if clean_middle_name(student.middle_name):  
+                name_parts.append(clean_middle_name(student.middle_name))
             name_parts.append(student.user.last_name)
             return " ".join(name_parts)
         try:
@@ -1895,7 +1905,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                     for student in students:
                         worksheet.write(row, 2, student.user.username, cell_format)  
-                        full_name = f"{student.user.first_name} {student.middle_name or ''} {student.user.last_name}".strip()
+                        full_name = f"{student.user.first_name} {clean_middle_name(student.middle_name) + " " if clean_middle_name(student.middle_name) else ""}{student.user.last_name}".strip()
                         worksheet.write(row, 3, full_name, cell_format)  
                         row += 1
 
@@ -2206,7 +2216,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             })
             
             def get_full_name(std):
-                return f"{std.user.first_name} {std.middle_name or ''} {std.user.last_name}".strip()
+                return f"{std.user.first_name} {clean_middle_name(std.middle_name) + " " if clean_middle_name(std.middle_name) else ''} {std.user.last_name}".strip()
 
             for assessment in assessments:
                 project = assessment.project
@@ -2372,8 +2382,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 print(publications)
             def get_full_name(student):
                 name_parts = [student.user.first_name]
-                if student.middle_name:  
-                    name_parts.append(student.middle_name)
+                if clean_middle_name(student.middle_name):  
+                    name_parts.append(clean_middle_name(student.middle_name))
                 name_parts.append(student.user.last_name)
                 return " ".join(name_parts)
             data = []
@@ -2454,7 +2464,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             
             for idx, (teacher, role) in enumerate(footer_data):
                 if teacher:
-                    full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                    full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                     worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
            
@@ -2511,8 +2521,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             print(publications)
             def get_full_name(student):
                 name_parts = [student.user.first_name]
-                if student.middle_name: 
-                    name_parts.append(student.middle_name)
+                if clean_middle_name(student.middle_name): 
+                    name_parts.append(clean_middle_name(student.middle_name))
                 name_parts.append(student.user.last_name)
                 return " ".join(name_parts)
             data = []
@@ -2675,7 +2685,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             # worksheet.write(footer_row, 3, "Dr. Kiran Deshpande\n(HOD, Information Technology)", footer_format)
             for idx, (teacher, role) in enumerate(footer_data):
                 if teacher:
-                    full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                    full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                     worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
             # Optionally, if any teacher data is missing, you can provide a default value like "Not Available"
@@ -3111,14 +3121,14 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             signature_lines = ["Signature:<br/><br/>"]
 
             for idx, member in enumerate(team_members, start=1):
-                full_name = f"{member.user.first_name} {member.middle_name or ''} {member.user.last_name}".strip()
+                full_name = f"{member.user.first_name} {clean_middle_name(member.middle_name) + " " if clean_middle_name(member.middle_name) else ''}{member.user.last_name}".strip()
                 signature_lines.append(f"Team Member {idx}: {full_name}<br/><br/>")
 
             signature_lines.append("<br/><br/>")
             if project_guide and project_co_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {project_guide.middle_name or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {clean_middle_name(project_co_guide.middle_name) or ''} {project_co_guide.user.last_name}<br/><br/>"
             elif project_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {project_guide.middle_name or ''} {project_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
             else:
                 guide_line = "Project Guide/Co-Guide Name:"  # no guide? maybe show blank?
 
@@ -3426,14 +3436,14 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             signature_lines = ["Signature:<br/><br/>"]
 
             for idx, member in enumerate(team_members, start=1):
-                full_name = f"{member.user.first_name} {member.middle_name or ''} {member.user.last_name}".strip()
+                full_name = f"{member.user.first_name} {clean_middle_name(member.middle_name) or ''} {member.user.last_name}".strip()
                 signature_lines.append(f"Team Member {idx}: {full_name}<br/><br/>")
 
             signature_lines.append("<br/><br/>")
             if project_guide and project_co_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {project_guide.middle_name or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}<br/><br/>"
             elif project_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {project_guide.middle_name or ''} {project_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
             else:
                 guide_line = "Project Guide/Co-Guide Name:"  # no guide? maybe show blank?
 
@@ -3508,7 +3518,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             students = []
             for mem in team_members:
                 students.append({
-                    "name": f"{mem.user.first_name} {mem.middle_name} {mem.user.last_name}".strip(),
+                    "name": f"{mem.user.first_name} {clean_middle_name(mem.middle_name) or ""} {mem.user.last_name}".strip(),
                     "moodle_id": mem.user.username 
                 })
             project_guide = project.project_guide
@@ -3520,11 +3530,11 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 department=project.project_guide.department  # Same department as project guide
             ).first()
             
-            guide_name = f"{project_guide.user.first_name} {project_guide.middle_name or ''} {project_guide.user.last_name}"
+            guide_name = f"{project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}"
             if project_co_guide:
-                co_guide_name = f"{project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}"
-            project_coordinator = f"{project_coord.user.first_name} {project_coord.middle_name or ''} {project_coord.user.last_name}"
-            hod_name = f"{hod.user.first_name} {hod.middle_name or ''} {hod.user.last_name}".strip() if hod else ""
+                co_guide_name = f"{project_co_guide.user.first_name} {clean_middle_name(project_co_guide.middle_name) or ''} {project_co_guide.user.last_name}"
+            project_coordinator = f"{project_coord.user.first_name} {clean_middle_name(project_coord.middle_name) or ''} {project_coord.user.last_name}"
+            hod_name = f"{hod.user.first_name} {clean_middle_name(hod.middle_name) or ''} {hod.user.last_name}".strip() if hod else ""
 
             # ---- Build the page ----
 
@@ -3813,8 +3823,8 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
                     def get_full_name(student):
                         name_parts = [student.user.first_name]
-                        if student.middle_name:  # Only add middle name if it's not null
-                            name_parts.append(student.middle_name)
+                        if clean_middle_name(student.middle_name):  # Only add middle name if it's not null
+                            name_parts.append(clean_middle_name(student.middle_name))
                         name_parts.append(student.user.last_name)
                         return " ".join(name_parts)
 
@@ -3898,7 +3908,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 # worksheet.write(footer_row, 3, "Dr. Kiran Deshpande\n(HOD, Information Technology)", footer_format)
                 for idx, (teacher, role) in enumerate(footer_data):
                     if teacher:
-                        full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                        full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                         worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
                 # Optionally, if any teacher data is missing, you can provide a default value like "Not Available"
@@ -3932,7 +3942,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 index = 1
                 for entry in remaining_students:
                     student = entry.student
-                    full_name = f"{student.user.first_name} {student.middle_name if student.middle_name else ''} {student.user.last_name}".strip()
+                    full_name = f"{student.user.first_name} {clean_middle_name(student.middle_name) if clean_middle_name(student.middle_name) else ''} {student.user.last_name}".strip()
                     remaining_student_details.append([index,student.user.username,full_name])
                     index+=1
                 
@@ -3988,7 +3998,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 # worksheet.write(footer_row, 3, "Dr. Kiran Deshpande\n(HOD, Information Technology)", footer_format)
                 for idx, (teacher, role) in enumerate(footer_data):
                     if teacher:
-                        full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                        full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                         worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
                 # Optionally, if any teacher data is missing, you can provide a default value like "Not Available"
@@ -4114,8 +4124,8 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
     def get_availability(self, request):
         def get_full_name(student):
             name_parts = [student.user.first_name]
-            if student.middle_name:  # Only add middle name if it's not null
-                name_parts.append(student.middle_name)
+            if clean_middle_name(student.middle_name):  # Only add middle name if it's not null
+                name_parts.append(clean_middle_name(student.middle_name))
             name_parts.append(student.user.last_name)
             return " ".join(name_parts)
 
@@ -5921,8 +5931,8 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
     def get_project_pref(self, request):
         def get_full_name(student):
             name_parts = [student.user.first_name]
-            if student.middle_name:  # Only add middle name if it's not null
-                name_parts.append(student.middle_name)
+            if clean_middle_name(student.middle_name):  # Only add middle name if it's not null
+                name_parts.append(clean_middle_name(student.middle_name))
             name_parts.append(student.user.last_name)
             return " ".join(name_parts)
 
@@ -6458,12 +6468,12 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
 
             data = {
                 'leader': {
-                    'name': f"{project.leader.user.first_name} {project.leader.middle_name or ''} {project.leader.user.last_name}".strip(),
+                    'name': f"{project.leader.user.first_name} {clean_middle_name(project.leader.middle_name) or ''} {project.leader.user.last_name}".strip(),
                     'moodle_id': project.leader.user.username
                 },
                 'members': [
                     {
-                        'name': f"{member.user.first_name} {member.middle_name or ''} {member.user.last_name}".strip(),
+                        'name': f"{member.user.first_name} {clean_middle_name(member.middle_name) or ''} {member.user.last_name}".strip(),
                         'moodle_id': member.user.username
                     }
                     for member in project.members.all()
@@ -6665,7 +6675,7 @@ class AssessmentEventViewSet(viewsets.ModelViewSet):
                     "id": group.id,
                     "Group": f"{group.group_no}",
                     "Domain": group.domain.name if group.domain else "N/A",
-                    "Guide": f"{group.project_guide.user.first_name} {group.project_guide.middle_name or ''} {group.project_guide.user.last_name}".strip() if group.project_guide else "N/A",
+                    "Guide": f"{group.project_guide.user.first_name} {clean_middle_name(group.project_guide.middle_name) or ''} {group.project_guide.user.last_name}".strip() if group.project_guide else "N/A",
                 })
 
             panel_data[panel_name] = panel_teachers
@@ -6676,7 +6686,7 @@ class AssessmentEventViewSet(viewsets.ModelViewSet):
             {
                 "id": ut.teacher.user.id,
                 "username": ut.teacher.user.username,
-                "name": f"{ut.teacher.user.first_name} {ut.teacher.middle_name or ''} {ut.teacher.user.last_name}".strip()
+                "name": f"{ut.teacher.user.first_name} {clean_middle_name(ut.teacher.middle_name) or ''} {ut.teacher.user.last_name}".strip()
             }
             for ut in UnassignedTeacher.objects.filter(event=event).select_related("teacher__user")
         ]
@@ -6689,7 +6699,7 @@ class AssessmentEventViewSet(viewsets.ModelViewSet):
                 "id": group.id,
                 "Group": f"{group.group_no}",
                 "Domain": group.domain.name if group.domain else "N/A",
-                "Guide": f"{group.project_guide.user.first_name} {group.project_guide.middle_name or ''} {group.project_guide.user.last_name}".strip() if group.project_guide else "N/A",
+                "Guide": f"{group.project_guide.user.first_name} {clean_middle_name(group.project_guide.middle_name) or ''} {group.project_guide.user.last_name}".strip() if group.project_guide else "N/A",
             })
         return Response({
             "panels": panel_data,
@@ -7570,8 +7580,8 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
 
                 def get_full_name(student):
                     name_parts = [student.user.first_name]
-                    if student.middle_name:
-                        name_parts.append(student.middle_name)
+                    if clean_middle_name(student.middle_name):
+                        name_parts.append(clean_middle_name(student.middle_name))
                     name_parts.append(student.user.last_name)
                     return " ".join(name_parts)
 
@@ -7679,7 +7689,7 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
 
                 for idx, (teacher, role) in enumerate(footer_data):
                     if teacher:
-                        full_name = f"{teacher.user.first_name} {teacher.middle_name if teacher.middle_name else ''} {teacher.user.last_name}".strip()
+                        full_name = f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name) if clean_middle_name(teacher.middle_name) else ''} {teacher.user.last_name}".strip()
                         worksheet.write(footer_row, idx, f"{full_name}\n({role})", footer_format)
 
             

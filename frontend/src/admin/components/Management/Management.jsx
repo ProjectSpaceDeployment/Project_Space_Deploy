@@ -429,6 +429,7 @@ const ManagementPage = ({ isDarkMode }) => {
       setIsAddModalOpen(false); 
     } catch (error) {
       alert(error.response.data.error || "Failed to register student.");
+      console.log("Error",error);
     }
   };
 

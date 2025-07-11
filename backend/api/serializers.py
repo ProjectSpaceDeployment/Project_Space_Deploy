@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth.models import User
+import math
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
@@ -144,8 +145,10 @@ class SemSerializer(serializers.ModelSerializer):
         return self.get_teacher_name(obj.class_incharge)
 
     def get_teacher_name(self, teacher):
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
         if teacher and teacher.user:
-            return f"{teacher.user.first_name} {teacher.middle_name or ''} {teacher.user.last_name}".strip()
+            return f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name)} {teacher.user.last_name}".strip()
 
 class ProjectSerializer(serializers.ModelSerializer):
     sem = serializers.CharField(source="sem.sem", read_only=True)  # Semester name
@@ -184,13 +187,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         return "N/A"
 
     def get_project_guide_name(self, obj):
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
         if obj.project_guide:
-            return f"{obj.project_guide.user.first_name} {obj.project_guide.middle_name or ''} {obj.project_guide.user.last_name}".strip()
+            return f"{obj.project_guide.user.first_name} {clean_middle_name(obj.project_guide.middle_name)} {obj.project_guide.user.last_name}".strip()
         return "N/A"
 
     def get_project_co_guide_name(self, obj):
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
         if obj.project_co_guide:
-            return f"{obj.project_co_guide.user.first_name} {obj.project_co_guide.middle_name or ''} {obj.project_co_guide.user.last_name}".strip()
+            return f"{obj.project_co_guide.user.first_name} {clean_middle_name(obj.project_co_guide.middle_name)} {obj.project_co_guide.user.last_name}".strip()
         return "N/A"
 
     def get_members(self, obj):
@@ -223,18 +230,22 @@ class AssessmentPanelSerializer(serializers.ModelSerializer):
     class Meta:
         model = AssessmentPanel
         fields = ['panel_number', 'panels', 'groups']
-
+    
     def get_panels(self, obj):
-        return [f"{teacher.user.first_name} {teacher.middle_name or ''} {teacher.user.last_name}".strip() for teacher in obj.teachers.all()]
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
+        return [f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name)} {teacher.user.last_name}".strip() for teacher in obj.teachers.all()]
 
     def get_groups(self, obj):
+        def clean_middle_name(name):
+            return "" if not name or str(name).strip().lower() == "nan" else name
         return [
             {   
                 "id":group.id,
                 "Group": group.group_no or f"{group.div}{group.id}",  # Replace with your actual Project field
                 "Domain": group.domain.name if group.domain else "",
-                "Guide": f"{group.project_guide.user.first_name} {group.project_guide.middle_name or ''} {group.project_guide.user.last_name}".strip() if group.project_guide and hasattr(group.project_guide, 'user') else "N/A",
-                "Co-Guide": f"{group.project_co_guide.user.first_name} {group.project_co_guide.middle_name or ''} {group.project_co_guide.user.last_name}".strip() if group.project_co_guide and hasattr(group.project_co_guide, 'user') else ""
+                "Guide": f"{group.project_guide.user.first_name} {clean_middle_name(group.project_guide.middle_name)} {group.project_guide.user.last_name}".strip() if group.project_guide and hasattr(group.project_guide, 'user') else "N/A",
+                "Co-Guide": f"{group.project_co_guide.user.first_name} {clean_middle_name(group.project_co_guide.middle_name)} {group.project_co_guide.user.last_name}".strip() if group.project_co_guide and hasattr(group.project_co_guide, 'user') else ""
             }
             for group in obj.groups.all()
         ]
@@ -270,7 +281,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email')
     department = serializers.CharField(source="batch.department.name", read_only=True)  # Department name
     # Fields from the Student model
-    middle_name = serializers.CharField()
+    middle_name = serializers.SerializerMethodField()
     batch = serializers.StringRelatedField()  # Or another method to display Batch details
 
     class Meta:
@@ -284,6 +295,16 @@ class StudentProfileSerializer(serializers.ModelSerializer):
             'batch',
             'department',
         ]
+    
+    def get_middle_name(self, obj):
+        middle = obj.middle_name
+        if middle is None:
+            return ""
+        if isinstance(middle, float) and math.isnan(middle):
+            return ""
+        if isinstance(middle, str) and middle.lower() == "nan":
+            return ""
+        return middle
 
 class AssessmentRubricSerializer(serializers.ModelSerializer):
     class Meta:
