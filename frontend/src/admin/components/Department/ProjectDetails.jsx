@@ -1375,6 +1375,48 @@ const handleDeleteWeek = async (weekNumber) => {
   <div className="fixed inset-0 bg-black bg-opacity-30 flex justify-center items-center z-10">
     <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[80vh] overflow-y-auto">
       <h2 className="text-2xl font-bold mb-6">Edit Project</h2>
+
+      <div 
+        className="flex justify-between items-center cursor-pointer py-2 px-3 rounded-md mb-3 hover:bg-gray-100"
+        onClick={() => setShowPreferences(!showPreferences)}
+        style={{
+          border: "3px dashed #ef4444", // red-500
+        }}
+      >
+        <span className="font-semibold text-green-600">Preferences</span>
+        <span className="text-gray-500 text-xl">
+          {showPreferences ? "▲" : "▼"}
+        </span>
+      </div>
+
+      {showPreferences && (
+        <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 space-y-3">
+          {fetchedPreferences ? (
+            Array.isArray(fetchedPreferences) ? (
+              // For Mini Project
+              <ul className="list-disc pl-5">
+                {fetchedPreferences.map((name, idx) => (
+                  <li key={idx}>{name}</li>
+                ))}
+              </ul>
+            ) : (
+              // For Major Project (object of domain → guide list)
+              Object.entries(fetchedPreferences).map(([domain, guides]) => (
+                <div key={domain} className="mb-2">
+                  <p className="font-medium text-gray-700">{domain}</p>
+                  <ul className="list-disc pl-5 text-gray-600">
+                    {guides.map((guide, idx) => (
+                      <li key={idx}>{guide}</li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            )
+          ) : (
+            <p className="text-gray-500 italic">Loading preferences...</p>
+          )}
+        </div>
+      )}
       
       {/* Leader */}
       <div className="mb-4">
@@ -1417,44 +1459,7 @@ const handleDeleteWeek = async (weekNumber) => {
           </select>
         ))}
       </div>
-      <div 
-        className="flex justify-between items-center cursor-pointer py-2 px-3 border border-red-500 border-dashed rounded-md mb-3 hover:bg-gray-100"
-        onClick={() => setShowPreferences(!showPreferences)}
-      >
-        <span className="font-semibold text-green-600">Preferences</span>
-        <span className="text-gray-500 text-xl">
-          {showPreferences ? "▲" : "▼"}
-        </span>
-      </div>
-
-      {showPreferences && (
-        <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 space-y-3">
-          {fetchedPreferences ? (
-            Array.isArray(fetchedPreferences) ? (
-              // For Mini Project
-              <ul className="list-disc pl-5">
-                {fetchedPreferences.map((name, idx) => (
-                  <li key={idx}>{name}</li>
-                ))}
-              </ul>
-            ) : (
-              // For Major Project (object of domain → guide list)
-              Object.entries(fetchedPreferences).map(([domain, guides]) => (
-                <div key={domain} className="mb-2">
-                  <p className="font-medium text-gray-700">{domain}</p>
-                  <ul className="list-disc pl-5 text-gray-600">
-                    {guides.map((guide, idx) => (
-                      <li key={idx}>{guide}</li>
-                    ))}
-                  </ul>
-                </div>
-              ))
-            )
-          ) : (
-            <p className="text-gray-500 italic">Loading preferences...</p>
-          )}
-        </div>
-      )}
+      
 
       {/* Conditional Fields */}
       {semester === "Major Project" ? (
