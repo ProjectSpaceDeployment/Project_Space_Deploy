@@ -1427,7 +1427,7 @@ const handleDeleteWeek = async (weekNumber) => {
         </span>
       </div> */}
 
-      {showPreferences && (
+      {/* {showPreferences && (
         <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 space-y-3">
           {fetchedPreferences ? (
             Array.isArray(fetchedPreferences) ? (
@@ -1454,7 +1454,7 @@ const handleDeleteWeek = async (weekNumber) => {
             <p className="text-gray-500 italic">Loading preferences...</p>
           )}
         </div>
-      )}
+      )} */}
 
       {/* Conditional Fields */}
       {semester === "Major Project" ? (
