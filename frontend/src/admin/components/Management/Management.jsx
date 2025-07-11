@@ -1472,6 +1472,7 @@ const ManagementPage = ({ isDarkMode }) => {
       </div> */}
 
           {/* Table */}
+          <div className="overflow-x-auto">
           <table className="w-full border-collapse border">
             <thead>
               <tr className="bg-gray-200">
@@ -1531,6 +1532,7 @@ const ManagementPage = ({ isDarkMode }) => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
       )}
       {activeTab === "Faculty Management" && (
