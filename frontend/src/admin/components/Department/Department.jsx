@@ -13,6 +13,7 @@ const DeptDetail = ({ isDarkMode }) => {
   const [showAddPopup, setShowAddPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [editData, setEditData] = useState({ name: "", year: "" });
+  const [hasAccess, setHasAccess] = useState(false);
 
   const navigate = useNavigate(); // Initialize navigate function
 
@@ -49,6 +50,16 @@ const DeptDetail = ({ isDarkMode }) => {
   // };
   const [academicYear, setAcademicYear] = useState("");
   const [categories, setCategories] = useState({});
+
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/teacher/has-add-access/?year_id=${id}`)
+        .then((res) => {
+          setHasAccess(res.data.has_access);
+        });
+    }
+  }, [id]);
+
 
   const fetchCategories = async () => {
     try {
@@ -124,7 +135,7 @@ const DeptDetail = ({ isDarkMode }) => {
 
   return (
     <div className={`p-6 transition duration-300 ${isDarkMode ? 'bg-[#121138] text-white' : 'bg-light text-black'} pt-16`}>
-      {!showSettings && (
+      {!showSettings && hasAccess && (
               <div className="flex justify-end">
                 <FontAwesomeIcon
                   icon={faCog}

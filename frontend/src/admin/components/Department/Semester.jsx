@@ -32,6 +32,17 @@ const Semesters = ({ isDarkMode }) => {
     classInCharge: "",
     tech:""
   });
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/teacher/has-add-access/?year_id=${id}`)
+        .then((res) => {
+          setHasAccess(res.data.has_access);
+        });
+    }
+  }, [id]);
+
 
   const fetchSemesters = () => {
     if (category && year) {
@@ -186,7 +197,7 @@ const Semesters = ({ isDarkMode }) => {
               </button>
       
               {/* Settings Button */}
-              {!showSettings && (
+              {!showSettings && hasAccess &&(
                 <FontAwesomeIcon
                   icon={faCog}
                   className="text-2xl cursor-pointer hover:text-gray-500 transition"
