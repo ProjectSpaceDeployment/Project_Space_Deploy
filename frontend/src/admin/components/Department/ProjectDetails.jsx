@@ -1057,12 +1057,12 @@ const handleDeleteWeek = async (weekNumber) => {
       setSelectedProjectToEdit(projectId);
       
       const allStudents = [
-        ...availstudents,  // assuming backend sends available students also
+        ...(availstudents || []),  // assuming backend sends available students also
         {
           name: projectData.leader.name,
           moodle_id: projectData.leader.moodle_id,
         },
-        ...projectData.members,
+        ...(projectData.members || []),
       ];
   
       const uniqueStudents = Array.from(
