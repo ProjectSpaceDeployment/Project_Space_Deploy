@@ -1097,6 +1097,7 @@ const handleDeleteWeek = async (weekNumber) => {
     };
   
     try {
+      console.log(payload);
       const response = await AxiosInstance.put(
         `/projectpreference/${selectedProjectToEdit}/update/`, // adjust to your endpoint
         payload
