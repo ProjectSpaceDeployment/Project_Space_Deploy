@@ -1418,10 +1418,10 @@ const handleDeleteWeek = async (weekNumber) => {
         ))}
       </div>
       <div 
-        className="flex justify-between items-center cursor-pointer py-2 px-3 border border-gray-300 border-dashed rounded-md mb-3 hover:bg-gray-100"
+        className="flex justify-between items-center cursor-pointer py-2 px-3 border border-red-500 border-dashed rounded-md mb-3 hover:bg-gray-100"
         onClick={() => setShowPreferences(!showPreferences)}
       >
-        <span className="font-semibold text-gray-800">Preferences</span>
+        <span className="font-semibold text-green-600">Preferences</span>
         <span className="text-gray-500 text-xl">
           {showPreferences ? "▲" : "▼"}
         </span>
