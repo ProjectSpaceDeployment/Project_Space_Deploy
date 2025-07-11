@@ -1051,7 +1051,7 @@ const handleDeleteWeek = async (weekNumber) => {
       );
       setDivision(projectData.division || "");
       setDomainSelected(projectData.domain || "");
-      setSelectedGuide(projectData.guide);
+      setSelectedGuide(projectData.guide || "");
       setCoGuide(projectData.co_guide || "");
   
       setSelectedProjectToEdit(projectId);
@@ -1417,7 +1417,7 @@ const handleDeleteWeek = async (weekNumber) => {
           </select>
         ))}
       </div>
-      {/* <div 
+      <div 
         className="flex justify-between items-center cursor-pointer py-2 px-3 border border-gray-300 border-dashed rounded-md mb-3 hover:bg-gray-100"
         onClick={() => setShowPreferences(!showPreferences)}
       >
@@ -1425,9 +1425,9 @@ const handleDeleteWeek = async (weekNumber) => {
         <span className="text-gray-500 text-xl">
           {showPreferences ? "▲" : "▼"}
         </span>
-      </div> */}
+      </div>
 
-      {/* {showPreferences && (
+      {showPreferences && (
         <div className="border border-dashed border-gray-300 rounded-lg p-4 bg-gray-50 space-y-3">
           {fetchedPreferences ? (
             Array.isArray(fetchedPreferences) ? (
@@ -1454,7 +1454,7 @@ const handleDeleteWeek = async (weekNumber) => {
             <p className="text-gray-500 italic">Loading preferences...</p>
           )}
         </div>
-      )} */}
+      )}
 
       {/* Conditional Fields */}
       {semester === "Major Project" ? (
