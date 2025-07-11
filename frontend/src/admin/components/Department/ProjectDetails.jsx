@@ -946,7 +946,7 @@ const handleDeleteWeek = async (weekNumber) => {
 
   const fetchStudents = async () => {
     try {
-      const response = await AxiosInstance.get("/semesters/available_students", {
+      const response = await AxiosInstance.get("/semesters/available_students/", {
         params: {
           category: category,
           year: year,
