@@ -52,13 +52,16 @@ const DeptDetail = ({ isDarkMode }) => {
   const [categories, setCategories] = useState({});
 
   useEffect(() => {
-    if (id) {
-      AxiosInstance.get(`/teacher/has-add-access/?year_id=${id}`)
-        .then((res) => {
-          setHasAccess(res.data.has_access);
-        });
-    }
-  }, [id]);
+    AxiosInstance.get("/managementpermission/check-access/")
+      .then((res) => {
+        setHasAccess(true);
+      })
+      .catch((err) => {
+        if (err.response && err.response.status === 403) {
+          setHasAccess(false);
+        }
+      });
+  }, []);
 
 
   const fetchCategories = async () => {
