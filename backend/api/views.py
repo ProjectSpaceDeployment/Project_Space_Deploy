@@ -6396,9 +6396,10 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
             if len(members) != len(member_ids):
                 return Response({"error": "Some members not found."}, status=400)
 
-            guide = Teacher.objects.filter(user_id=guide_id).first()
-            if not guide:
-                return Response({"error": "Guide not found."}, status=400)
+            if guide_id:    
+                guide = Teacher.objects.filter(user_id=guide_id).first()
+                if not guide:
+                    return Response({"error": "Guide not found."}, status=400)
 
             co_guide = None
             if co_guide_id:
@@ -6407,12 +6408,13 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
                     return Response({"error": "Co-guide not found."}, status=400)
 
             if project.sem.sem == "Major Project":
-                domain = Domain.objects.filter(id=domain_id).first()
-                if not domain:
-                    return Response({"error": "Domain not found."}, status=400)
-                project.domain = domain
-                project.project_co_guide = co_guide
-                project.div = project.div.upper()
+                if domain_id:
+                    domain = Domain.objects.filter(id=domain_id).first()
+                    if not domain:
+                        return Response({"error": "Domain not found."}, status=400)
+                    project.domain = domain
+                    project.project_co_guide = co_guide
+                    project.div = project.div.upper()
             else:
                 project.project_co_guide = None
 
