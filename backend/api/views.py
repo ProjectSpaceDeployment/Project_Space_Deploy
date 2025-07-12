@@ -4285,92 +4285,8 @@ class StudentViewSet(viewsets.ModelViewSet):
                 return Response({"error": f"Registration failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     def _handle_csv_upload(self, file):
-        try:
-            # Read file
-            if file.name.endswith(".csv"):
-                df = pd.read_csv(file)
-            elif file.name.endswith(".xlsx"):
-                df = pd.read_excel(file)
-            else:
-                return Response({"error": "Invalid file format. Use CSV or Excel."}, status=status.HTTP_400_BAD_REQUEST)
-
-            required_columns = {"moodleId", "firstname", "lastname", "batch", "email", "middlename", "department"}
-            missing_columns = required_columns - set(df.columns)
-            if missing_columns:
-                return Response({"error": f"Missing required columns: {missing_columns}"}, status=status.HTTP_400_BAD_REQUEST)
-
-            # Prefetch Departments and Batches
-            departments = {d.name: d for d in Department.objects.all()}
-            batches = Batch.objects.select_related("department").all()
-            batch_map = {(b.batch, b.department.name): b for b in batches}
-
-            new_users = []
-            new_students = []
-            existing_usernames = set(User.objects.filter(username__in=df["moodleId"]).values_list("username", flat=True))
-
-            with transaction.atomic():
-                for index, row in df.iterrows():
-                    username = str(row["moodleId"]).strip()
-                    if username in existing_usernames:
-                        continue  # Skip existing
-
-                    # Get dept and batch
-                    dept_name = str(row["department"]).strip()
-                    batch_key = (str(row["batch"]).strip(), dept_name)
-
-                    if dept_name not in departments:
-                        return Response({"error": f"Invalid department: {dept_name}"}, status=status.HTTP_400_BAD_REQUEST)
-
-                    if batch_key not in batch_map:
-                        return Response({"error": f"Invalid batch or department for: {batch_key}"}, status=status.HTTP_400_BAD_REQUEST)
-
-                    dept = departments[dept_name]
-                    batch = batch_map[batch_key]
-
-                    # Create user instance (don't save yet)
-                    user = User(
-                        username=username,
-                        email=row["email"],
-                        first_name=row["firstname"],
-                        last_name=row["lastname"]
-                    )
-                    user.set_password(f"{username}@Apsit")
-                    new_users.append(user)
-
-            # Bulk create users
-            created_users = User.objects.bulk_create(new_users)
-
-            # Re-fetch users to get instances with IDs (if needed)
-            created_user_map = {u.username: u for u in User.objects.filter(username__in=[u.username for u in new_users])}
-
-            # Build student list
-            for index, row in df.iterrows():
-                username = str(row["moodleId"]).strip()
-                if username not in created_user_map:
-                    continue
-
-                dept_name = str(row["department"]).strip()
-                batch_key = (str(row["batch"]).strip(), dept_name)
-                batch = batch_map[batch_key]
-
-                middle_name = row["middlename"]
-                if pd.isna(middle_name) or (isinstance(middle_name, str) and middle_name.lower() == 'nan'):
-                    middle_name = ""
-
-                student = Student(
-                    user=created_user_map[username],
-                    batch=batch,
-                    middle_name=middle_name
-                )
-                new_students.append(student)
-
-            Student.objects.bulk_create(new_students)
-
-            return Response({"message": f"{len(new_students)} students imported successfully!"}, status=status.HTTP_201_CREATED)
-
-        except Exception as e:
-            return Response({"error": f"Processing failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         # try:
+        #     # Read file
         #     if file.name.endswith(".csv"):
         #         df = pd.read_csv(file)
         #     elif file.name.endswith(".xlsx"):
@@ -4378,42 +4294,126 @@ class StudentViewSet(viewsets.ModelViewSet):
         #     else:
         #         return Response({"error": "Invalid file format. Use CSV or Excel."}, status=status.HTTP_400_BAD_REQUEST)
 
-        #     print(df.columns)
         #     required_columns = {"moodleId", "firstname", "lastname", "batch", "email", "middlename", "department"}
         #     missing_columns = required_columns - set(df.columns)
-
         #     if missing_columns:
         #         return Response({"error": f"Missing required columns: {missing_columns}"}, status=status.HTTP_400_BAD_REQUEST)
 
+        #     # Prefetch Departments and Batches
+        #     departments = {d.name: d for d in Department.objects.all()}
+        #     batches = Batch.objects.select_related("department").all()
+        #     batch_map = {(b.batch, b.department.name): b for b in batches}
+
+        #     new_users = []
+        #     new_students = []
+        #     existing_usernames = set(User.objects.filter(username__in=df["moodleId"]).values_list("username", flat=True))
+
         #     with transaction.atomic():
         #         for index, row in df.iterrows():
-        #             username = row["moodleId"]
+        #             username = str(row["moodleId"]).strip()
+        #             if username in existing_usernames:
+        #                 continue  # Skip existing
 
-        #             if User.objects.filter(username=username).exists():
-        #                 continue  # Skip existing users
-        #             password = f'{str(row["moodleId"]).strip()}@Apsit'
-        #             user = User.objects.create_user(username=username, email=row["email"], password=password)
-        #             user.first_name = row["firstname"]
-        #             user.last_name = row["lastname"]
-        #             user.save()
+        #             # Get dept and batch
+        #             dept_name = str(row["department"]).strip()
+        #             batch_key = (str(row["batch"]).strip(), dept_name)
 
-        #             try:
-        #                 dept = Department.objects.get(name=row["department"])
-        #                 batch = Batch.objects.get(batch=row["batch"], department=dept)
-        #             except Batch.DoesNotExist:
-        #                 raise ValueError(f"Invalid batch ID: {row['batch']}")  # Forces rollback
-        #             except Department.DoesNotExist:
-        #                 raise ValueError(f"Invalid department: {row['department']}")  # Forces rollback
+        #             if dept_name not in departments:
+        #                 return Response({"error": f"Invalid department: {dept_name}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        #             Student.objects.create(user=user, batch=batch, middle_name=row["middlename"])
+        #             if batch_key not in batch_map:
+        #                 return Response({"error": f"Invalid batch or department for: {batch_key}"}, status=status.HTTP_400_BAD_REQUEST)
 
-        #     return Response({"message": "CSV file processed successfully!"}, status=status.HTTP_201_CREATED)
+        #             dept = departments[dept_name]
+        #             batch = batch_map[batch_key]
 
-        # except ValueError as ie:
-        #     return Response({"error": str(ie)}, status=status.HTTP_400_BAD_REQUEST)
+        #             # Create user instance (don't save yet)
+        #             user = User(
+        #                 username=username,
+        #                 email=row["email"],
+        #                 first_name=row["firstname"],
+        #                 last_name=row["lastname"]
+        #             )
+        #             user.set_password(f"{username}@Apsit")
+        #             new_users.append(user)
+
+        #     # Bulk create users
+        #     created_users = User.objects.bulk_create(new_users)
+
+        #     # Re-fetch users to get instances with IDs (if needed)
+        #     created_user_map = {u.username: u for u in User.objects.filter(username__in=[u.username for u in new_users])}
+
+        #     # Build student list
+        #     for index, row in df.iterrows():
+        #         username = str(row["moodleId"]).strip()
+        #         if username not in created_user_map:
+        #             continue
+
+        #         dept_name = str(row["department"]).strip()
+        #         batch_key = (str(row["batch"]).strip(), dept_name)
+        #         batch = batch_map[batch_key]
+
+        #         middle_name = row["middlename"]
+        #         if pd.isna(middle_name) or (isinstance(middle_name, str) and middle_name.lower() == 'nan'):
+        #             middle_name = ""
+
+        #         student = Student(
+        #             user=created_user_map[username],
+        #             batch=batch,
+        #             middle_name=middle_name
+        #         )
+        #         new_students.append(student)
+
+        #     Student.objects.bulk_create(new_students)
+
+        #     return Response({"message": f"{len(new_students)} students imported successfully!"}, status=status.HTTP_201_CREATED)
 
         # except Exception as e:
         #     return Response({"error": f"Processing failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            if file.name.endswith(".csv"):
+                df = pd.read_csv(file)
+            elif file.name.endswith(".xlsx"):
+                df = pd.read_excel(file)
+            else:
+                return Response({"error": "Invalid file format. Use CSV or Excel."}, status=status.HTTP_400_BAD_REQUEST)
+
+            print(df.columns)
+            required_columns = {"moodleId", "firstname", "lastname", "batch", "email", "middlename", "department"}
+            missing_columns = required_columns - set(df.columns)
+
+            if missing_columns:
+                return Response({"error": f"Missing required columns: {missing_columns}"}, status=status.HTTP_400_BAD_REQUEST)
+
+            with transaction.atomic():
+                for index, row in df.iterrows():
+                    username = row["moodleId"]
+
+                    if User.objects.filter(username=username).exists():
+                        continue  # Skip existing users
+                    password = f'{str(row["moodleId"]).strip()}@Apsit'
+                    user = User.objects.create_user(username=username, email=row["email"], password=password)
+                    user.first_name = row["firstname"]
+                    user.last_name = row["lastname"]
+                    user.save()
+
+                    try:
+                        dept = Department.objects.get(name=row["department"])
+                        batch = Batch.objects.get(batch=row["batch"], department=dept)
+                    except Batch.DoesNotExist:
+                        raise ValueError(f"Invalid batch ID: {row['batch']}")  # Forces rollback
+                    except Department.DoesNotExist:
+                        raise ValueError(f"Invalid department: {row['department']}")  # Forces rollback
+
+                    Student.objects.create(user=user, batch=batch, middle_name=row["middlename"])
+
+            return Response({"message": "CSV file processed successfully!"}, status=status.HTTP_201_CREATED)
+
+        except ValueError as ie:
+            return Response({"error": str(ie)}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": f"Processing failed: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
     @action(detail=False, methods=["post"], url_path="register-sem-wise")    
     @transaction.atomic
@@ -5156,13 +5156,25 @@ class YearViewSet(viewsets.ReadOnlyModelViewSet):
 
     @action(detail=False, methods=["get"], url_path="by-department")
     def by_department(self, request):
-        departments = Department.objects.all()
-        data = {}
+        try:
+            teacher = Teacher.objects.get(user=request.user)
+            department = teacher.department
 
-        for department in departments:
+            if not department:
+                return Response({"error": "Teacher is not associated with any department."}, status=status.HTTP_400_BAD_REQUEST)
+
             years = Year.objects.filter(department=department).values("id", "year").order_by("-id")
-            data[department.name] = list(years)
-        return Response(data)
+            return Response({department.name: list(years)})
+
+        except Teacher.DoesNotExist:
+            return Response({"error": "Teacher profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        # departments = Department.objects.all()
+        # data = {}
+
+        # for department in departments:
+        #     years = Year.objects.filter(department=department).values("id", "year").order_by("-id")
+        #     data[department.name] = list(years)
+        # return Response(data)
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
