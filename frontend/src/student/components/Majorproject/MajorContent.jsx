@@ -461,7 +461,7 @@ const MajorProjectPopup = () => {
 
               {/* Navigation Buttons */}
               <div className="flex justify-between mt-4">
-                {currentStep === 1 && (
+                {(currentStep === 1 || currentStep === 4)&&(
                   <button
                     className="bg-gray-500 text-white p-2 rounded hover:bg-gray-400 transition"
                     onClick={handlePopup}
