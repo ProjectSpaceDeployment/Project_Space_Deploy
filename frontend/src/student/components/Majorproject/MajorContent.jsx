@@ -147,6 +147,8 @@ const MajorProjectPopup = () => {
     setIsPopupOpen(!isPopupOpen);
   };
 
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [pendingPayload, setPendingPayload] = useState(null);
   // Handle moving to the next step or submitting
   const handleNextStep = () => {
     if (!validateStep()) return;
@@ -187,7 +189,9 @@ const MajorProjectPopup = () => {
       };
 
       console.log('Payload to submit:', payload);
-      submitGroupData(payload);
+      setPendingPayload(payload);
+      setShowConfirmation(true);
+      // submitGroupData(payload);
     }
   };
 
@@ -465,14 +469,14 @@ const MajorProjectPopup = () => {
                     Close
                   </button>
                 )}
-                {currentStep > 1 && (
+                {/* {currentStep > 1 && (
                   <button
                     className="bg-gray-300 text-gray-700 p-2 rounded"
                     onClick={handlePreviousStep}
                   >
                     Previous
                   </button>
-                )}
+                )} */}
                 <button
                   className="bg-blue-500 text-white p-2 rounded"
                   onClick={handleNextStep}
@@ -484,6 +488,53 @@ const MajorProjectPopup = () => {
           </div>
         </div>
       )}
+      {showConfirmation && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="bg-white p-6 rounded-lg max-w-xl w-full shadow-xl">
+      <h2 className="text-xl font-semibold mb-4">Confirm Submission</h2>
+      <div className="text-sm max-h-64 overflow-auto">
+        <p><strong>Leader:</strong> {pendingPayload.leaderName} ({pendingPayload.leaderId})</p>
+        <p><strong>Division:</strong> {pendingPayload.div}</p>
+        <p><strong>Members:</strong></p>
+        <ul className="ml-4 list-disc">
+          {pendingPayload.members.map((m, i) => (
+            <li key={i}>{m.name} ({m.id})</li>
+          ))}
+        </ul>
+        <p className="mt-3 font-semibold">Preferences:</p>
+        <ol className="ml-4 list-decimal">
+          {pendingPayload.preferences.map((p, i) => (
+            <li key={i}>
+              <p><strong>Domain:</strong> {p.domain}</p>
+              <p><strong>Preference 1:</strong> {p.preference1}</p>
+              <p><strong>Preference 2:</strong> {p.preference2}</p>
+              <p><strong>Preference 3:</strong> {p.preference3}</p>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div className="mt-6 flex justify-end gap-3">
+        <button
+          className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+          onClick={() => setShowConfirmation(false)}
+        >
+          Cancel
+        </button>
+        <button
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+          onClick={() => {
+            submitGroupData(pendingPayload);
+            setShowConfirmation(false);
+          }}
+        >
+          Confirm & Submit
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };
