@@ -52,6 +52,7 @@ const Semesters = ({ isDarkMode }) => {
       AxiosInstance.get(`/semesters/?category=${category}&year=${year}`) // Use query parameters
         .then((response) => {
           setSemesters(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.error("Error fetching semesters:", error.response.data.error);

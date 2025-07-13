@@ -5248,9 +5248,7 @@ class SemViewSet(viewsets.ModelViewSet):
             When(sem="IV", then=Value(4)),
             When(sem="V", then=Value(5)),
             When(sem="VI", then=Value(6)),
-            When(sem="VII", then=Value(7)),
-            When(sem="VIII", then=Value(8)),
-            When(sem="Major Project", then=Value(9)),
+            When(sem="Major Project", then=Value(7)),
             output_field=IntegerField()
         )
 
