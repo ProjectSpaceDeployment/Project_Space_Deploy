@@ -48,6 +48,7 @@ from django.conf import settings
 
 from .weekly_tasks import PREDEFINED_TASKS_BY_SEM
 import math
+from django.db.models import Case, When, Value, IntegerField
 
 logger = logging.getLogger(__name__)
 
@@ -5240,12 +5241,25 @@ class SemViewSet(viewsets.ModelViewSet):
         category = request.query_params.get('category', None)
         year = request.query_params.get('year', None)
 
+        order = Case(
+            When(sem="I", then=Value(1)),
+            When(sem="II", then=Value(2)),
+            When(sem="III", then=Value(3)),
+            When(sem="IV", then=Value(4)),
+            When(sem="V", then=Value(5)),
+            When(sem="VI", then=Value(6)),
+            When(sem="VII", then=Value(7)),
+            When(sem="VIII", then=Value(8)),
+            When(sem="Major Project", then=Value(9)),
+            output_field=IntegerField()
+        )
+
         if category and year:
             dept = Department.objects.get(name = category)
             y = Year.objects.get(department=dept, year = year)
-            semesters = Sem.objects.filter(year=y)
+            semesters = Sem.objects.filter(year=y).annotate(ordering=order).order_by("ordering")
         else:
-            semesters = Sem.objects.all()  # Return all if no filter is provided
+            semesters = Sem.objects.all().annotate(ordering=order).order_by("ordering")  # Return all if no filter is provided
 
         serializer = self.get_serializer(semesters, many=True)
         return Response(serializer.data)
