@@ -5255,9 +5255,9 @@ class SemViewSet(viewsets.ModelViewSet):
         if category and year:
             dept = Department.objects.get(name = category)
             y = Year.objects.get(department=dept, year = year)
-            semesters = Sem.objects.filter(year=y).annotate(ordering=order).order_by("ordering")
+            semesters = Sem.objects.filter(year=y).annotate(ordering=order).order_by("ordering","div")
         else:
-            semesters = Sem.objects.all().annotate(ordering=order).order_by("ordering")  # Return all if no filter is provided
+            semesters = Sem.objects.all().annotate(ordering=order).order_by("ordering","div")  # Return all if no filter is provided
 
         serializer = self.get_serializer(semesters, many=True)
         return Response(serializer.data)
