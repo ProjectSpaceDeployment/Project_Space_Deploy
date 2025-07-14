@@ -157,7 +157,7 @@ const handleRegister = () => {
 
     })
     .catch((error) => {
-      console.error("Error:", error.response?.data || error.message);
+      console.error("Error:", error);
       alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     });
 };
