@@ -389,7 +389,7 @@ useEffect(() => {
   const [summary, setSummary] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
-  const handleGuideAllocation = () => {
+  const handleGuideAllocation = async () => {
     AxiosInstance
         .get(`guide-allocation/allocate_guides/?category=${category}&year=${year}&sem=${semester}&div=${div}`)
         .then((response) => {
