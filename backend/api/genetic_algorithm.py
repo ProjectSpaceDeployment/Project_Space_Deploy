@@ -2,7 +2,7 @@ from random import choices, randint, random, sample, seed, uniform, choice
 from typing import List, Callable, Tuple
 from collections import namedtuple
 from functools import partial
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 # Define Named Tuples
 Group = namedtuple('Group', ['id', 'domain_prefs', 'teacher_prefs'])
 Teachers = namedtuple('Teacher', ['username', 'domain_prefs', 'max_groups'])
@@ -289,12 +289,21 @@ def run_evolution(
         batch_size = max(2, len(top_individuals) // 6)  # Run 25% at a time
         optimized_individuals = []
 
-        with ThreadPoolExecutor() as executor:
+        # with ThreadPoolExecutor() as executor:
+        #     for i in range(0, len(top_individuals), batch_size):
+        #         batch = top_individuals[i:i + batch_size]
+        #         results = list(executor.map(lambda ind: simulated_annealing(ind, fitness_func, neighbor), batch))
+        #         optimized_individuals.extend([res[0] for res in results])
+        with ThreadPoolExecutor(max_workers=batch_size) as executor:
             for i in range(0, len(top_individuals), batch_size):
                 batch = top_individuals[i:i + batch_size]
-                results = list(executor.map(lambda ind: simulated_annealing(ind, fitness_func, neighbor), batch))
-                optimized_individuals.extend([res[0] for res in results])
-
+                futures = [executor.submit(simulated_annealing, ind, fitness_func, neighbor) for ind in batch]
+                for future in as_completed(futures):
+                    try:
+                        result = future.result()
+                        optimized_individuals.append(result[0])
+                    except Exception as e:
+                        print(f"Error during simulated annealing: {str(e)}", exc_info=True)
         next_generation.extend(optimized_individuals)
 
         # Selection and reproduction (ensuring enough offspring)
