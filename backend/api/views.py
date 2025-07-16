@@ -38,8 +38,10 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.enums import TA_CENTER
 
-from django.db.models import Case, When, Value, CharField, IntegerField
-from django.db.models.functions import Cast, Substr, Length, RegexSubstr
+from django.db.models import Q, Case, When, Value, F, CharField, IntegerField
+from django.db.models.functions import Cast, Substr, Length
+from .db_functions import RegexpMatch
+from django.db.models import Func
 
 # For PostgreSQL only: extract letters and digits
 from django.db.models.functions import Lower
@@ -5851,42 +5853,46 @@ class ProjectViewSet(viewsets.ModelViewSet):
         # Step 7: Assign projects
         if academic_role == "Head of Department" or is_project_coordinator or is_project_co_coordinator:
             projects = Project.objects.filter(sem=semester).annotate(
-                group_prefix=RegexSubstr('group_no', r'^[A-Za-z]+'),     # Alphabetic part
-                group_number=Cast(RegexSubstr('group_no', r'[0-9]+'), IntegerField()),  # Numeric part
+                group_prefix=Func(F('group_no'), Value('^[A-Za-z]+'), function='REGEXP_MATCHES', output_field=CharField()),
+                group_number_raw=Func(F('group_no'), Value('[0-9]+'), function='REGEXP_MATCHES', output_field=CharField()),
+            ).annotate(
+                group_number=Cast(F('group_number_raw'), IntegerField()),
                 fallback_sort=Cast('id', CharField())
             ).annotate(
                 final_prefix=Case(
-                    When(group_no__isnull=False, group_no__gt="", then='group_prefix'),
+                    When(group_no__isnull=False, group_no__gt="", then=F('group_prefix')),
                     default=Value(""),
                     output_field=CharField()
                 ),
                 final_number=Case(
-                    When(group_no__isnull=False, group_no__gt="", then='group_number'),
+                    When(group_no__isnull=False, group_no__gt="", then=F('group_number')),
                     default=Value(0),
                     output_field=IntegerField()
                 )
-            ).order_by("final_prefix", "final_number", "fallback_sort")
+            ).order_by('final_prefix', 'final_number', 'fallback_sort')
         else:
             prj = Project.objects.filter(sem=semester)
             projects = prj.filter(
                 Q(project_guide=teacher) | Q(project_co_guide=teacher)
             ).distinct().annotate(
-                group_prefix=RegexSubstr('group_no', r'^[A-Za-z]+'),
-                group_number=Cast(RegexSubstr('group_no', r'[0-9]+'), IntegerField()),
+                group_prefix=Func(F('group_no'), Value('^[A-Za-z]+'), function='REGEXP_MATCHES', output_field=CharField()),
+                group_number_raw=Func(F('group_no'), Value('[0-9]+'), function='REGEXP_MATCHES', output_field=CharField()),
+            ).annotate(
+                group_number=Cast(F('group_number_raw'), IntegerField()),
                 fallback_sort=Cast('id', CharField())
             ).annotate(
                 final_prefix=Case(
-                    When(group_no__isnull=False, group_no__gt="", then='group_prefix'),
+                    When(group_no__isnull=False, group_no__gt="", then=F('group_prefix')),
                     default=Value(""),
                     output_field=CharField()
                 ),
                 final_number=Case(
-                    When(group_no__isnull=False, group_no__gt="", then='group_number'),
+                    When(group_no__isnull=False, group_no__gt="", then=F('group_number')),
                     default=Value(0),
                     output_field=IntegerField()
                 )
-            ).order_by("final_prefix", "final_number", "fallback_sort")
-
+            ).order_by('final_prefix', 'final_number', 'fallback_sort')
+        print(projects)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
