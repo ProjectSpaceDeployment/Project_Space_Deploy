@@ -5861,12 +5861,14 @@ class ProjectViewSet(viewsets.ModelViewSet):
         if academic_role == "Head of Department" or is_project_coordinator or is_project_co_coordinator:
             projects = list(Project.objects.filter(sem=semester))
             projects.sort(key=natural_sort_key)
+            print(projects)
         else:
             prj = Project.objects.filter(sem=semester)
             projects = list(prj.filter(
                 Q(project_guide=teacher) | Q(project_co_guide=teacher)
             ).distinct())
             projects.sort(key=natural_sort_key)
+            print(projects)
         print(projects)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
