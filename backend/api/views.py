@@ -38,6 +38,12 @@ from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.utils import ImageReader
 from reportlab.lib.enums import TA_CENTER
 
+from django.db.models import Case, When, Value, CharField, IntegerField
+from django.db.models.functions import Cast, Substr, Length, RegexSubstr
+
+# For PostgreSQL only: extract letters and digits
+from django.db.models.functions import Lower
+
 import logging
 
 
@@ -5844,12 +5850,42 @@ class ProjectViewSet(viewsets.ModelViewSet):
 
         # Step 7: Assign projects
         if academic_role == "Head of Department" or is_project_coordinator or is_project_co_coordinator:
-            projects = Project.objects.filter(sem=semester).order_by("id")
+            projects = Project.objects.filter(sem=semester).annotate(
+                group_prefix=RegexSubstr('group_no', r'^[A-Za-z]+'),     # Alphabetic part
+                group_number=Cast(RegexSubstr('group_no', r'[0-9]+'), IntegerField()),  # Numeric part
+                fallback_sort=Cast('id', CharField())
+            ).annotate(
+                final_prefix=Case(
+                    When(group_no__isnull=False, group_no__gt="", then='group_prefix'),
+                    default=Value(""),
+                    output_field=CharField()
+                ),
+                final_number=Case(
+                    When(group_no__isnull=False, group_no__gt="", then='group_number'),
+                    default=Value(0),
+                    output_field=IntegerField()
+                )
+            ).order_by("final_prefix", "final_number", "fallback_sort")
         else:
             prj = Project.objects.filter(sem=semester)
             projects = prj.filter(
                 Q(project_guide=teacher) | Q(project_co_guide=teacher)
-            ).distinct().order_by("id")
+            ).distinct().annotate(
+                group_prefix=RegexSubstr('group_no', r'^[A-Za-z]+'),
+                group_number=Cast(RegexSubstr('group_no', r'[0-9]+'), IntegerField()),
+                fallback_sort=Cast('id', CharField())
+            ).annotate(
+                final_prefix=Case(
+                    When(group_no__isnull=False, group_no__gt="", then='group_prefix'),
+                    default=Value(""),
+                    output_field=CharField()
+                ),
+                final_number=Case(
+                    When(group_no__isnull=False, group_no__gt="", then='group_number'),
+                    default=Value(0),
+                    output_field=IntegerField()
+                )
+            ).order_by("final_prefix", "final_number", "fallback_sort")
 
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
