@@ -75,11 +75,11 @@ const MajorProjectPopup = () => {
         return false;
       }
   
-      const validMembers = members.filter(m => m.name.trim() && m.id.trim());
-      if (validMembers.length < 2) {
-        alert("At least 2 team members with name and Moodle ID are required.");
-        return false;
-      }
+      // const validMembers = members.filter(m => m.name.trim() && m.id.trim());
+      // if (validMembers.length < 2) {
+      //   alert("At least 2 team members with name and Moodle ID are required.");
+      //   return false;
+      // }
       
       const moodleIds = [leaderId.trim(), ...members.map(m => m.id.trim())];
       const uniqueIds = new Set(moodleIds);
@@ -91,7 +91,7 @@ const MajorProjectPopup = () => {
       // Check if at least one Moodle ID matches the logged-in user's Moodle ID
       const userMatch = moodleIds.some(id => id === username.trim()); // Ensure username is also trimmed
       if (!userMatch) {
-        alert("At least one Moodle ID should match your own login ID.");
+        alert("At least one Moodle ID should match your own moodleID.");
         return false;
       }
     }
