@@ -5850,26 +5850,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         is_project_coordinator = semester.project_coordinator == teacher
         is_project_co_coordinator = semester.project_co_coordinator == teacher
 
-        def natural_sort_key(p):
-            match = re.match(r'([A-Za-z]+)(\d+)', p.group_no or '')
-            if match:
-                prefix, number = match.groups()
-                return (prefix, int(number))
-            return ('', float('inf'))
-
         # Step 7: Assign projects
         if academic_role == "Head of Department" or is_project_coordinator or is_project_co_coordinator:
             projects = list(Project.objects.filter(sem=semester))
-            projects.sort(key=natural_sort_key)
-            print(projects)
         else:
             prj = Project.objects.filter(sem=semester)
             projects = list(prj.filter(
                 Q(project_guide=teacher) | Q(project_co_guide=teacher)
             ).distinct())
-            projects.sort(key=natural_sort_key)
-            print(projects)
-        print("projects")
+        print(projects)
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 

@@ -576,8 +576,26 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
   const fetchProjects = async (category, year, semester, div) => {
     try {
       const response = await AxiosInstance.get(`/projects/filtered-projects/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
-      
-      setProjects(response.data);
+      const sortedProjects = [...response.data].sort((a, b) => {
+        const regex = /^([A-Za-z]+)(\d+)$/;
+
+        const aMatch = (a.group_no || "").match(regex);
+        const bMatch = (b.group_no || "").match(regex);
+
+        if (!aMatch && !bMatch) return 0;
+        if (!aMatch) return 1;
+        if (!bMatch) return -1;
+
+        const [_, aPrefix, aNumber] = aMatch;
+        const [__, bPrefix, bNumber] = bMatch;
+
+        if (aPrefix === bPrefix) {
+          return parseInt(aNumber) - parseInt(bNumber);
+        } else {
+          return aPrefix.localeCompare(bPrefix);
+        }
+      });
+      setProjects(sortedProjects);
       const maxGroups = response.data.length;
   
       // Set interval based on the number of projects
