@@ -5869,7 +5869,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             ).distinct())
             projects.sort(key=natural_sort_key)
             print(projects)
-        print(projects)
+        print("projects")
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
