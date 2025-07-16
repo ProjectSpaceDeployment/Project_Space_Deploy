@@ -595,6 +595,7 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
           return aPrefix.localeCompare(bPrefix);
         }
       });
+      console.log(sortedProjects);
       setProjects(sortedProjects);
       const maxGroups = response.data.length;
   
