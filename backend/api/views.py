@@ -6115,10 +6115,10 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
 
                         # Ensure member has a valid CurrentSem and matches the leader's CurrentSem
                         if not member_cursem:
-                            raise ValueError(f"Member {member.user.username} does not have a valid for Major Project.")
+                            raise ValueError(f"Member {member.user.username} does not have a valid CurrentSem.")
 
                         if member_cursem.sem != cursem.sem:
-                            raise ValueError(f"Member {member.user.username} does not have same Semester as the leader.")
+                            raise ValueError(f"Member {member.user.username} is not in the same CurrentSem as the leader.")
 
                         if Project.objects.filter(sem=cursem.sem, members=member).exists() or Project.objects.filter(sem=cursem.sem, leader=member).exists():
                             raise ValueError(f"Member {member.user.username} is already part of another group.")
