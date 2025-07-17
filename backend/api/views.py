@@ -39,7 +39,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.enums import TA_CENTER
 
 from django.db.models import Q, Case, When, Value, F, CharField, IntegerField
-from django.db.models.functions import Cast, Substr, Length, RegexReplace
+from django.db.models.functions import Cast, Substr, Length
 from .db_functions import RegexpMatch
 from django.db.models import Func
 
