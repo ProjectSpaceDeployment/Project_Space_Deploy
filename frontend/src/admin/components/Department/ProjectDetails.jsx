@@ -874,7 +874,8 @@ const handleDeleteWeek = async (weekNumber) => {
   const fetchDomainData = async () => {
     try {
       const response = await AxiosInstance.get(`/teacherpreferences/availability/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
-      setDomainsData(response.data); 
+      setDomainsData(response.data.domains);
+      setFilteredCoGuides(response.data.co_guides); 
     } catch (error) {
       console.error('Error fetching domain teacher data:', error);
     }
@@ -908,7 +909,6 @@ const handleDeleteWeek = async (weekNumber) => {
     const selectedDomainData = domainsData.find(domain => domain.domain_id === parseInt(domainId));
     if (selectedDomainData) {
       setGuides(selectedDomainData.teachers);
-      setFilteredCoGuides(selectedDomainData.co_guides);
     }
   };
   const handleManual = async (event) => {
