@@ -4086,12 +4086,8 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
             year = Year.objects.filter(department = teacher.department.id).order_by('-id').first()
 
             semester = Sem.objects.filter(year=year, sem="Major Project").first()
-
-            cursem = ProjectGuide.objects.filter(sem=semester, teacher=teacher).first()
-
-            if cursem:
-                cursem.form = 1
-                cursem.save()
+            teacher.form = 1
+            teacher.save()
 
         return Response({"message": "Preferences saved successfully!"}, status=status.HTTP_201_CREATED)
 
@@ -4189,11 +4185,11 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                                 'teacher_id': teacher.user.id,
                                 'availability': project_guide.availability
                             })
-                        else:
-                            co_guides.append({
-                                'teacher_name': get_full_name(teacher),
-                                'teacher_id': teacher.user.id,
-                            })
+                        # else:
+                        #     co_guides.append({
+                        #         'teacher_name': get_full_name(teacher),
+                        #         'teacher_id': teacher.user.id,
+                        #     })
                     # guide_teacher_ids = [t['teacher_id'] for t in teachers_with_availability]
                     # co_guides = [
                     #     {
@@ -4207,8 +4203,18 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                         'domain_name': domain.name,
                         'domain_id': domain.id,
                         'teachers': teachers_with_availability,
-                        'co_guides': co_guides,
+                        # 'co_guides': co_guides,
                     })
+                    department_teachers = Teacher.objects.filter(department=dept).order_by('user__first_name', 'user__last_name')
+                    co_guides = []
+
+                    for teacher in department_teachers:
+                        project_guide = ProjectGuide.objects.filter(teacher=teacher, sem=semester).first()
+                        co_guides.append({
+                            'teacher_name': get_full_name(teacher),
+                            'teacher_id': teacher.user.id,
+                            'availability': project_guide.availability if project_guide else None
+                        })
             else:
                 projectguide = ProjectGuide.objects.filter(sem=semester)
 
@@ -4218,7 +4224,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                         'teacher_id': pg.teacher.user.id,
                         'availability': pg.availability
                     })
-            return Response(domain_teacher_data, status=status.HTTP_200_OK)
+            return Response({'domains': domain_teacher_data, 'co_guides': co_guides} , status=status.HTTP_200_OK)
         except Exception as e:
                 print("ERROR:", str(e))
                 print(traceback.format_exc())  # Prints full error traceback
@@ -5391,6 +5397,7 @@ class SemViewSet(viewsets.ModelViewSet):
             if semester:
                 semester.teacher_form = 1
                 semester.save()
+            Teacher.objects.filter(department=dept).update(form=0)
             return Response({"message": "Activated Form"}, status=status.HTTP_200_OK)
         except Sem.DoesNotExist:
             return Response({"error": "Invalid semester ID"}, status=status.HTTP_400_BAD_REQUEST)
@@ -5497,14 +5504,11 @@ class SemViewSet(viewsets.ModelViewSet):
             print(year)
             semester = Sem.objects.filter(year=year, sem="Major Project", div__isnull=True).first()
             print(semester.sem,semester.div)
-            cursem = ProjectGuide.objects.get(sem=semester,teacher=teacher)
-            print(cursem)
             visibility = False
-            if cursem:
-                if semester.teacher_form == 1 and cursem.form == 0 :
-                    visibility = True
+            if semester.teacher_form == 1 and teacher.form == 0 :
+                visibility = True
             print(visibility)
-            return Response({"status":visibility, "year":year.year, "semester":semester.sem, "cursem":cursem.form},status=status.HTTP_200_OK)
+            return Response({"status":visibility, "year":year.year, "semester":semester.sem},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=500)
     
