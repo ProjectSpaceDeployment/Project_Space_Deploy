@@ -871,7 +871,7 @@ const handleDeleteWeek = async (weekNumber) => {
   const [domainselected, setDomainSelected] = useState("");
   const [selectedGuide, setSelectedGuide] = useState('');
   const [guides, setGuides] = useState([]);
-  const [filteredCoGuides, setFilteredCoGuides] = useState([]);
+  const [filteredCoGuides, setFilteredCoGuides] = useState([]);g
   const fetchDomainData = async () => {
     try {
       const response = await AxiosInstance.get(`/teacherpreferences/availability/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
