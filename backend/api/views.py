@@ -39,7 +39,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.enums import TA_CENTER
 
 from django.db.models import Q, Case, When, Value, F, CharField, IntegerField
-from django.db.models.functions import Cast, Substr, Length, RegexReplace
+from django.db.models.functions import Cast, Substr, Length
 from .db_functions import RegexpMatch
 from django.db.models import Func
 
@@ -4189,11 +4189,11 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                                 'teacher_id': teacher.user.id,
                                 'availability': project_guide.availability
                             })
-                        else:
-                            co_guides.append({
-                                'teacher_name': get_full_name(teacher),
-                                'teacher_id': teacher.user.id,
-                            })
+                        # else:
+                        #     co_guides.append({
+                        #         'teacher_name': get_full_name(teacher),
+                        #         'teacher_id': teacher.user.id,
+                        #     })
                     # guide_teacher_ids = [t['teacher_id'] for t in teachers_with_availability]
                     # co_guides = [
                     #     {
@@ -4207,7 +4207,14 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                         'domain_name': domain.name,
                         'domain_id': domain.id,
                         'teachers': teachers_with_availability,
-                        'co_guides': co_guides,
+                    })
+                department_teachers = Teacher.objects.filter(department=dept).order_by('user__first_name', 'user__last_name')
+                for teacher in department_teachers:
+                    project_guide = ProjectGuide.objects.filter(teacher=teacher, sem=semester).first()
+                    co_guides.append({
+                        'teacher_name': get_full_name(teacher),
+                        'teacher_id': teacher.user.id,
+                        'availability': project_guide.availability if project_guide else None
                     })
             else:
                 projectguide = ProjectGuide.objects.filter(sem=semester)
@@ -4218,7 +4225,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
                         'teacher_id': pg.teacher.user.id,
                         'availability': pg.availability
                     })
-            return Response(domain_teacher_data, status=status.HTTP_200_OK)
+            return Response({'domains': domain_teacher_data, 'co_guides': co_guides} , status=status.HTTP_200_OK)
         except Exception as e:
                 print("ERROR:", str(e))
                 print(traceback.format_exc())  # Prints full error traceback
