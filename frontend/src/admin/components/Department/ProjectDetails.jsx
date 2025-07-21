@@ -885,7 +885,7 @@ const handleDeleteWeek = async (weekNumber) => {
   const fetchAvailability = async () => {
     try {
       const response = await AxiosInstance.get(`/teacherpreferences/availability/?category=${category}&year=${year}&sem=${semester}&div=${div}`);
-      setFilteredGuides(response.data); 
+      setFilteredGuides(response.data.domains); 
     } catch (error) {
       console.error('Error fetching domain teacher data:', error);
     }
