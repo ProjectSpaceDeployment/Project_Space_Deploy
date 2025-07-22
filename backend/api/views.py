@@ -6511,6 +6511,10 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
             co_guide_id = data.get('co_guide_id')
             domain_id = data.get('domain_id')
             div = data.get('division')
+            group_no = data.get('group_no')
+
+            if group_no:
+                project.group_no = group_no
 
             if div:
                 project.div = div
@@ -6612,6 +6616,7 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
                 'guide': project.project_guide.user.id if project.project_guide else None,
                 'co_guide': project.project_co_guide.user.id if project.project_co_guide else None,
                 'semester': project.sem.sem if project.sem else None,
+                'group_no': project.group_no if project.group_no else f"{project.div}{project.id}",
             }
             return Response(data, status=status.HTTP_200_OK)
 

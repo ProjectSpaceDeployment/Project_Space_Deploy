@@ -993,6 +993,7 @@ const handleDeleteWeek = async (weekNumber) => {
   const [leader, setLeader] = useState("");
   const [members, setMembers] = useState(["", "", ""]);
   const [division, setDivision] = useState("");
+  const [groupno, setGroupNo] = useState("");
 
   const handleAddSubmit = async () => {
     try {
@@ -1071,6 +1072,7 @@ const handleDeleteWeek = async (weekNumber) => {
       setDomainSelected(projectData.domain || "");
       setSelectedGuide(projectData.guide || "");
       setCoGuide(projectData.co_guide || "");
+      setGroupNo(projectData.group_no || "");
   
       setSelectedProjectToEdit(projectId);
       
@@ -1112,6 +1114,7 @@ const handleDeleteWeek = async (weekNumber) => {
       domain_id: domainselected || null,
       division: division || "",
       semester,
+      group_no: groupno || "",
     };
   
     try {
@@ -1436,6 +1439,16 @@ const handleDeleteWeek = async (weekNumber) => {
           )}
         </div>
       )}
+
+      <div className="mb-4">
+        <label className="block mb-1 font-medium">Group No:</label>
+        <input
+          type="text"
+          value={groupno}
+          onChange={(e) => setGroupNo(e.target.value)}
+          className="w-full p-2 border rounded-md"
+        />
+      </div>
       
       {/* Leader */}
       <div className="mb-4">
