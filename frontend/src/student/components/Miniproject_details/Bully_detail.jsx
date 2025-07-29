@@ -36,8 +36,8 @@ const Bully_detail = ({ isSidebarOpen, isMobile }) => {
     const fetchDomain = async () => {
       try {
         const response = await AxiosInstance.get(`/projects/${id}/get_domain/`);
-        console.log(response.data);
-        setDomain(response.data);
+        console.log(response.data.domain);
+        setDomain(response.data.domain);
       } catch (error) {
         console.error("Error fetching project:", error);
       }
