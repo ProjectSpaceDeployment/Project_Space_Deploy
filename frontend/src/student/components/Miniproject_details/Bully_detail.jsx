@@ -21,7 +21,7 @@ const Bully_detail = ({ isSidebarOpen, isMobile }) => {
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const response = await AxiosInstance.get(`/projects/${id}/get_project_pk`);
+        const response = await AxiosInstance.get(`/projects/${id}/get_project_pk/`);
         console.log(response.data);
         setProject(response.data);
       } catch (error) {
