@@ -41,8 +41,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
   const [tasksSem7, setTasksSem7] = useState([]);
   const [tasksSem8, setTasksSem8] = useState([]);
   const [activeSemester, setActiveSemester] = useState('sem7');
-  useEffect(() => {
-    const fetchTasks = async () => {
+  const fetchTasks = async () => {
       try {
         // const response = await AxiosInstance.get(`/projects/tasks/?id=${id}&sem_new=sem_7`);
         // setTasks(response.data); // Update state with the fetched tasks
@@ -56,7 +55,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
         console.error('Error fetching tasks:', error);
       }
     };
-
+  useEffect(() => {
     if (id) {
       console.log("entered");
       fetchTasks();  // Fetch tasks when projectId is available
@@ -245,6 +244,7 @@ const Major1_detail = ({isSidebarOpen, isMobile}) => {
       console.error('Error submitting task status:', error);
       // Handle error (e.g., notify user)
     }
+    fetchTasks();
   };
 
   const [activeTab, setActiveTab] = useState("Details");
