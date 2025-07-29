@@ -5917,6 +5917,15 @@ class ProjectViewSet(viewsets.ModelViewSet):
         except Project.DoesNotExist:
             return Response({"error": "Project not found"}, status=404)
 
+    @action(detail=True, methods=['get'])
+    def get_domain(self, request, pk=None):  # Get pk from URL
+        try:
+            project = Project.objects.get(pk=pk)  
+            domain = project.sem.tech
+            return Response({"domain":domain}, status=200)
+        except Project.DoesNotExist:
+            return Response({"error": "Domain not found"}, status=404)
+
     
     @action(detail=False, methods=['get'], url_path="status-project")
     def status_project(self,request):

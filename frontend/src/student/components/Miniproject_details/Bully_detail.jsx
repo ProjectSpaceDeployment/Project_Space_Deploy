@@ -31,6 +31,20 @@ const Bully_detail = ({ isSidebarOpen, isMobile }) => {
     fetchProject();
   }, [id]);
 
+  const [domain, setDomain] = useState(null);
+  useEffect(() => {
+    const fetchDomain = async () => {
+      try {
+        const response = await AxiosInstance.get(`/projects/${id}/get_domain/`);
+        console.log(response.data);
+        setDomain(response.data);
+      } catch (error) {
+        console.error("Error fetching project:", error);
+      }
+    };
+    fetchDomain();
+  }, [id]);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTaskId, setSelectedTaskId] = useState(null);
 
@@ -465,7 +479,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
     
              <p className="text-gray-700 dark:text-gray-400">
                Domain:{" "}
-               <span className="font-medium">{project?.domain ?? ""}</span>
+               <span className="font-medium">{domain ?? ""}</span>
              </p>
              <p className="text-gray-700 dark:text-gray-400">
                Name:{" "}
