@@ -315,43 +315,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
   //   setTaskDescription({});
   //   setIsModalOpen(false);
   // };
-  const handleSubmit = async () => {
-    console.log(selectedDate);
-    const selectedWeekData = taskData[currentSem].find((week) => week.week === selectedWeek);
-    if (!selectedWeekData) {
-      alert("No task data found for the selected week.");
-      return;
-    }
-  
-    const taskStatuses = selectedWeekData.tasks.map((task, index) => ({
-      task_id: task.task_id, // ensure `task.id` is available
-      details: taskDescription[index] || ""
-    }));
-  
-    const payload = {
-      project_id: project.group, // Replace with actual project ID
-      week_id: selectedWeekData.id, // Ensure you have this from backend
-      completion_percentage: parseInt(completionPercentage),
-      remarks: remarks,
-      date: selectedDate,
-      task_statuses: taskStatuses
-    };
-
-    console.log(payload);
-  
-    try {
-      const response = await AxiosInstance.post("/task/submit-logbook/", payload);
-      console.log("Response:", response.data);
-      alert("Task and progress saved successfully!");
-      setIsModalOpen(false);
-    } catch (error) {
-      console.error("Error saving data:", error.response?.data || error.message);
-      alert("An error occurred while saving. It may have already been submitted.");
-    }
-    if (project.group) {
-      fetchTasks();
-    }
-  };
+ 
 
   // const taskData = [
   //   { week: "Week 1", tasks: ["To participate in project orientation conducted by department.", "To discuss feasibility of project ideas proposed with guide", "To present at least three topics as per the guidelines given by department"] },
@@ -419,6 +383,44 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       fetchTasks();
     }
   }, [project.group]);
+
+  const handleSubmit = async () => {
+    console.log(selectedDate);
+    const selectedWeekData = taskData[currentSem].find((week) => week.week === selectedWeek);
+    if (!selectedWeekData) {
+      alert("No task data found for the selected week.");
+      return;
+    }
+  
+    const taskStatuses = selectedWeekData.tasks.map((task, index) => ({
+      task_id: task.task_id, // ensure `task.id` is available
+      details: taskDescription[index] || ""
+    }));
+  
+    const payload = {
+      project_id: project.group, // Replace with actual project ID
+      week_id: selectedWeekData.id, // Ensure you have this from backend
+      completion_percentage: parseInt(completionPercentage),
+      remarks: remarks,
+      date: selectedDate,
+      task_statuses: taskStatuses
+    };
+
+    console.log(payload);
+  
+    try {
+      const response = await AxiosInstance.post("/task/submit-logbook/", payload);
+      console.log("Response:", response.data);
+      alert("Task and progress saved successfully!");
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error saving data:", error.response?.data || error.message);
+      alert("An error occurred while saving. It may have already been submitted.");
+    }
+    if (project.group) {
+      fetchTasks();
+    }
+  };
 
   useEffect(() => {
     if (isModalOpen && taskData.length > 0) {
