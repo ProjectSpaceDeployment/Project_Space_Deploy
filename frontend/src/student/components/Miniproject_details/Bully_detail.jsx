@@ -319,7 +319,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
     // <div className="ml-64 w-1200 rounded-lg mr-1 space-y-4">
     <div
   className={`p-4 md:p-6 bg-white shadow-lg rounded-lg 
-    w-full transition-all duration-300 space-y-6
+     transition-all duration-300 space-y-6
     dark:bg-gray-800 dark:border-gray-600 dark:text-white
     ${!isMobile ? 'ml-64 w-auto' : isSidebarOpen ? 'ml-64 w-auto' : 'w-full'}`}
 >  
