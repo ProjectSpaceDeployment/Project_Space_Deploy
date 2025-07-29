@@ -491,9 +491,11 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
              </p>
              <p className="text-gray-700 dark:text-gray-400">Members:</p>
              <ul className="list-disc list-inside text-gray-700 dark:text-gray-400">
-               {project?.members.map((member, index) => (
-                 <li key={index}>{member}</li>
-               ))}
+                {Array.isArray(project?.members) &&
+                  project.members.map((member, index) => (
+                    <li key={index}>{member}</li>
+                  ))
+                }
              </ul>
            </fieldset>
     
@@ -527,7 +529,7 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </tr>
               </thead>
               <tbody>
-                {tasks.map((task) => (
+                {/* {tasks.map((task) => (
                   <tr key={task.id} className="border border-gray-300">
                     <td className="border border-gray-300 p-2">{task.week}</td>
                     <td className="border border-gray-300 p-2">
@@ -553,7 +555,36 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                 </button>
                     </td>
                   </tr>
-                ))}
+                ))} */}
+                {Array.isArray(tasks) && tasks.map((task) => (
+  <tr key={task.id} className="border border-gray-300">
+    <td className="border border-gray-300 p-2">{task.week}</td>
+    <td className="border border-gray-300 p-2">
+      {Array.isArray(task.tasks) ? (
+        task.tasks.map((t, index) => (
+          <div key={t.task_id}>
+            {index + 1}. {t.task}
+          </div>
+        ))
+      ) : (
+        <div>{task.tasks}</div>
+      )}
+    </td>
+    <td className="border border-gray-300 p-2 text-center">
+      <button
+        onClick={() => openModal(task.id)}
+        className={`px-4 py-2 rounded ${
+          task.submitted
+            ? "bg-green-500 text-white"
+            : "bg-blue-500 text-white hover:bg-blue-700"
+        }`}
+      >
+        {task.submitted ? "Edit" : "Submit"}
+      </button>
+    </td>
+  </tr>
+))}
+
               </tbody>
             </table>
           </div>
@@ -576,12 +607,11 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
             </p>
 
             {/* Render tasks inside the modal */}
-            {selectedTask?.tasks.map((t, index) => (
+            {/* {selectedTask?.tasks.map((t, index) => (
               <div key={t.task_id} className="p-3 bg-gray-100 rounded-md mb-2">
-                {/* Task description */}
+     
                 <p className="text-gray-700 font-medium">{index + 1}. {t.task}</p>
 
-                {/* Radio buttons */}
                 <div className="mt-1 flex space-x-3">
                   <label className="flex items-center space-x-1">
                     <input
@@ -615,7 +645,6 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                   </label>
                 </div>
 
-                {/* Input box for details */}
                 {showInput[t.task_id] && (
                   <input
                     id={`details-${t.task_id}`}
@@ -626,7 +655,60 @@ const handleFileUpload = async (e, link, existingUploadId = null) => {
                   />
                 )}
               </div>
-            ))}
+            ))} */}
+            {/* Render tasks inside the modal */}
+{Array.isArray(selectedTask?.tasks) && selectedTask.tasks.map((t, index) => (
+  <div key={t.task_id} className="p-3 bg-gray-100 rounded-md mb-2">
+    {/* Task description */}
+    <p className="text-gray-700 font-medium">{index + 1}. {t.task}</p>
+
+    {/* Radio buttons */}
+    <div className="mt-1 flex space-x-3">
+      <label className="flex items-center space-x-1">
+        <input
+          type="radio"
+          name={`status-${t.task_id}`}
+          value="Completed"
+          className="accent-blue-500"
+          onChange={() => handleStatusChange(t.task_id, 'Completed')}
+        />
+        <span>Completed</span>
+      </label>
+      <label className="flex items-center space-x-1">
+        <input
+          type="radio"
+          name={`status-${t.task_id}`}
+          value="Partially Completed"
+          className="accent-gray-500"
+          onChange={() => handleStatusChange(t.task_id, 'Partially Completed')}
+        />
+        <span>Partially Completed</span>
+      </label>
+      <label className="flex items-center space-x-1">
+        <input
+          type="radio"
+          name={`status-${t.task_id}`}
+          value="Not Completed"
+          className="accent-red-500"
+          onChange={() => handleStatusChange(t.task_id, 'Not Completed')}
+        />
+        <span>Not Completed</span>
+      </label>
+    </div>
+
+    {/* Input box for details */}
+    {showInput[t.task_id] && (
+      <input
+        id={`details-${t.task_id}`}
+        type="text"
+        placeholder="Enter details..."
+        onChange={(e) => handleDetailsChange(t.task_id, e.target.value)}
+        className="mt-2 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
+    )}
+  </div>
+))}
+
           </>
         );
       })()}
