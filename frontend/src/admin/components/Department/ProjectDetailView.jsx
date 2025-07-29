@@ -348,6 +348,9 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       console.error("Error saving data:", error.response?.data || error.message);
       alert("An error occurred while saving. It may have already been submitted.");
     }
+    if (project.group) {
+      fetchTasks();
+    }
   };
 
   // const taskData = [
@@ -377,9 +380,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
   const [taskData, setTaskData] = useState({ '7': [], '8': [] });
   const [currentSem, setCurrentSem] = useState('7');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const fetchTasks = async () => {
+  const fetchTasks = async () => {
       try {
         setLoading(true);
         
@@ -413,7 +414,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
         setLoading(false);
       }
     };
-
+  useEffect(() => {
     if (project.group) {
       fetchTasks();
     }

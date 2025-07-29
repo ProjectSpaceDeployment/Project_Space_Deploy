@@ -3051,7 +3051,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 if task_description.strip():
                     table_data.append([Paragraph(f"{task_description}", body_style)])
 
-            table_data.append([Paragraph(remarks, body_style)])
+            table_data.append([Paragraph(f"Guide Remarks: {remarks}", body_style)])
             
 
             print(len(table_data))
@@ -3387,7 +3387,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
                 if task_description.strip():
                     table_data.append([Paragraph(f"{task_description}", body_style)])
 
-            table_data.append([Paragraph(remarks, body_style)])
+            table_data.append([Paragraph(f"Guide Remarks: {remarks}", body_style)])
 
             # Adjust table rows
             expected_rows = 5
