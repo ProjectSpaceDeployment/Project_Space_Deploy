@@ -381,7 +381,6 @@ useEffect(() => {
       <BarChart data={data}>
         <XAxis dataKey="week" interval={0}/>
         <YAxis ticks={ticks}/>
-        <Tooltip cursor={{ fill: "transparent" }}/>
         <Bar dataKey="groups" fill="#0088FE" onClick={(data, index) => handleBarClick(data, index)}/>
       </BarChart>
     </ResponsiveContainer>
