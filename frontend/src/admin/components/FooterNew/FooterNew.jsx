@@ -11,12 +11,12 @@ const Footer = () => {
       >
         <p className="text-md max-w-4xl mx-auto px-1 text-gray-800">
           Developed by{" "}
-          <span className="text-pink-600 font-semibold">Prakruti Bhavsar</span>,{" "}
-          <span className="text-blue-600 font-semibold">Nimisha Idekar</span>,{" "}
-          <span className="text-purple-600 font-semibold">Akanksha Bhoir</span>, and{" "}
-          <span className="text-teal-600 font-semibold">Payal Gupta</span> under the guidance of{" "}
-          <span className="text-rose-600 font-semibold">Prof. Vishal S. Badgujar</span> and{" "}
-          <span className="text-indigo-600 font-semibold">Prof. Seema Jadhav</span>.
+          <span className="font-semibold">Prakruti Bhavsar</span>,{" "}
+          <span className="font-semibold">Nimisha Idekar</span>,{" "}
+          <span className="font-semibold">Akanksha Bhoir</span>, and{" "}
+          <span className="font-semibold">Payal Gupta</span> under the guidance of{" "}
+          <span className="font-semibold">Prof. Vishal S. Badgujar</span> and{" "}
+          <span className="font-semibold">Prof. Seema Jadhav</span>.
         </p>
       </motion.div>
     </footer>
