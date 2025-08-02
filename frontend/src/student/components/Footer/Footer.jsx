@@ -8,12 +8,12 @@ const Footer = ({ isSidebarOpen, isMobile }) => {
       <div className="flex flex-col items-center justify-center text-center px-4">
         <p className={`text-center text-[#373a93] font-medium transition-all duration-300 ease-in-out
           ${!isMobile && isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
-          Developed by <span className="text-[#ff2b5f] font-bold">Prakruti Bhavsar</span>,
-          <span className="text-[#ff2b5f] font-bold"> Nimisha Idekar</span>,
-          <span className="text-[#ff2b5f] font-bold"> Akanksha Bhoir</span>, and
-          <span className="text-[#ff2b5f] font-bold"> Payal Gupta</span> under the guidance of
-          <span className="text-[#2777a6] font-bold"> Prof. Vishal S. Badgujar</span> and
-          <span className="text-[#2777a6] font-bold"> Prof. Seema Jadhav</span>.
+          Developed by <span className="font-bold">Prakruti Bhavsar</span>,
+          <span className="font-bold"> Nimisha Idekar</span>,
+          <span className="font-bold"> Akanksha Bhoir</span>, and
+          <span className="font-bold"> Payal Gupta</span> under the guidance of
+          <span className="font-bold"> Prof. Vishal S. Badgujar</span> and
+          <span className="font-bold"> Prof. Seema Jadhav</span>.
         </p>
       </div>
     </footer>
