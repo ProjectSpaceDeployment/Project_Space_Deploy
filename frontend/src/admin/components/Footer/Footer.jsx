@@ -12,15 +12,24 @@ const Footer = () => {
         whileInView={{ opacity: 1, y: 0 }}
         className="container"
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14 md:gap-4">
-          {/* first section */}
+        <div className="flex flex-col items-center justify-center text-center px-4">
+        <p className={`text-center text-[#373a93] font-medium transition-all duration-300 ease-in-out
+          ${!isMobile && isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
+          Developed by <span className="font-bold">Prakruti Bhavsar</span>,
+          <span className="font-bold"> Nimisha Idekar</span>,
+          <span className="font-bold"> Akanksha Bhoir</span>, and
+          <span className="font-bold"> Payal Gupta</span> under the guidance of
+          <span className="font-bold"> Prof. Vishal S. Badgujar</span> and
+          <span className="font-bold"> Prof. Seema Jadhav</span>.
+        </p>
+      </div>
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-14 md:gap-4">
           <div className="space-y-4 max-w-[300px]">
             <h1 className="text-2xl font-bold">About Us</h1>
             <p className="text-dark2">
             we believe that effective project management is the key to academic success. Founded by a team of passionate students and professionals, our mission is to empower college students to collaborate seamlessly and manage their projects with ease.
             </p>
           </div>
-          {/* second section */}
           <div className="grid grid-cols-2 gap-10">
             <div className="space-y-4">
               <h1 className="text-2xl font-bold">Connect with us</h1>
@@ -59,7 +68,6 @@ const Footer = () => {
               </div>
             </div>
           </div>
-          {/* third section */}
           <div className="space-y-4 max-w-[300px]">
             <h1 className="text-2xl font-bold">Get In Touch</h1>
             <div className="flex items-center">
@@ -72,23 +80,8 @@ const Footer = () => {
                 Go
               </button>
             </div>
-            {/* social icons */}
-            {/* <div className="flex space-x-6 py-3">
-              <a href="https://chat.whatsapp.com/FQSKgJ5f1eIAhlyF5sVym0">
-                <FaWhatsapp className="cursor-pointer hover:text-primary hover:scale-105 duration-200" />
-              </a>
-              <a href="https://www.instagram.com/the.coding.journey/">
-                <FaInstagram className="cursor-pointer hover:text-primary hover:scale-105 duration-200" />
-              </a>
-              <a href="https://thecodingjourney.com/">
-                <TbWorldWww className="cursor-pointer hover:text-primary hover:scale-105 duration-200" />
-              </a>
-              <a href="https://www.youtube.com/@TheCodingJourney">
-                <FaYoutube className="cursor-pointer hover:text-primary hover:scale-105 duration-200" />
-              </a>
-            </div> */}
           </div>
-        </div>
+        </div> */}
       </motion.div>
     </footer>
   );
