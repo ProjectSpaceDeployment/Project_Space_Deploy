@@ -13,8 +13,7 @@ const Footer = () => {
         className="container"
       >
         <div className="flex flex-col items-center justify-center text-center px-4">
-        <p className={`text-center text-[#373a93] font-medium transition-all duration-300 ease-in-out
-          ${!isMobile && isSidebarOpen ? 'ml-64' : 'ml-0'}`}>
+        <p className={`text-center text-[#373a93] font-medium transition-all duration-300 ease-in-out`}>
           Developed by <span className="font-bold">Prakruti Bhavsar</span>,
           <span className="font-bold"> Nimisha Idekar</span>,
           <span className="font-bold"> Akanksha Bhoir</span>, and
