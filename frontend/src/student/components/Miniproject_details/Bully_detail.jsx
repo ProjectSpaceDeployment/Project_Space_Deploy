@@ -193,16 +193,32 @@ const Bully_detail = ({ isSidebarOpen, isMobile }) => {
   }, [project]);
 
   const [showPopup, setShowPopup] = useState(false);
-  const [projectDetails, setProjectDetails] = useState({
-    name: "Bully Box: \"Stop Bullying, Report It Fully\"",
-    abstract: "\"Bully Box\" is a safe and anonymous platform...",
-  });
-  const [tempDetails, setTempDetails] = useState(projectDetails);
+  // const [projectDetails, setProjectDetails] = useState({
+  //   name: "Bully Box: \"Stop Bullying, Report It Fully\"",
+  //   abstract: "\"Bully Box\" is a safe and anonymous platform...",
+  // });
+  const [tempDetails, setTempDetails] = useState();
 
-  const handlePopupSubmit = () => {
-    console.log(tempDetails);
-    setShowPopup(false);
-  };
+  const handlePopupSubmit = async () => {
+      try {
+        const response = await AxiosInstance.post(`/projects/${id}/update_topic/`, {
+          name: tempDetails.name,
+          abstract: tempDetails.abstract,
+        });
+        if (response.status===200){
+          alert("Data Updated");
+        }else{
+          alert(response.data.error);
+        }
+        // Optional: refresh project data after update
+        const result = await AxiosInstance.get(`/projects/${id}/`);
+        setProject(result.data);
+    
+        setShowPopup(false); // Close modal
+      } catch (error) {
+        console.error("Failed to update project:", error);
+      }
+    };
 
 
 
