@@ -446,11 +446,12 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
     const selectedWeekData = taskData[currentSem].find(w => w.week === week);
 
     if (selectedWeekData) {
-      const initialDescriptions = {};
+      const initialDescriptions = [];
       selectedWeekData.tasks.forEach((task, index) => {
         initialDescriptions[index] = task.details || '';
       });
       setTaskDescription(initialDescriptions);
+      setRemarks(selectedWeekData.remarks);
     }
 
   };
@@ -746,7 +747,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
             <button
               className="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600"
               onClick={() => handleViewSubmission(weekData.week)}
-              disabled={weekData.is_final || !isChecked}
+              disabled={!isChecked}
             >
               Logbook
             </button>
@@ -860,7 +861,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
                 <textarea
                       className="w-full p-2 border rounded-md"
                       placeholder="Describe what is completed and what is not..."
-                      value={taskDescription[i] || ''|| task.details} // Ensure correct task description is shown
+                      value={taskDescription[i] || task.details || ''} // Ensure correct task description is shown
                       onChange={(e) => handleTextareaChange(i, e.target.value)} // Update state when user types
                     />
               </div>
@@ -873,7 +874,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
         <p className="text-lg font-semibold">Remarks:</p>
         <textarea
           className="w-full p-2 border rounded-md resize-none"
-          value={remarks}
+          value={remarks || ""}
           onChange={(e) => setRemarks(e.target.value)}
           placeholder="Add remarks..."
           rows={4} // Adjustable size for the remarks box

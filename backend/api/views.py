@@ -6003,6 +6003,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             for task in tasks],
                     "submitted": all(task_submissions.filter(task=task).exists() for task in tasks),
                     "is_final":ProjectWeekProgress.objects.get(project=project, week = week).is_final if ProjectWeekProgress.objects.filter(project=project, week = week).exists() else False,
+                    "remarks":ProjectWeekProgress.objects.get(project=project, week = week).remarks if ProjectWeekProgress.objects.filter(project=project, week = week).exists() else "",
                 })
             print(result)
             
