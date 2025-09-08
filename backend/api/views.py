@@ -48,6 +48,8 @@ from django.db.models.functions import Lower
 
 import logging
 
+from django.utils import timezone
+
 
 import xlsxwriter
 from io import BytesIO
@@ -7276,6 +7278,12 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
             week_progress, _ = ProjectWeekProgress.objects.get_or_create(
                 project_id=project_id,
                 week_id=week_id,
+                defaults={
+                    "completion_percentage": completion if completion is not None else 0,
+                    "remarks": remarks or "",
+                    "is_final": True,
+                    "submitted_date": date or timezone.now(),
+                }
             )
 
             # Always update

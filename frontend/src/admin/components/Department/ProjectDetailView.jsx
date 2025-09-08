@@ -886,6 +886,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       <div className="mb-4">
             <p className="text-lg font-semibold">Completion:</p>
             <input
+              required
               type="range"
               min="0"
               max="100"
@@ -907,6 +908,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       <div className="mb-4">
         <p className="text-lg font-semibold">Date:</p>
         <DatePicker
+          required
           selected={selectedDate}
           dateFormat="yyyy-MM-dd"
           onChange={handleDateChange}
