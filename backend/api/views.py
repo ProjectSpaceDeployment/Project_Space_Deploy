@@ -448,7 +448,7 @@ class ClusteringViewSet(viewsets.ModelViewSet):
                         middle_name = clean_middle_name(pref.teacher.middle_name)
                         last_name = pref.teacher.user.last_name
 
-                        full_name = f"{title} {first_name} {middle_name + ' ' if middle_name else ''}{last_name}"
+                        full_name = f"{first_name} {middle_name + ' ' if middle_name else ''}{last_name}"
                         
                         domain_name = pref.domain.name
                         teachers[pref.teacher.user.username].append(domain_name)
@@ -458,7 +458,7 @@ class ClusteringViewSet(viewsets.ModelViewSet):
                     for project in projects:
                         
                         domain_name = project.domain.name if project.domain else "Unknown Domain"
-                        guide_name = f"{project.project_guide.title} {project.project_guide.user.first_name} {clean_middle_name(project.project_guide.middle_name) + ' ' if clean_middle_name(project.project_guide.middle_name) else ''}{project.project_guide.user.last_name}" if project.project_guide else "No Guide Assigned"
+                        guide_name = f"{project.project_guide.user.first_name} {clean_middle_name(project.project_guide.middle_name) + ' ' if clean_middle_name(project.project_guide.middle_name) else ''}{project.project_guide.user.last_name}" if project.project_guide else "No Guide Assigned"
 
                         groups.append({
                             "Group": project.id,
@@ -3137,9 +3137,9 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             signature_lines.append("<br/><br/>")
             if project_guide and project_co_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {clean_middle_name(project_co_guide.middle_name) or ''} {project_co_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.user.first_name} {clean_middle_name(project_co_guide.middle_name) or ''} {project_co_guide.user.last_name}<br/><br/>"
             elif project_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
             else:
                 guide_line = "Project Guide/Co-Guide Name:"  # no guide? maybe show blank?
 
@@ -3452,9 +3452,9 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             signature_lines.append("<br/><br/>")
             if project_guide and project_co_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.title} {project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name} &nbsp;&nbsp;&nbsp;&nbsp; {project_co_guide.user.first_name} {project_co_guide.middle_name or ''} {project_co_guide.user.last_name}<br/><br/>"
             elif project_guide:
-                guide_line = f"Project Guide/Co-Guide Name: {project_guide.title} {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
+                guide_line = f"Project Guide/Co-Guide Name: {project_guide.user.first_name} {clean_middle_name(project_guide.middle_name) or ''} {project_guide.user.last_name}<br/><br/>"
             else:
                 guide_line = "Project Guide/Co-Guide Name:"  # no guide? maybe show blank?
 
@@ -4123,7 +4123,7 @@ class TeacherPreferenceViewSet(viewsets.ModelViewSet):
             teacher_dict = defaultdict(list)
 
             for pref in preferences:
-                teacher_name = f"{pref.teacher.title} {pref.teacher.user.first_name} {pref.teacher.user.last_name}"
+                teacher_name = f"{pref.teacher.user.first_name} {pref.teacher.user.last_name}"
                 teacher_dict[pref.domain.name].append(teacher_name)
 
             return Response(teacher_dict)
