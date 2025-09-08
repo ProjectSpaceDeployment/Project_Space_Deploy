@@ -452,7 +452,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       setTaskDescription(initialDescriptions);
       setRemarks(selectedWeekData.remarks);
       setSelectedDate(selectedWeekData.date);
-      completionPercentage(selectedWeekData.completion_percentage);
+      setCompletionPercentage(selectedWeekData.completion_percentage);
     }
 
   };
