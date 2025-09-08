@@ -5987,7 +5987,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             weeks = Week.objects.filter(semester=semester, sem = sem_value).order_by('week_number')
             result = []
             for week in weeks:
-                week_prog = ProjectWeekProgress.objects.get(project=project, week = week)
+                week_prog = ProjectWeekProgress.objects.get(project=project, week = week).first()
                 tasks = Task.objects.filter(week=week).order_by('sequence_number')
                 task_submissions = ProjectTask.objects.filter(task__in=tasks, project=project)
             
@@ -6003,10 +6003,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
             }
             for task in tasks],
                     "submitted": all(task_submissions.filter(task=task).exists() for task in tasks),
-                    "is_final":week_prog.is_final if week_prog else False,
-                    "remarks":week_prog.remarks if week_prog else "",
-                    "date": week_prog.submitted_date if week_prog else None,
-                    "completion_percentage": week_prog.completion_percentage if week_prog else 0,
+                    "is_final":week_prog.is_final if week_prog.exists()  else False,
+                    "remarks":week_prog.remarks if week_prog.exists()  else "",
+                    "date": week_prog.submitted_date if week_prog.exists()  else None,
+                    "completion_percentage": week_prog.completion_percentage if week_prog.exists() else 0,
                 })
             print(result)
             
