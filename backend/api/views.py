@@ -5988,6 +5988,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             result = []
             for week in weeks:
                 week_prog = ProjectWeekProgress.objects.filter(project=project, week = week).first()
+                exist = ProjectWeekProgress.objects.filter(project=project, week = week).exists()
                 tasks = Task.objects.filter(week=week).order_by('sequence_number')
                 task_submissions = ProjectTask.objects.filter(task__in=tasks, project=project)
             
@@ -6003,10 +6004,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
             }
             for task in tasks],
                     "submitted": all(task_submissions.filter(task=task).exists() for task in tasks),
-                    "is_final":week_prog.is_final if week_prog.exists()  else False,
-                    "remarks":week_prog.remarks if week_prog.exists()  else "",
-                    "date": week_prog.submitted_date if week_prog.exists()  else None,
-                    "completion_percentage": week_prog.completion_percentage if week_prog.exists() else 0,
+                    "is_final":week_prog.is_final if exist  else False,
+                    "remarks":week_prog.remarks if exist else "",
+                    "date": week_prog.submitted_date if exist  else None,
+                    "completion_percentage": week_prog.completion_percentage if exist else 0,
                 })
             print(result)
             
