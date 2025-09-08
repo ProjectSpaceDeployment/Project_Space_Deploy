@@ -5985,6 +5985,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
             project = Project.objects.get(pk=id)
             semester = project.sem
             weeks = Week.objects.filter(semester=semester, sem = sem_value).order_by('week_number')
+            week_prog = ProjectWeekProgress.objects.get(project=project, week = week)
             result = []
             for week in weeks:
                 tasks = Task.objects.filter(week=week).order_by('sequence_number')
@@ -6002,8 +6003,10 @@ class ProjectViewSet(viewsets.ModelViewSet):
             }
             for task in tasks],
                     "submitted": all(task_submissions.filter(task=task).exists() for task in tasks),
-                    "is_final":ProjectWeekProgress.objects.get(project=project, week = week).is_final if ProjectWeekProgress.objects.filter(project=project, week = week).exists() else False,
-                    "remarks":ProjectWeekProgress.objects.get(project=project, week = week).remarks if ProjectWeekProgress.objects.filter(project=project, week = week).exists() else "",
+                    "is_final":week_prog.is_final if week_prog else False,
+                    "remarks":week_prog.remarks if week_prog else "",
+                    "date": week_prog.submitted_date if week_prog else None,
+                    "completion_percentage": week_prog.completion_percentage if week_prog else 0,
                 })
             print(result)
             
@@ -7263,11 +7266,23 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
                 project_task.save()
 
             # Save week progress (only once)
-            ProjectWeekProgress.objects.get_or_create(
+            # ProjectWeekProgress.objects.get_or_create(
+            #     project_id=project_id,
+            #     week_id=week_id,
+            #     defaults={'completion_percentage': completion, 'remarks': remarks , "is_final":True, "submitted_date":date}
+            # )
+
+            week_progress, _ = ProjectWeekProgress.objects.get_or_create(
                 project_id=project_id,
                 week_id=week_id,
-                defaults={'completion_percentage': completion, 'remarks': remarks , "is_final":True, "submitted_date":date}
             )
+
+            # Always update
+            week_progress.completion_percentage = completion
+            week_progress.remarks = remarks
+            week_progress.is_final = True
+            week_progress.submitted_date = date
+            week_progress.save()
 
             return Response({'message': 'Task statuses and progress updated successfully'}, status=status.HTTP_200_OK)
 

@@ -422,14 +422,14 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
     }
   };
 
-  useEffect(() => {
-    if (isModalOpen && taskData.length > 0) {
-      const initialDescriptions = taskData
-        .find((week) => week.week === selectedWeek)
-        ?.tasks.map((task) => task.details || ''); // Default to empty string if no details
-      setTaskDescription(initialDescriptions || []);
-    }
-  }, [isModalOpen, selectedWeek, taskData]);
+  // useEffect(() => {
+  //   if (isModalOpen && taskData.length > 0) {
+  //     const initialDescriptions = taskData
+  //       .find((week) => week.week === selectedWeek)
+  //       ?.tasks.map((task) => task.details || ''); // Default to empty string if no details
+  //     setTaskDescription(initialDescriptions || []);
+  //   }
+  // }, [isModalOpen, selectedWeek, taskData]);
   // New `taskStatus` array to map statuses to each task.
   const taskStatusesOptions = [
     ["Completed"], // Week 1 statuses
@@ -439,8 +439,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
 
 
   const handleViewSubmission = (week) => {
-    setSelectedWeek(week);
-    setCompletionPercentage(Math.floor(Math.random() * 101)); // Generate a random percentage
+    setSelectedWeek(week); // Generate a random percentage
     setIsModalOpen(true);
 
     const selectedWeekData = taskData[currentSem].find(w => w.week === week);
@@ -452,6 +451,8 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
       });
       setTaskDescription(initialDescriptions);
       setRemarks(selectedWeekData.remarks);
+      setSelectedDate(selectedWeekData.date);
+      completionPercentage(selectedWeekData.completion_percentage);
     }
 
   };
@@ -874,7 +875,7 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
         <p className="text-lg font-semibold">Remarks:</p>
         <textarea
           className="w-full p-2 border rounded-md resize-none"
-          value={remarks || ""}
+          value={remarks}
           onChange={(e) => setRemarks(e.target.value)}
           placeholder="Add remarks..."
           rows={4} // Adjustable size for the remarks box
