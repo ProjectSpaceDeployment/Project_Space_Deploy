@@ -5985,9 +5985,9 @@ class ProjectViewSet(viewsets.ModelViewSet):
             project = Project.objects.get(pk=id)
             semester = project.sem
             weeks = Week.objects.filter(semester=semester, sem = sem_value).order_by('week_number')
-            week_prog = ProjectWeekProgress.objects.get(project=project, week = week)
             result = []
             for week in weeks:
+                week_prog = ProjectWeekProgress.objects.get(project=project, week = week)
                 tasks = Task.objects.filter(week=week).order_by('sequence_number')
                 task_submissions = ProjectTask.objects.filter(task__in=tasks, project=project)
             
