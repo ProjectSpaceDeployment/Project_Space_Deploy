@@ -17,6 +17,7 @@ const ContentDetail = ({isDarkMode }) => {
         const response = await AxiosInstance.get(`/event/${event}/event_detail/`);
         setEventName(response.data.event);
         setResponseData(response.data.panels);
+        console.log(responseData);
       } catch (error) {
         console.error("Error fetching event data:", error);
       }
