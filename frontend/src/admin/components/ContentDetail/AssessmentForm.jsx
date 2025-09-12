@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa"; // Import the close icon
 import AxiosInstance from "../../../AxiosInstance";
 
-const AssessmentForm = ({ projectTitle, members, groupId, eventId, onClose, isDarkMode }) => {
+const AssessmentForm = ({ projectTitle, members, groupId, topic, eventId, onClose, isDarkMode }) => {
   // const [marks, setMarks] = useState({
   //   problemStatement: 0,
   //   objective: 0,
@@ -118,6 +118,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, eventId, onClose, isDa
         <h2 className="text-3xl font-bold mb-6">{`Group: ${projectTitle}`}</h2>
 
         <h3 className="text-lg font-medium">{`Domain: ${members}`}</h3>
+        <h3 className="text-lg font-medium">{`Title: ${topic}`}</h3>
 
         <div className="space-y-6">
           {/* {[ 

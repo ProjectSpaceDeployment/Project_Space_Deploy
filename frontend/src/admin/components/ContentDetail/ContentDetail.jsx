@@ -33,8 +33,8 @@ const ContentDetail = ({isDarkMode }) => {
     };
 
       // Add button click handler
-  const handleAddButtonClick = (projectTitle, members, groupId) => {
-    setSelectedProject({ projectTitle, members, groupId }); // Set the project title and members
+  const handleAddButtonClick = (projectTitle, members, groupId, Topic) => {
+    setSelectedProject({ projectTitle, members, groupId, Topic }); // Set the project title and members
     setFormOpen(true); // Open the form
   };
 
@@ -225,6 +225,7 @@ const handleOpenPDF = async () => {
                 <li key={idx}>
                   <p className="font-medium">Group: {group.Group}</p>
                   <p>Domain: {group.Domain}</p>
+                  <p>Project Title: {group.Topic}</p>
                   <p>Guide: {group.Guide}</p>
                 </li>
               ))}
@@ -263,7 +264,7 @@ const handleOpenPDF = async () => {
                     <tr>
                       <th className="border border-gray-300 p-2">Group</th>
                       <th className="border border-gray-300 p-2">Domain</th>
-
+                      <th lassName="border border-gray-300 p-2">Project Title</th>
                       <th className="border border-gray-300 p-2">Actions</th>
                     </tr>
                   </thead>
@@ -273,10 +274,11 @@ const handleOpenPDF = async () => {
               <tr key={idx} className="border">
                 <td className="border border-gray-300 p-2">{group.Group}</td>
                 <td className="border border-gray-300 p-2">{group.Domain}</td>
+                <td className="border border-gray-300 p-2">{group.Topic}</td>
                 <td className="border border-gray-300 p-2">
                   <button
                     onClick={() =>
-                      handleAddButtonClick(group.Group, group.Domain, group.id)
+                      handleAddButtonClick(group.Group, group.Domain, group.id, group.Topic)
                     }
                     className={`py-2 px-4 rounded-lg font-semibold transition-all ${
                       isDarkMode
@@ -325,6 +327,7 @@ const handleOpenPDF = async () => {
           projectTitle={selectedProject.projectTitle}
           members={selectedProject.members}
           groupId={selectedProject.groupId}
+          topic = {selectedProject.Topic}
           eventId={event}
           onClose={closeForm}
           isDarkMode={isDarkMode}

@@ -244,6 +244,7 @@ class AssessmentPanelSerializer(serializers.ModelSerializer):
                 "id":group.id,
                 "Group": group.group_no or f"{group.div}{group.id}",  # Replace with your actual Project field
                 "Domain": group.domain.name if group.domain else "",
+                "Topic": group.final_topic.name if group.final_topic else "",
                 "Guide": f"{group.project_guide.user.first_name} {clean_middle_name(group.project_guide.middle_name)} {group.project_guide.user.last_name}".strip() if group.project_guide and hasattr(group.project_guide, 'user') else "N/A",
                 "Co-Guide": f"{group.project_co_guide.user.first_name} {clean_middle_name(group.project_co_guide.middle_name)} {group.project_co_guide.user.last_name}".strip() if group.project_co_guide and hasattr(group.project_co_guide, 'user') else ""
             }
