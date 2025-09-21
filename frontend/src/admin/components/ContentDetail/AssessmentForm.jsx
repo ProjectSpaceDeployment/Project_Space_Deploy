@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa"; // Import the close icon
 import AxiosInstance from "../../../AxiosInstance";
 
-const AssessmentForm = ({ projectTitle, members, groupId, topic, eventId, onClose, isDarkMode }) => {
+const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment, eventId, onClose, isDarkMode }) => {
   // const [marks, setMarks] = useState({
   //   problemStatement: 0,
   //   objective: 0,
@@ -41,14 +41,14 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, eventId, onClos
     if (groupId && eventId) {
       AxiosInstance(`/project-assessment/get-assessment/?project=${groupId}&event=${eventId}`)
         .then((res) => {
-          const data = res.data; 
+          const data = res.data;
+          console.log(res.data) 
           if (data.id) {
             setMarks(data.marks.reduce((acc, mark) => {
               acc[mark.rubric_id] = mark.marks;  // Reshaping the marks data to be used in the form
               return acc;
             }, {}));  // Reshape marks as needed
             setRemarks(data.remarks);
-            setReadOnly(true);  // Disable editing when data is fetched
           } else {
             setReadOnly(false);
           }
@@ -88,7 +88,12 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, eventId, onClos
       })),
     };
     try {
-      const response = await AxiosInstance.post("/project-assessment/", payload); // Adjust URL if needed
+      if (has_assessment){
+      const response = await AxiosInstance.patch("/project-assessment/", payload); }
+      else{
+        const response = await AxiosInstance.post("/project-assessment/", payload);
+      }
+      // Adjust URL if needed
       onClose(); // optionally close modal after submission
     } catch (error) {
       console.error("Error submitting assessment:", error);
@@ -148,7 +153,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, eventId, onClos
               <label className="w-3/4 text-lg font-medium">{rubric.name}:</label>
               <input
                 type="number"
-                value={marks[rubric.id]}
+                value={marks[rubric.id] ?? ""}
                 onChange={(e) => handleMarksChange(e, rubric.id, rubric.max_marks)}
                 max={rubric.max_marks}
                 onWheel={(e) => e.target.blur()}

@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import AssessmentForm from "./AssessmentForm";
+import { FaEdit } from "react-icons/fa";
 import AxiosInstance from "../../../AxiosInstance";
+import EditForm from "./EditForm";
 const ContentDetail = ({isDarkMode }) => {
   const { year, event } = useParams();
   const [activeTab, setActiveTab] = useState("panel");
   const [isFormOpen, setFormOpen] = useState(false); // Track if the form is open
+  const [isEditFormOpen, setEditFormOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null); // Store the selected project
   const navigate = useNavigate();
   const [responseData, setResponseData] = useState({});
   const [eventname, setEventName] = useState("");
 
-  useEffect(() => {
-    const fetchEventData = async () => {
+  const fetchEventData = async () => {
       try {
         const response = await AxiosInstance.get(`/event/${event}/event_detail/`);
         setEventName(response.data.event);
@@ -22,7 +24,8 @@ const ContentDetail = ({isDarkMode }) => {
         console.error("Error fetching event data:", error);
       }
     };
-  
+
+  useEffect(() => {
     if (event) fetchEventData();
   }, [event]);
 
@@ -39,9 +42,19 @@ const ContentDetail = ({isDarkMode }) => {
     setFormOpen(true); // Open the form
   };
 
+  const handleEditEvent = () =>{
+    setEditFormOpen(true);
+  }
+
+  const closeEditForm = () => {
+    setEditFormOpen(false);
+     // Close the form
+  };
+
    // Close the form
    const closeForm = () => {
-    setFormOpen(false); // Close the form
+    setFormOpen(false);
+     // Close the form
   };
 
 //   const handleOpenPDF = async () => {
@@ -136,13 +149,31 @@ const handleOpenPDF = async () => {
         {/* Title Section */}
         <h2 className="text-3xl font-bold mb-6">Review Assessment</h2>
         <div
-          className="text-2xl font-semibold flex items-center space-x-3 cursor-pointer"
-          onClick={handleNavigateToYearBox}
+          className="text-2xl font-semibold flex items-center justify-between cursor-pointer"
+          
         >
-          <span>{`Year ${year}`}</span>
-          <span className="text-gray-400">{">"}</span>
-          <span className="text-gray-600">{eventname || "Poster Presentation"}</span>
+          <div className="flex items-center space-x-3">
+            <span onClick={handleNavigateToYearBox}>{`Year ${year}`}</span>
+            <span className="text-gray-400">{">"}</span>
+            <span className="text-gray-600">{eventname || "Poster Presentation"}</span>
+          </div>
+          
+          <button
+            onClick={handleEditEvent} // your function to open edit form/modal
+            className="text-gray-500 hover:text-blue-600"
+          >
+            <FaEdit />
+          </button>
+          
+
         </div>
+        {isEditFormOpen && (
+        <EditForm
+          eventId={event}
+          onClose={closeEditForm}
+          isDarkMode={isDarkMode}
+        />
+      )}
 
         {/* Tabs */}
         <div className="flex justify-between items-center mb-6 mt-4">
@@ -225,7 +256,6 @@ const handleOpenPDF = async () => {
               {panelData.groups.map((group, idx) => (
                 <li key={idx}>
                   <p className="font-medium">Group: {group.Group}</p>
-                  <p>Domain: {group.Domain}</p>
                   <p>Project Title: {group.Topic}</p>
                   <p>Guide: {group.Guide}</p>
                 </li>
@@ -264,8 +294,7 @@ const handleOpenPDF = async () => {
                   <thead>
                     <tr>
                       <th className="border border-gray-300 p-2">Group</th>
-                      <th className="border border-gray-300 p-2">Domain</th>
-                      <th lassName="border border-gray-300 p-2">Project Title</th>
+                      <th className="border border-gray-300 p-2">Project Title</th>
                       <th className="border border-gray-300 p-2">Actions</th>
                     </tr>
                   </thead>
@@ -274,7 +303,6 @@ const handleOpenPDF = async () => {
             panelData.groups.map((group, idx) => (
               <tr key={idx} className="border">
                 <td className="border border-gray-300 p-2">{group.Group}</td>
-                <td className="border border-gray-300 p-2">{group.Domain}</td>
                 <td className="border border-gray-300 p-2">{group.Topic}</td>
                 <td className="border border-gray-300 p-2">
                   <button
@@ -287,7 +315,7 @@ const handleOpenPDF = async () => {
                         : "bg-[#fba02a] text-black hover:bg-[#ffbf71]"
                     }`}
                   >
-                    Add
+                    {group.has_assessment ? "Edit" : "Add"}
                   </button>
                 </td>
               </tr>
@@ -329,6 +357,7 @@ const handleOpenPDF = async () => {
           members={selectedProject.members}
           groupId={selectedProject.groupId}
           topic = {selectedProject.Topic}
+          has_assessment = {selectedProject.has_assessment}
           eventId={event}
           onClose={closeForm}
           isDarkMode={isDarkMode}

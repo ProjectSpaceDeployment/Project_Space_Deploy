@@ -6784,7 +6784,7 @@ class AssessmentEventViewSet(viewsets.ModelViewSet):
             event = AssessmentEvent.objects.get(pk=pk)
             panels = AssessmentPanel.objects.filter(event=event).order_by("panel_number")
             print(panels)
-            serialized_panels = AssessmentPanelSerializer(panels, many=True).data
+            serialized_panels = AssessmentPanelSerializer(panels, many=True,context={"event": event}).data
 
             # If needed, you can add event meta details as well
             return Response({
@@ -7883,4 +7883,15 @@ class LinkUploadViewSet(viewsets.ModelViewSet):
             return HttpResponse(f"Error generating Excel: {e}", status=500)
 
 
-    
+class AssessmentEventModelViewSet(viewsets.ModelViewSet):
+    queryset = AssessmentEvent.objects.all()
+    serializer_class = AssessmentEventSerializer
+
+    @action(detail=True, methods=["put"])
+    def update_event_with_rubrics(self, request, pk=None):
+        print(request.data)
+        event = self.get_object()
+        serializer = self.get_serializer(event, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

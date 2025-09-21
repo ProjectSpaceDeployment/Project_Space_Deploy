@@ -237,6 +237,7 @@ class AssessmentPanelSerializer(serializers.ModelSerializer):
         return [f"{teacher.user.first_name} {clean_middle_name(teacher.middle_name)} {teacher.user.last_name}".strip() for teacher in obj.teachers.all()]
 
     def get_groups(self, obj):
+        event = self.context.get("event")
         def clean_middle_name(name):
             return "" if not name or str(name).strip().lower() == "nan" else name
         return [
@@ -244,7 +245,8 @@ class AssessmentPanelSerializer(serializers.ModelSerializer):
                 "id":group.id,
                 "Group": group.group_no or f"{group.div}{group.id}",  # Replace with your actual Project field
                 "Domain": group.domain.name if group.domain else "",
-                "Topic": group.final_topic.name if group.final_topic else "",
+                "Topic": group.final_topic if group.final_topic else "",
+                "has_assessment": ProjectAssessment.objects.filter(project=group, event=event).exists() if event else False,
                 "Guide": f"{group.project_guide.user.first_name} {clean_middle_name(group.project_guide.middle_name)} {group.project_guide.user.last_name}".strip() if group.project_guide and hasattr(group.project_guide, 'user') else "N/A",
                 "Co-Guide": f"{group.project_co_guide.user.first_name} {clean_middle_name(group.project_co_guide.middle_name)} {group.project_co_guide.user.last_name}".strip() if group.project_co_guide and hasattr(group.project_co_guide, 'user') else ""
             }
@@ -308,6 +310,7 @@ class StudentProfileSerializer(serializers.ModelSerializer):
         return middle
 
 class AssessmentRubricSerializer(serializers.ModelSerializer):
+    id = serializers.IntegerField()
     class Meta:
         model = AssessmentRubric
         fields = ['id', 'name', 'max_marks']
@@ -347,3 +350,35 @@ class LinkUploadSerializer(serializers.ModelSerializer):
     class Meta:
         model = LinkUpload
         fields = '__all__'
+
+class AssessmentEventSerializer(serializers.ModelSerializer):
+    rubrics = AssessmentRubricSerializer(many=True)
+
+    class Meta:
+        model = AssessmentEvent
+        fields = ["id", "name", "rubrics"]
+    
+    def update(self, instance, validated_data):
+        print(instance)
+        print(validated_data)
+        # Update event fields
+        instance.name = validated_data.get("name", instance.name)
+        instance.save()
+
+        # Update rubrics content only (no add/delete)
+        rubrics_data = validated_data.pop("rubrics", [])
+        for rubric_data in rubrics_data:
+            rubric_id = rubric_data.get("id")
+            if not rubric_id:
+                continue  # skip if no id (prevents adding new ones)
+            
+            try:
+                rubric = instance.rubrics.get(id=rubric_id)
+            except AssessmentRubric.DoesNotExist:
+                continue  # skip if rubric doesn't belong to this event
+
+            rubric.name = rubric_data.get("name", rubric.name)
+            rubric.max_marks = rubric_data.get("max_marks", rubric.max_marks)
+            rubric.save()
+
+        return instance

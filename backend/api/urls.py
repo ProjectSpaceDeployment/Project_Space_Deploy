@@ -40,7 +40,6 @@ router.register('departments', DepartmentViewSet, basename='departments')
 router.register('designation', DesignationViewSet, basename='designation')
 router.register('managementpermission', ManagementPermissionViewSet, basename='managementpermission')
 router.register('academicbatch', AcademicBatchViewSet, basename='academicbatch')
-
-
+router.register('assessmentevent',AssessmentEventModelViewSet,basename='assessmentevent')
 
 urlpatterns = router.urls

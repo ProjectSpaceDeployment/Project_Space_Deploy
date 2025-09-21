@@ -385,6 +385,24 @@ const ProjectDetailView = ({ initialProject, onClose, isDarkMode }) => {
   }, [project.group]);
 
   const handleSubmit = async () => {
+    let missingFields = [];
+
+    if (!selectedDate) {
+      missingFields.push("Date");
+    }
+
+    if (!completionPercentage || parseInt(completionPercentage) <= 0) {
+      missingFields.push("Completion Percentage (must be greater than 0)");
+    }
+
+    if (!remarks || remarks.trim() === "") {
+      missingFields.push("Remarks");
+    }
+
+    if (missingFields.length > 0) {
+      alert(`Please fill the following field(s): ${missingFields.join(", ")}`);
+      return;
+    }
     console.log(selectedDate);
     const selectedWeekData = taskData[currentSem].find((week) => week.week === selectedWeek);
     if (!selectedWeekData) {
