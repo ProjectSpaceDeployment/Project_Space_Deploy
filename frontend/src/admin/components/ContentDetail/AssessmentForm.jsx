@@ -129,7 +129,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
       console.log(has_assessment)
       console.log(payload)
       if (has_assessment){
-      const response = await AxiosInstance.patch(`/project-assessment/${id}`, payload); }
+      const response = await AxiosInstance.patch(`/project-assessment/${id}/`, payload); }
       else{
         const response = await AxiosInstance.post("/project-assessment/", payload);
       }
