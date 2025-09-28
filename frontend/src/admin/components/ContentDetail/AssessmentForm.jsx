@@ -17,16 +17,53 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
   const [remarks, setRemarks] = useState("");
 
   useEffect(() => {
-    AxiosInstance.get(`/assessment/rubrics/?id=${eventId}`).then((res) => {
-      setRubrics(res.data);
-      // Initialize marks with 0 for each rubric
-      const initialMarks = {};
-      res.data.forEach((rubric) => {
-        initialMarks[rubric.id] = 0;
-      });
-      setMarks(initialMarks);
+  if (!eventId) return;
+
+  // First load rubrics
+  AxiosInstance.get(`/assessment/rubrics/?id=${eventId}`).then((res) => {
+    setRubrics(res.data);
+
+    // Initialize with 0s
+    const initialMarks = {};
+    res.data.forEach((rubric) => {
+      initialMarks[rubric.id] = 0;
     });
-  }, []);
+
+    setMarks(initialMarks);
+
+    // Then load assessment (only after rubrics are ready)
+    if (groupId) {
+      AxiosInstance(`/project-assessment/get-assessment/?project=${groupId}&event=${eventId}`)
+        .then((res2) => {
+          const data = res2.data;
+          if (data.id) {
+            setMarks((prev) => {
+              const updated = { ...prev };
+              data.marks.forEach((mark) => {
+                updated[mark.rubric_id] = mark.marks;
+              });
+              return updated;
+            });
+            setRemarks(data.remarks);
+          } else {
+            setReadOnly(false);
+          }
+        });
+    }
+  });
+}, [groupId, eventId]);
+
+  // useEffect(() => {
+  //   AxiosInstance.get(`/assessment/rubrics/?id=${eventId}`).then((res) => {
+  //     setRubrics(res.data);
+  //     // Initialize marks with 0 for each rubric
+  //     const initialMarks = {};
+  //     res.data.forEach((rubric) => {
+  //       initialMarks[rubric.id] = 0;
+  //     });
+  //     setMarks(initialMarks);
+  //   });
+  // }, []);
 
   const [readOnly, setReadOnly] = useState(false);
 
@@ -37,27 +74,27 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
     }, {});
   };
 
-  useEffect(() => {
-    if (groupId && eventId) {
-      AxiosInstance(`/project-assessment/get-assessment/?project=${groupId}&event=${eventId}`)
-        .then((res) => {
-          const data = res.data;
-          console.log(res.data) 
-          if (data.id) {
-            setMarks(data.marks.reduce((acc, mark) => {
-              acc[mark.rubric_id] = mark.marks;  // Reshaping the marks data to be used in the form
-              return acc;
-            }, {}));  // Reshape marks as needed
-            setRemarks(data.remarks);
-          } else {
-            setReadOnly(false);
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching assessment data:', error);
-        });
-    }
-  }, [groupId, eventId]);
+  // useEffect(() => {
+  //   if (groupId && eventId) {
+  //     AxiosInstance(`/project-assessment/get-assessment/?project=${groupId}&event=${eventId}`)
+  //       .then((res) => {
+  //         const data = res.data;
+  //         console.log(res.data) 
+  //         if (data.id) {
+  //           setMarks(data.marks.reduce((acc, mark) => {
+  //             acc[mark.rubric_id] = mark.marks;  // Reshaping the marks data to be used in the form
+  //             return acc;
+  //           }, {}));  // Reshape marks as needed
+  //           setRemarks(data.remarks);
+  //         } else {
+  //           setReadOnly(false);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error('Error fetching assessment data:', error);
+  //       });
+  //   }
+  // }, [groupId, eventId]);
   
 
   const handleMarksChange = (e, rubricId, maxMarks) => {
@@ -153,7 +190,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
               <label className="w-3/4 text-lg font-medium">{rubric.name}:</label>
               <input
                 type="number"
-                value={marks[rubric.id] ?? ""}
+                value={marks[rubric.id]}
                 onChange={(e) => handleMarksChange(e, rubric.id, rubric.max_marks)}
                 max={rubric.max_marks}
                 onWheel={(e) => e.target.blur()}

@@ -2918,7 +2918,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             progress = ProjectWeekProgress.objects.get(project=project, week=week)
 
             selected_week = week.week_number
-            date = progress.submitted_date.strftime('%Y-%m-%d')  # Format the date
+            date = timezone.localtime(progress.submitted_date).date().isoformat()
             completion_percentage = progress.completion_percentage
             remarks = progress.remarks
 
@@ -3357,7 +3357,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             )
 
             selected_week = week.week_number
-            date = progress.submitted_date.strftime('%Y-%m-%d')
+            date = timezone.localtime(progress.submitted_date).date().isoformat()
             remarks = progress.remarks
 
             # Title
@@ -6011,7 +6011,6 @@ class ProjectViewSet(viewsets.ModelViewSet):
                     "date": week_prog.submitted_date if exist  else None,
                     "completion_percentage": week_prog.completion_percentage if exist else 0,
                 })
-            print(result)
             
             return Response(result, status=status.HTTP_200_OK)
         except Exception as e:
@@ -7196,7 +7195,7 @@ class WeekViewSet(viewsets.ModelViewSet):
             ]
 
         return Response(data)
-
+from datetime import datetime
 class ProjectTaskViewSet(viewsets.ModelViewSet):
     queryset = ProjectTask.objects.all()
     serializer_class = ProjectTaskSerializer
@@ -7238,7 +7237,7 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
             return Response({'message': 'Task statuses updated successfully'}, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-    
+
     @action(detail=False, methods=['post'], url_path='submit-logbook')
     @transaction.atomic
     def submit_logbook(self, request):
@@ -7251,6 +7250,7 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
             remarks = request.data.get('remarks')
             print(project_id)
             print(week_id)
+            print(date)
 
             if not project_id or not week_id or not task_statuses:
                 return Response({'error': 'Project ID, week ID and task statuses are required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -7282,7 +7282,7 @@ class ProjectTaskViewSet(viewsets.ModelViewSet):
                     "completion_percentage": completion if completion is not None else 0,
                     "remarks": remarks or "",
                     "is_final": True,
-                    "submitted_date": date or timezone.now(),
+                    "submitted_date": date,
                 }
             )
 

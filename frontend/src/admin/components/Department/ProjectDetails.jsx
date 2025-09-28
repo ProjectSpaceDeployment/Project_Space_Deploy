@@ -623,7 +623,8 @@ const [roles, setRoles] = useState({ academic_role: "", project_roles: [] });
     const matchesSearch =
     (group.leader_name || "").toLowerCase().includes(query.toLowerCase()) ||
     (group.project_guide_name || "").toLowerCase().includes(query.toLowerCase()) ||
-    (group.project_coguide_name || "").toLowerCase().includes(query.toLowerCase());
+    (group.project_coguide_name || "").toLowerCase().includes(query.toLowerCase()) ||
+    (group.final_topic || "").toLowerCase().includes(query.toLowerCase());
   
     return matchesDomain && matchesDiv && matchesSearch;
   });
@@ -1698,6 +1699,7 @@ const handleDeleteWeek = async (weekNumber) => {
             <th className="p-3 border">Group No</th>
             <th className="p-3 border">Leader Name</th>
             <th className="p-3 border">Domain</th>
+            <th className="p-3 border">Project Title</th>
             <th className="p-3 border">Project Guide</th>
             <th className="p-3 border">Co-Guide</th>
           </tr>
@@ -1733,6 +1735,7 @@ const handleDeleteWeek = async (weekNumber) => {
                 >{group.group_no ? group.group_no : `${group.div}${group.id}`}</td>
                 <td className="p-3 border">{group.leader_name}</td>
                 <td className="p-3 border">{group.domain}</td>
+                <td className="p-3 border">{group.final_topic}</td>
                 <td className="p-3 border">{group.project_guide_name}</td>
                 <td className="p-3 border">{group.project_co_guide_name || "N/A"}</td>
               </tr>
