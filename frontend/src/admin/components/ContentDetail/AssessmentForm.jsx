@@ -159,8 +159,8 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
 
         <h2 className="text-3xl font-bold mb-6">{`Group: ${projectTitle}`}</h2>
 
-        <h3 className="text-lg font-medium">{`Domain: ${members}`}</h3>
-        <h3 className="text-lg font-medium">{`Title: ${topic}`}</h3>
+        <h3 className="text-lg font-medium mb-2">{`Domain: ${members}`}</h3>
+        <h3 className="text-lg font-medium mb-4">{`Title: ${topic}`}</h3>
 
         <div className="space-y-6">
           {/* {[ 
