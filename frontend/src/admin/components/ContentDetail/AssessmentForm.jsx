@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { FaTimes } from "react-icons/fa"; // Import the close icon
 import AxiosInstance from "../../../AxiosInstance";
 
-const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment, eventId, onClose, isDarkMode }) => {
+const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment, eventId, onClose, onSuccess, isDarkMode }) => {
   // const [marks, setMarks] = useState({
   //   problemStatement: 0,
   //   objective: 0,
@@ -131,6 +131,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
         const response = await AxiosInstance.post("/project-assessment/", payload);
       }
       // Adjust URL if needed
+      if (onSuccess) onSuccess(); 
       onClose(); // optionally close modal after submission
     } catch (error) {
       console.error("Error submitting assessment:", error);

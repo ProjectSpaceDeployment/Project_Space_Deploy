@@ -360,6 +360,7 @@ const handleOpenPDF = async () => {
           has_assessment = {selectedProject.has_assessment}
           eventId={event}
           onClose={closeForm}
+          onSuccess = {fetchEventData}
           isDarkMode={isDarkMode}
         />
       )}
