@@ -15,7 +15,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
   const [rubrics, setRubrics] = useState([]);
   const [marks, setMarks] = useState({});
   const [remarks, setRemarks] = useState("");
-
+  const [id, setId] = useState();
   useEffect(() => {
   if (!eventId) return;
 
@@ -37,6 +37,7 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
         .then((res2) => {
           const data = res2.data;
           if (data.id) {
+            setId(data.id);
             setMarks((prev) => {
               const updated = { ...prev };
               data.marks.forEach((mark) => {
@@ -125,8 +126,10 @@ const AssessmentForm = ({ projectTitle, members, groupId, topic, has_assessment,
       })),
     };
     try {
+      console.log(has_assessment)
+      console.log(payload)
       if (has_assessment){
-      const response = await AxiosInstance.patch("/project-assessment/", payload); }
+      const response = await AxiosInstance.patch(`/project-assessment/${id}`, payload); }
       else{
         const response = await AxiosInstance.post("/project-assessment/", payload);
       }

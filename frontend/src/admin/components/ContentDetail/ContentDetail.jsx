@@ -37,8 +37,8 @@ const ContentDetail = ({isDarkMode }) => {
     };
 
       // Add button click handler
-  const handleAddButtonClick = (projectTitle, members, groupId, Topic) => {
-    setSelectedProject({ projectTitle, members, groupId, Topic }); // Set the project title and members
+  const handleAddButtonClick = (projectTitle, members, groupId, Topic, has_assessment) => {
+    setSelectedProject({ projectTitle, members, groupId, Topic, has_assessment }); // Set the project title and members
     setFormOpen(true); // Open the form
   };
 
@@ -307,7 +307,7 @@ const handleOpenPDF = async () => {
                 <td className="border border-gray-300 p-2">
                   <button
                     onClick={() =>
-                      handleAddButtonClick(group.Group, group.Domain, group.id, group.Topic)
+                      handleAddButtonClick(group.Group, group.Domain, group.id, group.Topic, group.has_assessment)
                     }
                     className={`py-2 px-4 rounded-lg font-semibold transition-all ${
                       isDarkMode

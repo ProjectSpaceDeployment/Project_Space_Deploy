@@ -334,6 +334,28 @@ class ProjectAssessmentSerializer(serializers.ModelSerializer):
             AssessmentMark.objects.create(project_assessment=project_assessment, **mark)
         return project_assessment
 
+    def update(self, instance, validated_data):
+        marks_data = validated_data.pop('marks', None)
+
+        # update top-level fields
+        instance.project = validated_data.get('project', instance.project)
+        instance.event = validated_data.get('event', instance.event)
+        instance.remarks = validated_data.get('remarks', instance.remarks)
+        instance.save()
+
+        if marks_data is not None:
+            # clear old marks and recreate
+            instance.marks.all().delete()
+            for mark in marks_data:
+                AssessmentMark.objects.create(
+                    project_assessment=instance,
+                    **mark
+                )
+
+        return instance
+
+    
+
 class ResourceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Resource
