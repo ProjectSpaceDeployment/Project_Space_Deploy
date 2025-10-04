@@ -1472,7 +1472,7 @@ const ManagementPage = ({ isDarkMode }) => {
                   : "bg-red-500 text-white"
               }`}
               disabled={isRemoveDisabled}
-              onClick={handleStudentRemove}
+              // onClick={handleStudentRemove}
             >
               Remove
             </button>
