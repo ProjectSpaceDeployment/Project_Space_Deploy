@@ -6824,6 +6824,10 @@ class ReviewViewSet(viewsets.ModelViewSet):
         events = AssessmentEvent.objects.filter(year=year).values("id", "name")
         return Response(list(events))
 
+class AssessmentEventSet(viewsets.ModelViewSet):
+    queryset = AssessmentEvent.objects.all()
+    serializer_class = AssessmentEventDetailSerializer
+
 class AssessmentEventViewSet(viewsets.ModelViewSet):
     queryset = AssessmentEvent.objects.all()
     serializer_class = AssessmentPanelSerializer

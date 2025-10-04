@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import AssessmentForm from "./AssessmentForm";
-import { FaEdit } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import AxiosInstance from "../../../AxiosInstance";
 import EditForm from "./EditForm";
 const ContentDetail = ({isDarkMode }) => {
@@ -139,6 +139,20 @@ const handleOpenPDF = async () => {
       alert(error.response?.data?.message || error.response?.data?.error || "An unexpected error occurred.");
     }
   };
+
+  const handleDeleteEvent = async () => {
+  if (window.confirm("Are you sure you want to delete this event?")) {
+    try {
+      await AxiosInstance.delete(`/assessment-events/${event}/`);
+      alert("Event deleted successfully!");
+      handleNavigateToYearBox(); // refresh event list after delete
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Failed to delete the event.");
+    }
+  }
+};
+
   return (
     <div
       className={`min-h-screen flex flex-col ${
@@ -158,12 +172,21 @@ const handleOpenPDF = async () => {
             <span className="text-gray-600">{eventname || "Poster Presentation"}</span>
           </div>
           
+          <div className="flex items-center space-x-6">
           <button
             onClick={handleEditEvent} // your function to open edit form/modal
             className="text-gray-500 hover:text-blue-600"
           >
             <FaEdit />
           </button>
+
+          <button
+            onClick={handleDeleteEvent}
+            className="text-gray-500 hover:text-red-600"
+          >
+            <FaTrash />
+          </button>
+          </div>
           
 
         </div>
@@ -241,7 +264,7 @@ const handleOpenPDF = async () => {
                       <ul className="space-y-2">
                       {panelData.panels && panelData.panels.length > 0 ? (
               panelData.panels.map((teacher, idx) => (
-                <li key={idx}>Prof. {teacher}</li>
+                <li key={idx}>{teacher}</li>
               ))
             ) : (
               <p className="text-gray-500">No teachers assigned.</p>
