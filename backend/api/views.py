@@ -372,15 +372,18 @@ class ClusteringViewSet(viewsets.ModelViewSet):
 
                 prev_panels = AssessmentPanel.objects.filter(event=prev_event)
                 panel_dict = {}
+                assigned_teachers = set()
                 for old_panel in prev_panels:
                     new_panel = AssessmentPanel.objects.create(event=new_event, panel_number=old_panel.panel_number)
                     new_panel.teachers.set(old_panel.teachers.all())
                     new_panel.groups.set([]) 
                     panel_dict[new_panel.id] = list(old_panel.teachers.all())
-                
-                prev_unassigned_teachers = UnassignedTeacher.objects.filter(event=prev_event)
+                    assigned_teachers.update(old_panel.teachers.all())
+                all_teacher_ids = set(Teacher.objects.filter(department=y.department))
+                prev_unassigned_teachers = all_teacher_ids - assigned_teachers
+                print(prev_unassigned_teachers)
                 for unassigned in prev_unassigned_teachers:
-                    UnassignedTeacher.objects.create(event=new_event, teacher=unassigned.teacher)
+                    UnassignedTeacher.objects.create(event=new_event, teacher=unassigned)
 
                 # Build teacher domain expertise map
                 teacher_domains = {}
@@ -3058,7 +3061,7 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             print(len(table_data))
 
-            print(table_data)
+            # print(table_data)
 
             expected_rows = 5  # This can be any value you define
 
@@ -3070,19 +3073,53 @@ class CustomModelViewSet(viewsets.ModelViewSet):
 
             # Combine rows if the table has more rows than expected
             if len(table_data) > expected_rows:
-                # You can define how to combine rows, for now, we'll just merge them in a simple way
-                # For example, you can join the text content of the paragraphs
                 combined_data = []
-                for i in range(0, len(table_data), 2):  # Combine every two rows
-                    combined_text = ""
-                    if i < len(table_data):
-                        combined_text += table_data[i][0].getPlainText()
-                    if i + 1 < len(table_data):
-                        combined_text += " " + table_data[i + 1][0].getPlainText()
+                combined_data.append(table_data[0])
+                # for i in range(1, len(table_data), 2):  # Combine every two rows
+                #     combined_text = ""
+                #     if i < len(table_data):
+                #         combined_text += table_data[i][0].getPlainText()
+                #     if i + 1 < len(table_data):
+                #         combined_text += " " + table_data[i + 1][0].getPlainText()
 
-                    combined_data.append([Paragraph(combined_text, body_style)])
+                #     combined_data.append([Paragraph(combined_text, body_style)])
+
+                middle_rows = table_data[1:-1]
+                current_rows = len(table_data)
+                rows_to_reduce = current_rows - expected_rows
+
+                # If we have more than expected, we’ll merge some of the middle rows pairwise
+                i = 0
+                while i < len(middle_rows):
+                    if rows_to_reduce > 0 and i + 1 < len(middle_rows):
+                        # Merge this row with the next one
+                        merged_text = (
+                            middle_rows[i][0].getPlainText() + " " + middle_rows[i + 1][0].getPlainText()
+                        )
+                        combined_data.append([Paragraph(merged_text, body_style)])
+                        i += 2
+                        rows_to_reduce -= 1  # reduce one row count
+                    else:
+                        # Just append as-is
+                        combined_data.append(middle_rows[i])
+                        i += 1
+
+                # Always keep the last row (e.g., "Guide Remarks")
+                combined_data.append(table_data[-1])
 
                 table_data = combined_data
+
+                # table_data = combined_data
+
+                if len(table_data) < expected_rows:
+                # Add the difference as empty rows
+                    for _ in range(expected_rows - len(table_data)):
+                        table_data.append([Paragraph("", body_style)])
+
+                print(len(combined_data))
+
+            print(len(table_data))
+            print(table_data)
 
             row_heights = [25, 70, 70, 70, 70]
 
@@ -4620,6 +4657,20 @@ class StudentViewSet(viewsets.ModelViewSet):
 
         except Exception as e:
             return Response({"error": f"An error occurred while processing the file: {str(e)}"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+    @action(detail=False, methods=["post"], url_path="bulk-delete")
+    @transaction.atomic
+    def bulk_delete_teachers(self, request):
+        usernames = request.data.get("usernames", [])
+
+        if not isinstance(usernames, list) or not all(isinstance(u, str) for u in usernames):
+            return Response({"error": "A list of valid usernames is required."},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        users_deleted = User.objects.filter(username__in=usernames).delete()
+
+        return Response({"message": f"{users_deleted[0]} user(s) deleted."},
+                        status=status.HTTP_200_OK)
     
 class StudentSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()

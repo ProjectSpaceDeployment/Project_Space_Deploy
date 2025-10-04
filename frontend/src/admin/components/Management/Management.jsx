@@ -696,6 +696,27 @@ const ManagementPage = ({ isDarkMode }) => {
     }
   };
 
+  const handleStudentRemove = async () => {
+    if (selectedStudents.length === 0) {
+      alert("Please select at least one teacher to delete.");
+      return;
+    }
+
+    try {
+      const response = await AxiosInstance.post('/student/bulk-delete/', {
+        usernames: selectedStudents,
+      });
+
+      if (response.status === 200) {
+        alert("Selected students deleted successfully.");
+        setSelectedTeachers([]); // Clear the selection
+      }
+    } catch (error) {
+      console.error("Error deleting teachers:", error.response?.data || error.message);
+      alert("Failed to delete teachers.");
+    }
+  };
+
   const filteredDepartments = depart.filter(
     (dept) =>
       dept.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -1451,6 +1472,7 @@ const ManagementPage = ({ isDarkMode }) => {
                   : "bg-red-500 text-white"
               }`}
               disabled={isRemoveDisabled}
+              onClick={handleStudentRemove}
             >
               Remove
             </button>
