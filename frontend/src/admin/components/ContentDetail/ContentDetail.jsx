@@ -6,6 +6,8 @@ import AxiosInstance from "../../../AxiosInstance";
 import EditForm from "./EditForm";
 const ContentDetail = ({isDarkMode }) => {
   const { year, event } = useParams();
+  const { state } = useLocation();
+  const id = state?.id;
   const [activeTab, setActiveTab] = useState("panel");
   const [isFormOpen, setFormOpen] = useState(false); // Track if the form is open
   const [isEditFormOpen, setEditFormOpen] = useState(false);
@@ -13,6 +15,16 @@ const ContentDetail = ({isDarkMode }) => {
   const navigate = useNavigate();
   const [responseData, setResponseData] = useState({});
   const [eventname, setEventName] = useState("");
+  const [hasAccess, setHasAccess] = useState(false);
+
+  useEffect(() => {
+    if (id) {
+      AxiosInstance.get(`/teacher/has-add-access/?year_id=${id}`)
+        .then((res) => {
+          setHasAccess(res.data.has_access);
+        });
+    }
+  }, [id]);
 
   const fetchEventData = async () => {
       try {
@@ -171,8 +183,10 @@ const handleOpenPDF = async () => {
             <span className="text-gray-400">{">"}</span>
             <span className="text-gray-600">{eventname || "Poster Presentation"}</span>
           </div>
-          
+
+          {hasAccess && (
           <div className="flex items-center space-x-5">
+            
           <button
             onClick={handleEditEvent} // your function to open edit form/modal
             className="text-gray-500 hover:text-blue-600"
@@ -187,6 +201,9 @@ const handleOpenPDF = async () => {
             <FaTrash />
           </button>
           </div>
+        )}
+          
+          
           
 
         </div>

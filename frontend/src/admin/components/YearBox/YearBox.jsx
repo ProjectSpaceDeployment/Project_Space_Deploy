@@ -39,7 +39,7 @@ const YearBox = ({ id, year, isDarkMode }) => {
 
   // Navigate to the content detail page
   const handleContentClick = (event) => {
-    navigate(`/assessment/${year}/${event}`);
+    navigate(`/assessment/${year}/${event}`,{ state: { id } });
   };
 
   const [semesterOptions, setSemesterOptions] = useState([]);
