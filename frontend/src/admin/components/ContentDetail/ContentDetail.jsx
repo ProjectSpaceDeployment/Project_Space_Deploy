@@ -172,7 +172,7 @@ const handleOpenPDF = async () => {
             <span className="text-gray-600">{eventname || "Poster Presentation"}</span>
           </div>
           
-          <div className="flex items-center space-x-6">
+          <div className="flex items-center space-x-5">
           <button
             onClick={handleEditEvent} // your function to open edit form/modal
             className="text-gray-500 hover:text-blue-600"
