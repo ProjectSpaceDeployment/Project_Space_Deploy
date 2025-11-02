@@ -1072,7 +1072,7 @@ const handleDeleteWeek = async (weekNumber) => {
       setDomainSelected(projectData.domain || "");
       // setSelectedGuide(projectData.guide || "");
       if (projectData.domain){
-        const selectedDomainData = domainsData.find(domain => domain.domain_id === parseInt(selectedDomain));
+        const selectedDomainData = domainsData.find(domain => domain.domain_id === parseInt(projectData.domain));
         if (selectedDomainData) {
           setGuides(selectedDomainData.teachers);
         }
