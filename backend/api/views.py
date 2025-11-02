@@ -6579,11 +6579,25 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
             div = data.get('division')
             group_no = data.get('group_no')
 
+            # ----- Deactivate current leader & members' CurrentSem -----
+            if project.leader:
+                prev_leader_sem = CurrentSem.objects.filter(student=project.leader).order_by('-id').first()
+                if prev_leader_sem:
+                    prev_leader_sem.form = 0
+                    prev_leader_sem.save()
+
+            for prev_member in project.members.all():
+                prev_member_sem = CurrentSem.objects.filter(student=prev_member).order_by('-id').first()
+                if prev_member_sem:
+                    prev_member_sem.form = 0
+                    prev_member_sem.save()
+
             if group_no:
                 project.group_no = group_no
 
             if div:
                 project.div = div
+
             leader = Student.objects.filter(user__username=leader_id).first()
             if not leader:
                 return Response({"error": "Leader not found."}, status=400)
@@ -6620,6 +6634,17 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
 
             project.members.set(members)
             project.save()
+
+            new_leader_sem = CurrentSem.objects.filter(student=leader).order_by('-id').first()
+            if new_leader_sem:
+                new_leader_sem.form = 1
+                new_leader_sem.save()
+
+            for member in members:
+                member_sem = CurrentSem.objects.filter(student=member).order_by('-id').first()
+                if member_sem:
+                    member_sem.form = 1
+                    member_sem.save()
 
             return Response({"message": "Project updated successfully!"}, status=200)
 
