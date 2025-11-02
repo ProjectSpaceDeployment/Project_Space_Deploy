@@ -1070,7 +1070,14 @@ const handleDeleteWeek = async (weekNumber) => {
       );
       setDivision(projectData.division || "");
       setDomainSelected(projectData.domain || "");
-      setSelectedGuide(projectData.guide || "");
+      // setSelectedGuide(projectData.guide || "");
+      if (projectData.domain){
+        const selectedDomainData = domainsData.find(domain => domain.domain_id === parseInt(selectedDomain));
+        if (selectedDomainData) {
+          setGuides(selectedDomainData.teachers);
+        }
+        setSelectedGuide(projectData.guide || "");
+      }
       setCoGuide(projectData.co_guide || "");
       setGroupNo(projectData.group_no || "");
   
