@@ -3429,10 +3429,63 @@ class CustomModelViewSet(viewsets.ModelViewSet):
             table_data.append([Paragraph(f"Guide Remarks: {remarks}", body_style)])
 
             # Adjust table rows
-            expected_rows = 5
+            expected_rows = 5  # This can be any value you define
+
+            # Add empty rows if the table has fewer rows than expected
             if len(table_data) < expected_rows:
+                # Add the difference as empty rows
                 for _ in range(expected_rows - len(table_data)):
                     table_data.append([Paragraph("", body_style)])
+
+            # Combine rows if the table has more rows than expected
+            if len(table_data) > expected_rows:
+                combined_data = []
+                combined_data.append(table_data[0])
+                # for i in range(1, len(table_data), 2):  # Combine every two rows
+                #     combined_text = ""
+                #     if i < len(table_data):
+                #         combined_text += table_data[i][0].getPlainText()
+                #     if i + 1 < len(table_data):
+                #         combined_text += " " + table_data[i + 1][0].getPlainText()
+
+                #     combined_data.append([Paragraph(combined_text, body_style)])
+
+                middle_rows = table_data[1:-1]
+                current_rows = len(table_data)
+                rows_to_reduce = current_rows - expected_rows
+
+                # If we have more than expected, we’ll merge some of the middle rows pairwise
+                i = 0
+                while i < len(middle_rows):
+                    if rows_to_reduce > 0 and i + 1 < len(middle_rows):
+                        # Merge this row with the next one
+                        merged_text = (
+                            middle_rows[i][0].getPlainText() + " " + middle_rows[i + 1][0].getPlainText()
+                        )
+                        combined_data.append([Paragraph(merged_text, body_style)])
+                        i += 2
+                        rows_to_reduce -= 1  # reduce one row count
+                    else:
+                        # Just append as-is
+                        combined_data.append(middle_rows[i])
+                        i += 1
+
+                # Always keep the last row (e.g., "Guide Remarks")
+                combined_data.append(table_data[-1])
+
+                table_data = combined_data
+
+                # table_data = combined_data
+
+                if len(table_data) < expected_rows:
+                # Add the difference as empty rows
+                    for _ in range(expected_rows - len(table_data)):
+                        table_data.append([Paragraph("", body_style)])
+
+                print(len(combined_data))
+
+            print(len(table_data))
+            print(table_data)
 
             row_heights = [25, 70, 70, 70, 70]
             table_status = Table(table_data, colWidths=[500], rowHeights=row_heights)
