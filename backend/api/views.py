@@ -6586,7 +6586,7 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
                     print(last_group_no)
                     no = last_group_no+1
                     # Step 3: New group number will be last + 1
-                    new_group_no = f"{division.upper()}{no}"
+                    new_group_no = f"{semester.div.upper()}{no}"
                     project = Project.objects.create(
                         leader=leader,
                         project_guide=guide,
