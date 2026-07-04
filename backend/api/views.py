@@ -6207,8 +6207,6 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
         data = request.data.get('payload', {})
         print(data)  
         leader_id = data.get('leaderId')
-        def remove_title(name):
-            return re.sub(r'^(Prof\.|Dr\.|Mr\.|Ms\.)\s+', '', name)
         try:
             with transaction.atomic(): 
                 leader = Student.objects.get(user__username=leader_id)
@@ -6297,10 +6295,9 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
                     for i in range(1, 4):  # Loop for preference1, preference2, preference3
                         teacher_name = preference_data.get(f'preference{i}')
                         if teacher_name:
-                            teacher_name = remove_title(teacher_name)
 
                             # Assuming 'teacher_name' is now in "FirstName LastName" format
-                            first_name, last_name = teacher_name.split(' ', 1)
+                            first_name, last_name = teacher_name.rsplit(' ', 1)
                             try:
                                 teacher = Teacher.objects.get(user__first_name=first_name, user__last_name=last_name)
                             except Teacher.DoesNotExist:
@@ -6324,8 +6321,6 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'], url_path="create-group")
     @transaction.atomic
     def create_group(self, request):
-        def remove_title(name):
-            return re.sub(r'^(Prof\.|Dr\.|Mr\.|Ms\.)\s+', '', name)
         data = request.data
         print(data)  # Get the request data
         try:
