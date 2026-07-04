@@ -6325,7 +6325,7 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
     @transaction.atomic
     def create_group(self, request):
         def remove_title(name):
-            return re.sub(r'^(Prof\.|Dr\.)\s+', '', name)
+            return re.sub(r'^(Prof\.|Dr\.|Mr\.|Ms\.)\s+', '', name)
         data = request.data
         print(data)  # Get the request data
         try:
