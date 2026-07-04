@@ -6208,7 +6208,7 @@ class ProjectPreferenceViewSet(viewsets.ModelViewSet):
         print(data)  
         leader_id = data.get('leaderId')
         def remove_title(name):
-            return re.sub(r'^(Prof\.|Dr\.)\s+', '', name)
+            return re.sub(r'^(Prof\.|Dr\.|Mr\.|Ms\.)\s+', '', name)
         try:
             with transaction.atomic(): 
                 leader = Student.objects.get(user__username=leader_id)
